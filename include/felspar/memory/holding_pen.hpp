@@ -41,6 +41,13 @@ namespace felspar::memory {
             new (pen.data()) T{std::move(t)};
             holding = true;
         }
+        template<typename... Args>
+        T &emplace(Args... args) {
+            reset();
+            new (pen.data()) T{std::forward<Args>(args)...};
+            holding = true;
+            return value();
+        }
         /// Destroy any held value
         void reset() {
             if (holding) {
