@@ -10,15 +10,22 @@ namespace {
 
     auto const access = suite.test("accessors", [](auto check) {
         felspar::memory::small_vector<int> const int_c{0, 1, 2, 3, 4};
-        check(int_c[0]) == 0;
+        check(int_c.front()) == 0;
         check(int_c[1]) == 1;
         check(int_c[2]) == 2;
         check(int_c[3]) == 3;
-        felspar::memory::small_vector<int> const int_m{0, 1, 2, 3, 4};
-        check(int_m[0]) == 0;
+        check(int_c.back()) == 4;
+
+        felspar::memory::small_vector<int> int_m{0, 1, 2, 3, 4};
+        check(int_m.front()) == 0;
+        int_m.front() = -1;
+        check(int_m.front()) == -1;
         check(int_m[1]) == 1;
         check(int_m[2]) == 2;
         check(int_m[3]) == 3;
+        check(int_m.back()) == 4;
+        int_m.back() = -2;
+        check(int_m.back()) == -2;
     });
 
     auto const meta = suite.test("meta", [](auto check) {

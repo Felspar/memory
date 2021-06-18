@@ -48,10 +48,14 @@ namespace felspar::memory {
         /// Access
         T const &operator[](std::size_t const i) const { return *(data() + i); }
         T &operator[](std::size_t const i) { return *(data() + i); }
+        T &back() { return *(data() + entries - 1); }
+        T const &back() const { return *(data() + entries - 1); }
         T const *data() const noexcept {
             return reinterpret_cast<T const *>(storage.data());
         }
         T *data() noexcept { return reinterpret_cast<T *>(storage.data()); }
+        T &front() { return *data(); }
+        T const &front() const { return *data(); }
 
         /// Modifiers
         void push_back(T t) {
