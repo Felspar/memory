@@ -9,11 +9,16 @@ namespace {
 
 
     auto const access = suite.test("accessors", [](auto check) {
-        felspar::memory::small_vector<int> c_int{0, 1, 2, 3, 4};
-        check(c_int[0]) == 0;
-        check(c_int[1]) == 1;
-        check(c_int[2]) == 2;
-        check(c_int[3]) == 3;
+        felspar::memory::small_vector<int> const int_c{0, 1, 2, 3, 4};
+        check(int_c[0]) == 0;
+        check(int_c[1]) == 1;
+        check(int_c[2]) == 2;
+        check(int_c[3]) == 3;
+        felspar::memory::small_vector<int> const int_m{0, 1, 2, 3, 4};
+        check(int_m[0]) == 0;
+        check(int_m[1]) == 1;
+        check(int_m[2]) == 2;
+        check(int_m[3]) == 3;
     });
 
     auto const meta = suite.test("meta", [](auto check) {
