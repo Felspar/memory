@@ -8,10 +8,13 @@ namespace {
     auto const suite = felspar::testsuite("small_vector");
 
 
-    auto const meta = suite.test("meta", [](auto check) {
-        felspar::memory::small_vector<int> empty;
+    felspar::memory::small_vector<int> constexpr c_int = {};
+    felspar::memory::small_vector<std::array<std::byte, 58>, 128> constexpr c_56;
 
-        check(empty.capacity()) == 32;
+
+    auto const meta = suite.test("meta", [](auto check) {
+        check(c_int.capacity()) == 32;
+        check(c_56.capacity()) == 128;
     });
 
 
