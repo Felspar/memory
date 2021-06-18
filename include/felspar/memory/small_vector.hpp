@@ -2,6 +2,7 @@
 
 
 #include <array>
+#include <stdexcept>
 
 
 namespace felspar::memory {
@@ -34,10 +35,21 @@ namespace felspar::memory {
         using value_type = T;
 
         /// Constructors
-        small_vector(){};
+        small_vector() noexcept {};
 
         /// Capacity and meta-data
-        auto capacity() const { return N; }
+        auto capacity() const noexcept { return N; }
+        auto size() const noexcept { return entries; }
+
+        /// Access
+
+        /// Modifiers
+        void push_back(T t) {
+            if (entries >= capacity()) {
+                throw std::length_error{"Over small_vector capacity"};
+            }
+            new (storage.data() + block_size * entries++) T{std::move(t)};
+        }
     };
 
 
