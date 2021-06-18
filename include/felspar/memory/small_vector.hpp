@@ -28,13 +28,13 @@ namespace felspar::memory {
                 detail::block_size(sizeof(T), alignof(T));
 
         std::size_t entries = {};
-        std::array<std::byte, block_size * N> storage alignas(T) = {};
+        std::array<std::byte, block_size * N> storage alignas(T);
 
       public:
         using value_type = T;
 
         /// Constructors
-        constexpr small_vector(){};
+        small_vector(){};
 
         /// Capacity and meta-data
         auto capacity() const { return N; }
