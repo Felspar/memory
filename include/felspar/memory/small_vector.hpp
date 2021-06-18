@@ -36,12 +36,18 @@ namespace felspar::memory {
 
         /// Constructors
         small_vector() noexcept {};
+        template<typename... Args>
+        small_vector(Args... args) {
+            (push_back(std::forward<Args>(args)), ...);
+        }
 
         /// Capacity and meta-data
         auto capacity() const noexcept { return N; }
         auto size() const noexcept { return entries; }
 
         /// Access
+        T &operator[](std::size_t const i) { return *(data() + i); }
+        T *data() noexcept { return reinterpret_cast<T *>(storage.data()); }
 
         /// Modifiers
         void push_back(T t) {
