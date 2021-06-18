@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+cd $(dirname $0)
+mkdir -p build.tmp/{clang,gcc}-{debug,release}
+
+CMAKE="cmake -G Ninja ."
+
+
+export CC=gcc-10
+export CXX=g++-10
+
+$CMAKE -B build.tmp/gcc-debug \
+    -DCMAKE_INSTALL_PREFIX=dist/gcc-debug
+
+$CMAKE -B build.tmp/gcc-release \
+    -DCMAKE_INSTALL_PREFIX=dist/gcc-release \
+    -DCMAKE_BUILD_TYPE=Release
+
+
+export CC=clang
+export CXX=clang++
+
+$CMAKE -B build.tmp/clang-debug \
+    -DCMAKE_INSTALL_PREFIX=dist/clang-debug
+
+$CMAKE -B build.tmp/clang-release \
+    -DCMAKE_INSTALL_PREFIX=dist/clang-release \
+    -DCMAKE_BUILD_TYPE=Release
+
+
+export CXXFLAGS=-stdlib=libc++
+
+$CMAKE -B build.tmp/clang-debug-libc++ \
+    -DCMAKE_INSTALL_PREFIX=dist/clang-debug-libc++
+
+$CMAKE -B build.tmp/clang-release-libc++ \
+    -DCMAKE_INSTALL_PREFIX=dist/clang-release-libc++ \
+    -DCMAKE_BUILD_TYPE=Release
