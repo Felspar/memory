@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 cd $(dirname $0)
-mkdir -p build.tmp/{clang,gcc}-{debug,release}
 
 CMAKE="cmake -G Ninja ."
 
 
-export CC=gcc-10
-export CXX=g++-10
+export CC=gcc
+export CXX=g++
 
 $CMAKE -B build.tmp/gcc-debug \
     -DCMAKE_INSTALL_PREFIX=dist/gcc-debug
