@@ -9,6 +9,7 @@ endif()
 add_library(felspar-memory INTERFACE)
 target_include_directories(felspar-memory INTERFACE include)
 target_compile_features(felspar-memory INTERFACE cxx_std_20)
+target_link_libraries(felspar-memory INTERFACE felspar-exceptions)
 
 if(TARGET check)
     set_property(TARGET check PROPERTY EXCLUDE_FROM_ALL TRUE)

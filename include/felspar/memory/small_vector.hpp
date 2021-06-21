@@ -2,7 +2,7 @@
 
 
 #include <array>
-#include <stdexcept>
+#include <felspar/exceptions.hpp>
 
 
 namespace felspar::memory {
@@ -60,7 +60,7 @@ namespace felspar::memory {
         /// Modifiers
         void push_back(T t) {
             if (entries >= capacity()) {
-                throw std::length_error{"Over small_vector capacity"};
+                throw felspar::length_error{"Over small_vector capacity"};
             }
             new (storage.data() + block_size * entries++) T{std::move(t)};
         }
