@@ -58,6 +58,14 @@ namespace felspar::memory {
         T const &front() const { return *data(); }
 
         /// Modifiers
+        template<typename... Args>
+        void emplace_back(Args... args) {
+            if (entries >= capacity()) {
+                throw felspar::length_error{"Over small_vector capacity"};
+            }
+            new (storage.data() + block_size * entries++)
+                    T{std::forward<Args>(args)...};
+        }
         void push_back(T t) {
             if (entries >= capacity()) {
                 throw felspar::length_error{"Over small_vector capacity"};

@@ -38,12 +38,28 @@ namespace {
     });
 
 
-    auto const mod = suite.test("modifiers", [](auto check) {
+    class emplace_only {
+        std::string one, two;
+
+      public:
+        emplace_only(std::string o, std::string t)
+        : one{std::move(o)}, two{std::move(t)} {}
+        emplace_only(emplace_only const &) = delete;
+        emplace_only(emplace_only &&) = delete;
+
+        bool operator==(emplace_only const &) const = default;
+    };
+
+    auto const mod = suite.test("back insertion", [](auto check) {
         felspar::memory::small_vector<int> c_int;
         c_int.push_back(0);
         check(c_int.size()) == 1;
         c_int.push_back(1);
         check(c_int.size()) == 2;
+
+        felspar::memory::small_vector<emplace_only> emp;
+        emp.emplace_back("one", "two");
+        check(emp.back()) == emplace_only{"one", "two"};
     });
 
 
