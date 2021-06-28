@@ -30,11 +30,11 @@ namespace {
 
     auto const meta = suite.test("meta", [](auto check) {
         felspar::memory::small_vector<int> c_int;
-        check(c_int.capacity()) == 32;
-        check(c_int.size()) == 0;
+        check(c_int.capacity()) == 32u;
+        check(c_int.size()) == 0u;
         felspar::memory::small_vector<std::array<std::byte, 58>, 128> c_56;
-        check(c_56.capacity()) == 128;
-        check(c_56.size()) == 0;
+        check(c_56.capacity()) == 128u;
+        check(c_56.size()) == 0u;
     });
 
 
@@ -53,9 +53,9 @@ namespace {
     auto const mod = suite.test("back insertion", [](auto check) {
         felspar::memory::small_vector<int> c_int;
         c_int.push_back(0);
-        check(c_int.size()) == 1;
+        check(c_int.size()) == 1u;
         c_int.push_back(1);
-        check(c_int.size()) == 2;
+        check(c_int.size()) == 2u;
 
         felspar::memory::small_vector<emplace_only> emp;
         emp.emplace_back("one", "two");
