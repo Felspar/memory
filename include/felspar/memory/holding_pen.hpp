@@ -19,6 +19,8 @@ namespace felspar::memory {
         holding_pen(T &&t) : pen{}, holding{true} {
             new (pen.data()) T{std::move(t)};
         }
+        holding_pen(holding_pen const &) = delete;
+        holding_pen(holding_pen &&) = delete;
         ~holding_pen() { reset(); }
 
         /// Access to the pen
@@ -34,9 +36,11 @@ namespace felspar::memory {
         T const &operator*() const { return value(); }
 
         /// ## Manipulating the holding pen
+        holding_pen &operator=(holding_pen const &) = delete;
+        holding_pen &operator=(holding_pen &&) = delete;
 
         /// Assign a new value into the pen destroying any value already held
-        void assign(T &&t) {
+        void assign(T t) {
             reset();
             new (pen.data()) T{std::move(t)};
             holding = true;
