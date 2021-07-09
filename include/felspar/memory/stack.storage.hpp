@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include <felspar/exceptions/bad_alloc.hpp>
 #include <felspar/memory/sizes.hpp>
 
 #include <array>
@@ -39,7 +40,7 @@ namespace felspar::memory {
         std::byte *allocate(std::size_t bytes) {
             bytes = block_size(bytes, alignment_size);
             if (bytes > available.size()) [[unlikely]] {
-                throw std::runtime_error{"Out of free memory"};
+                throw felspar::stdexcept::bad_alloc{"Out of free memory"};
             }
             for (auto &slot : allocations) {
                 if (slot.data() == nullptr) {
@@ -48,7 +49,8 @@ namespace felspar::memory {
                     return slot.data();
                 }
             }
-            throw std::runtime_error{"Out of allocation bookkeeping slots"};
+            throw felspar::stdexcept::bad_alloc{
+                    "Out of allocation bookkeeping slots"};
         }
     };
 

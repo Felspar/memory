@@ -28,7 +28,7 @@ namespace {
 
         check([&]() {
             stack.allocate(65);
-        }).throws(std::runtime_error{"Out of free memory"});
+        }).throws(felspar::stdexcept::bad_alloc{"Out of free memory"});
 
         auto a1 = stack.allocate(1u);
         check(a1) == reinterpret_cast<std::byte const *>(&stack);
@@ -38,9 +38,9 @@ namespace {
         check(a2) == reinterpret_cast<std::byte const *>(&stack) + 16u;
         check(stack.free()) == stack.storage_bytes - 32u;
 
-        check([&]() {
-            stack.allocate(8u);
-        }).throws(std::runtime_error{"Out of allocation bookkeeping slots"});
+        check([&]() { stack.allocate(8u); })
+                .throws(felspar::stdexcept::bad_alloc{
+                        "Out of allocation bookkeeping slots"});
     });
 
 
