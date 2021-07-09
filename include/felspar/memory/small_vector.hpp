@@ -48,14 +48,16 @@ namespace felspar::memory {
         template<typename... Args>
         void emplace_back(Args... args) {
             if (entries >= capacity()) {
-                throw felspar::length_error{"Over small_vector capacity"};
+                throw felspar::stdexcept::length_error{
+                        "Over small_vector capacity"};
             }
             new (storage.data() + block_size * entries++)
                     T{std::forward<Args>(args)...};
         }
         void push_back(T t) {
             if (entries >= capacity()) {
-                throw felspar::length_error{"Over small_vector capacity"};
+                throw felspar::stdexcept::length_error{
+                        "Over small_vector capacity"};
             }
             new (storage.data() + block_size * entries++) T{std::move(t)};
         }
