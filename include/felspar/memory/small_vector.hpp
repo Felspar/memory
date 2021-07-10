@@ -63,5 +63,8 @@ namespace felspar::memory {
         }
     };
 
+    template<typename... Args>
+    small_vector(Args...) -> small_vector<std::common_type_t<Args...>>;
+
 
 }
