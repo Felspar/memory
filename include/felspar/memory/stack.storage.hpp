@@ -17,8 +17,8 @@ namespace felspar::memory {
         /// Storage memory for the
         std::array<std::byte, S> storage alignas(CA);
         using allocation = std::span<std::byte>;
-        small_vector<allocation, A> allocations = {};
-        allocation available = {storage.data(), storage.size()};
+        small_vector<allocation, A + 1> allocations = {
+                allocation{storage.data(), storage.size()}};
 
       public:
         /// The size of the usable storage in bytes
@@ -34,21 +34,21 @@ namespace felspar::memory {
         stack_storage &operator=(stack_storage &&) = delete;
 
         /// Return the amount of free memory remaining in the storage
-        auto free() const noexcept { return available.size(); }
+        auto free() const noexcept { return allocations.back().size(); }
 
         /// Allocate a number of bytes
         std::byte *allocate(std::size_t bytes) {
             bytes = block_size(bytes, alignment_size);
-            if (bytes > available.size()) [[unlikely]] {
+            if (bytes > allocations.back().size()) [[unlikely]] {
                 throw felspar::stdexcept::bad_alloc{"Out of free memory"};
             } else if (allocations.size() == allocations.capacity())
                     [[unlikely]] {
                 throw felspar::stdexcept::bad_alloc{
                         "Out of allocation bookkeeping slots"};
             } else {
-                auto alloc = available.first(bytes);
-                allocations.push_back(alloc);
-                available = available.subspan(bytes);
+                auto &alloc = allocations.back();
+                allocations.push_back(alloc.subspan(bytes));
+                alloc = alloc.first(bytes);
                 return alloc.data();
             }
         }
