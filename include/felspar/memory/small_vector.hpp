@@ -37,6 +37,9 @@ namespace felspar::memory {
         small_vector(Args... args) {
             (push_back(std::forward<Args>(args)), ...);
         }
+        ~small_vector() {
+            for (auto &i : *this) { std::destroy_at(&i); }
+        }
 
         /// Capacity and meta-data
         auto capacity() const noexcept { return N; }

@@ -73,4 +73,30 @@ namespace {
     });
 
 
+    struct count_destruction {
+        static std::size_t count;
+        ~count_destruction() { ++count; }
+    };
+    std::size_t count_destruction::count = {};
+    auto const destruct = suite.test("destruction", [](auto check) {
+        { [[maybe_unused]] count_destruction cd{}; }
+        check(std::exchange(count_destruction::count, 0)) == 1u;
+
+        {
+            felspar::memory::small_vector<count_destruction> c;
+            c.emplace_back();
+            check(c.size()) == 1u;
+        }
+        check(std::exchange(count_destruction::count, 0)) == 1u;
+
+        {
+            felspar::memory::small_vector<count_destruction> c;
+            c.emplace_back();
+            c.emplace_back();
+            check(c.size()) == 2u;
+        }
+        check(std::exchange(count_destruction::count, 0)) == 2u;
+    });
+
+
 }
