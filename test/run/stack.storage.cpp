@@ -27,7 +27,7 @@ namespace {
         felspar::memory::stack_storage<64, 2, 16> stack;
 
         check([&]() {
-            stack.allocate(65);
+            [[maybe_unused]] auto _ = stack.allocate(65u);
         }).throws(felspar::stdexcept::bad_alloc{"Out of free memory"});
 
         auto a1 = stack.allocate(1u);
@@ -38,7 +38,7 @@ namespace {
         check(a2) == reinterpret_cast<std::byte const *>(&stack) + 16u;
         check(stack.free()) == stack.storage_bytes - 32u;
 
-        check([&]() { stack.allocate(8u); })
+        check([&]() { [[maybe_unused]] auto _ = stack.allocate(8u); })
                 .throws(felspar::stdexcept::bad_alloc{
                         "Out of allocation bookkeeping slots"});
     });

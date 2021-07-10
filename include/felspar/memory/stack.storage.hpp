@@ -34,10 +34,12 @@ namespace felspar::memory {
         stack_storage &operator=(stack_storage &&) = delete;
 
         /// Return the amount of free memory remaining in the storage
-        auto free() const noexcept { return allocations.back().size(); }
+        [[nodiscard]] auto free() const noexcept {
+            return allocations.back().size();
+        }
 
         /// Allocate a number of bytes
-        std::byte *allocate(std::size_t bytes) {
+        [[nodiscard]] std::byte *allocate(std::size_t bytes) {
             bytes = block_size(bytes, alignment_size);
             if (bytes > allocations.back().size()) [[unlikely]] {
                 throw felspar::stdexcept::bad_alloc{"Out of free memory"};
