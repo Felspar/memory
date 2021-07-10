@@ -9,7 +9,12 @@
 namespace felspar::memory {
 
 
-    /// Stack allocated dynamic vector
+    /// # Stack allocated dynamic vector
+    /**
+     * Because the storage area is embedded iterators are never invalidated by
+     * adding or removing items to the array, but they are invalided by moving
+     * the `small_vector`.
+     */
     template<typename T, std::size_t N = 32>
     class small_vector final {
         static std::size_t constexpr block_size =
@@ -19,7 +24,12 @@ namespace felspar::memory {
         std::array<std::byte, block_size * N> storage alignas(T);
 
       public:
-        using value_type = T;
+        using value_type = std::remove_reference_t<T>;
+        using reference_type = std::add_lvalue_reference_t<value_type>;
+        using const_reference_type =
+                std::add_lvalue_reference_t<value_type const>;
+        using pointer_type = std::add_pointer_t<value_type>;
+        using const_pointer_type = std::add_pointer_t<value_type const>;
 
         /// Constructors
         small_vector() noexcept {};
@@ -33,28 +43,32 @@ namespace felspar::memory {
         auto size() const noexcept { return entries; }
 
         /// Access
-        T const &operator[](std::size_t const i) const { return *(data() + i); }
-        T &operator[](std::size_t const i) { return *(data() + i); }
+        const_reference_type operator[](std::size_t const i) const {
+            return *(data() + i);
+        }
+        reference_type operator[](std::size_t const i) { return *(data() + i); }
 
-        T const *data() const noexcept {
+        const_pointer_type data() const noexcept {
             return reinterpret_cast<T const *>(storage.data());
         }
-        T *data() noexcept { return reinterpret_cast<T *>(storage.data()); }
+        pointer_type data() noexcept {
+            return reinterpret_cast<T *>(storage.data());
+        }
 
-        T &back() { return *(data() + entries - 1); }
-        T const &back() const { return *(data() + entries - 1); }
-        T &front() { return *data(); }
-        T const &front() const { return *data(); }
+        reference_type back() { return *(data() + entries - 1); }
+        const_reference_type back() const { return *(data() + entries - 1); }
+        reference_type front() { return *data(); }
+        const_reference_type front() const { return *data(); }
 
         /// Iteration
-        using iterator = std::add_pointer_t<value_type>;
-        iterator begin() { return data(); }
-        iterator end() { return data() + size(); }
-        using const_iterator = std::add_pointer_t<value_type const>;
-        const_iterator begin() const { return data(); }
-        const_iterator end() const { return data() + size(); }
-        const_iterator cbegin() const { return data(); }
-        const_iterator cend() const { return data() + size(); }
+        using iterator = pointer_type;
+        iterator begin() noexcept { return data(); }
+        iterator end() noexcept { return data() + size(); }
+        using const_iterator = const_pointer_type;
+        const_iterator begin() const noexcept { return data(); }
+        const_iterator end() const noexcept { return data() + size(); }
+        const_iterator cbegin() const noexcept { return data(); }
+        const_iterator cend() const noexcept { return data() + size(); }
 
         /// Modifiers
         template<typename... Args>
