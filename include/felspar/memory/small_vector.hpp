@@ -44,6 +44,16 @@ namespace felspar::memory {
         T &front() { return *data(); }
         T const &front() const { return *data(); }
 
+        /// Iteration
+        using iterator = std::add_pointer_t<value_type>;
+        iterator begin() { return data(); }
+        iterator end() { return data() + size(); }
+        using const_iterator = std::add_pointer_t<value_type const>;
+        const_iterator begin() const { return data(); }
+        const_iterator end() const { return data() + size(); }
+        const_iterator cbegin() const { return data(); }
+        const_iterator cend() const { return data() + size(); }
+
         /// Modifiers
         template<typename... Args>
         void emplace_back(Args... args) {

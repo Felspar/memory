@@ -38,10 +38,15 @@ namespace {
     });
 
 
-    auto const cons = suite.test("construct", [](auto check) {
-        felspar::memory::small_vector c_int{1, 2, 3};
+    auto const cons = suite.test("iterate", [](auto check) {
+        felspar::memory::small_vector const c_int{1, 2, 3};
         check(c_int.size()) == 3u;
+
+        for (int expected = 0; auto const &v : c_int) {
+            check(v) == ++expected;
+        }
     });
+
 
     class emplace_only {
         std::string one, two;
