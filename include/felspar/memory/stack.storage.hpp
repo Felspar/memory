@@ -2,7 +2,7 @@
 
 
 #include <felspar/exceptions/bad_alloc.hpp>
-#include <felspar/memory/sizes.hpp>
+#include <felspar/memory/small_vector.hpp>
 
 #include <array>
 #include <stdexcept>
@@ -17,7 +17,7 @@ namespace felspar::memory {
         /// Storage memory for the
         std::array<std::byte, S> storage alignas(CA);
         using allocation = std::span<std::byte>;
-        std::array<allocation, A> allocations = {};
+        small_vector<allocation, A> allocations = {};
         allocation available = {storage.data(), storage.size()};
 
       public:
@@ -41,16 +41,16 @@ namespace felspar::memory {
             bytes = block_size(bytes, alignment_size);
             if (bytes > available.size()) [[unlikely]] {
                 throw felspar::stdexcept::bad_alloc{"Out of free memory"};
+            } else if (allocations.size() == allocations.capacity())
+                    [[unlikely]] {
+                throw felspar::stdexcept::bad_alloc{
+                        "Out of allocation bookkeeping slots"};
+            } else {
+                auto alloc = available.first(bytes);
+                allocations.push_back(alloc);
+                available = available.subspan(bytes);
+                return alloc.data();
             }
-            for (auto &slot : allocations) {
-                if (slot.data() == nullptr) {
-                    slot = available.first(bytes);
-                    available = available.subspan(bytes);
-                    return slot.data();
-                }
-            }
-            throw felspar::stdexcept::bad_alloc{
-                    "Out of allocation bookkeeping slots"};
         }
     };
 
