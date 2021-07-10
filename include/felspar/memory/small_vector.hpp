@@ -90,6 +90,13 @@ namespace felspar::memory {
             }
             new (storage.data() + block_size * entries++) T{std::move(t)};
         }
+        void erase(iterator pos) {
+            for (auto from = pos + 1u, e = end(); from != e; ++from, ++pos) {
+                *pos = std::move(*from);
+            }
+            std::destroy_at(pos);
+            --entries;
+        }
     };
 
     template<typename... Args>

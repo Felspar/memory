@@ -99,4 +99,29 @@ namespace {
     });
 
 
+    auto const erase = suite.test("erase", [](auto check) {
+        felspar::memory::small_vector c1{1, 2, 3};
+        c1.erase(c1.begin());
+        check(c1.size()) == 2u;
+        check(c1[0]) == 2;
+        check(c1[1]) == 3;
+        c1.erase(c1.begin() + 1);
+        check(c1.size()) == 1u;
+        check(c1[0]) == 2;
+        c1.erase(c1.begin());
+        check(c1.size()) == 0u;
+
+        {
+            felspar::memory::small_vector cd{
+                    count_destruction{}, count_destruction{}};
+            count_destruction::count = 0u;
+            cd.erase(cd.begin());
+            check(count_destruction::count) == 1u;
+            cd.erase(cd.begin());
+            check(count_destruction::count) == 2u;
+        }
+        check(count_destruction::count) == 2u;
+    });
+
+
 }
