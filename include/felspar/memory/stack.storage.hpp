@@ -43,11 +43,11 @@ namespace felspar::memory {
                 std::size_t bytes,
                 source_location loc = source_location::current()) {
             bytes = block_size(bytes, alignment_size);
-            if (bytes > allocations.back().size()) [[unlikely]] {
+            if (bytes > allocations.back().size()) /*[[unlikely]]*/ {
                 throw felspar::stdexcept::bad_alloc{
                         "Out of free memory", std::move(loc)};
             } else if (allocations.size() == allocations.capacity())
-                    [[unlikely]] {
+            /*[[unlikely]]*/ {
                 throw felspar::stdexcept::bad_alloc{
                         "Out of allocation bookkeeping slots", std::move(loc)};
             } else {
@@ -61,7 +61,7 @@ namespace felspar::memory {
                 std::byte *location,
                 std::size_t count = 1u,
                 source_location loc = source_location::current()) {
-            if (count != 1u) {
+            if (count != 1u) /*[[unlikely]]*/ {
                 throw felspar::stdexcept::runtime_error{
                         "Deallocation count must be 1", std::move(loc)};
             }
