@@ -57,6 +57,28 @@ namespace felspar::memory {
                 return alloc.data();
             }
         }
+        void deallocate(
+                std::byte *location,
+                std::size_t count = 1u,
+                source_location loc = source_location::current()) {
+            if (count != 1u) {
+                throw felspar::stdexcept::runtime_error{
+                        "Deallocation count must be 1", std::move(loc)};
+            }
+            for (auto pos = allocations.begin(); pos != allocations.end();
+                 ++pos) {
+                if (location >= pos->data()
+                    and location < pos->data() + pos->size()) {
+                    auto const freeing = *pos;
+                    allocations.erase(pos);
+                    *pos = {freeing.data(), freeing.size() + pos->size()};
+                    return;
+                }
+            }
+            throw felspar::stdexcept::runtime_error{
+                    "Bookkeeping entry for allocation not found",
+                    std::move(loc)};
+        }
     };
 
 

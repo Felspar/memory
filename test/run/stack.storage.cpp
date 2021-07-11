@@ -44,4 +44,34 @@ namespace {
     });
 
 
+    auto const d = suite.test("deallocate", [](auto check) {
+        felspar::memory::stack_storage<64, 8> stack;
+
+        auto a1 = stack.allocate(1u);
+        check(a1) == reinterpret_cast<std::byte const *>(&stack);
+        auto a2 = stack.allocate(1u);
+        check(a2) == reinterpret_cast<std::byte const *>(&stack) + 8u;
+        auto a3 = stack.allocate(1u);
+        check(a3) == reinterpret_cast<std::byte const *>(&stack) + 16u;
+
+        stack.deallocate(a3);
+        auto a4 = stack.allocate(1u);
+        check(a4) == a3;
+
+        stack.deallocate(a1);
+        auto a5 = stack.allocate(1u);
+        check(a5) == reinterpret_cast<std::byte const *>(&stack) + 24u;
+
+        stack.deallocate(a2);
+        stack.deallocate(a4);
+        stack.deallocate(a5);
+        check(stack.free()) == 64u;
+
+        auto a6 = stack.allocate(1u);
+        check(a6) == reinterpret_cast<std::byte const *>(&stack);
+        stack.deallocate(a6);
+        check(stack.free()) == 64u;
+    });
+
+
 }
