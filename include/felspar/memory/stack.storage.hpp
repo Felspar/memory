@@ -39,14 +39,17 @@ namespace felspar::memory {
         }
 
         /// Allocate a number of bytes
-        [[nodiscard]] std::byte *allocate(std::size_t bytes) {
+        [[nodiscard]] std::byte *allocate(
+                std::size_t bytes,
+                source_location loc = source_location::current()) {
             bytes = block_size(bytes, alignment_size);
             if (bytes > allocations.back().size()) [[unlikely]] {
-                throw felspar::stdexcept::bad_alloc{"Out of free memory"};
+                throw felspar::stdexcept::bad_alloc{
+                        "Out of free memory", std::move(loc)};
             } else if (allocations.size() == allocations.capacity())
                     [[unlikely]] {
                 throw felspar::stdexcept::bad_alloc{
-                        "Out of allocation bookkeeping slots"};
+                        "Out of allocation bookkeeping slots", std::move(loc)};
             } else {
                 auto &alloc = allocations.back();
                 allocations.push_back(alloc.subspan(bytes));
