@@ -72,11 +72,12 @@ namespace felspar::memory {
            that point (which in turn will destruct the owned memory.
          */
         static control *increment(control *c) noexcept {
-            if (c) ++c->ownership_count;
+            if (c) { ++c->ownership_count; }
             return c;
         }
         virtual void free() noexcept = 0;
-        static void decrement(control *c) noexcept {
+        static void decrement(control *&cr) noexcept {
+            control *c = std::exchange(cr, nullptr);
             if (c && --c->ownership_count == 0u) { c->free(); }
         }
 
