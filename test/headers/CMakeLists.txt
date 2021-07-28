@@ -1,6 +1,7 @@
 add_library(memory-headers-tests STATIC EXCLUDE_FROM_ALL
         control.cpp
         holding_pen.cpp
+        raw_storage.cpp
         sizes.cpp
         small_vector.cpp
         stack.storage.cpp

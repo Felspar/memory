@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include <memory>
+#include <felspar/memory/raw_storage.hpp>
 
 
 namespace felspar::memory {
@@ -10,24 +10,20 @@ namespace felspar::memory {
     /// Optionally holds a value, but does not allow the value to be re-assigned
     /// without being explicitly cleared first
     template<typename T>
-    class alignas(T) holding_pen {
-        std::array<std::byte, sizeof(T)> pen;
+    class holding_pen {
+        raw_storage<T> store;
         bool holding;
 
       public:
         holding_pen() : holding{false} {}
-        holding_pen(T &&t) : pen{}, holding{true} {
-            new (pen.data()) T{std::move(t)};
-        }
+        holding_pen(T &&t) : holding{true} { store.emplace(std::move(t)); }
         holding_pen(holding_pen const &) = delete;
         holding_pen(holding_pen &&) = delete;
         ~holding_pen() { reset(); }
 
         /// Access to the pen
-        T &value() { return *reinterpret_cast<T *>(pen.data()); }
-        T const &value() const {
-            return *reinterpret_cast<T const *>(pen.data());
-        }
+        T &value() { return *store.data(); }
+        T const &value() const { return *store.data(); }
 
         explicit operator bool() const { return holding; }
         T *operator->() { return &value(); }
@@ -41,24 +37,16 @@ namespace felspar::memory {
 
         /// Assign a new value into the pen destroying any value already held
         void assign(T t) {
-            reset();
-            new (pen.data()) T{std::move(t)};
-            holding = true;
+            store.destroy_if(std::exchange(holding, true));
+            store.emplace(std::move(t));
         }
         template<typename... Args>
         T &emplace(Args... args) {
-            reset();
-            new (pen.data()) T{std::forward<Args>(args)...};
-            holding = true;
-            return value();
+            store.destroy_if(std::exchange(holding, true));
+            return store.emplace(std::forward<Args>(args)...);
         }
         /// Destroy any held value
-        void reset() {
-            if (holding) {
-                std::destroy_at(reinterpret_cast<T *>(pen.data()));
-                holding = false;
-            }
-        }
+        void reset() { store.destroy_if(std::exchange(holding, false)); }
 
         /// Fetch the value then clear the pen
         holding_pen transfer_out() && {
