@@ -38,7 +38,9 @@ namespace felspar::memory {
         /// occupied.
         template<typename... Args>
         reference_type emplace(Args... args) {
-            std::construct_at<value_type>(data(), std::forward<Args>(args)...);
+            new (data()) value_type{std::forward<Args>(args)...};
+            /// TODO The below is not available in libc++ yet
+            // std::construct_at<value_type>(data(), std::forward<Args>(args)...);
             return *data();
         }
 
