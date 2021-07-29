@@ -27,6 +27,13 @@ namespace felspar::memory {
         using pointer_type = std::add_pointer_t<value_type>;
         using const_pointer_type = std::add_pointer_t<value_type const>;
 
+        /// Users must use the APIs to manage copy and move themselves
+        raw_storage() = default;
+        raw_storage(raw_storage const &) = delete;
+        raw_storage(raw_storage &&) = delete;
+        raw_storage &operator=(raw_storage const &) = delete;
+        raw_storage &operator=(raw_storage &&) = delete;
+
         /// Returns the memory location of any value stored in the storage
         pointer_type data() {
             return reinterpret_cast<pointer_type>(pen.data());
