@@ -22,6 +22,8 @@ namespace felspar::memory {
       public:
         using value_type = std::remove_cv_t<std::remove_reference_t<T>>;
         using reference_type = std::add_lvalue_reference_t<value_type>;
+        using const_reference_type =
+                std::add_lvalue_reference_t<value_type const>;
         using pointer_type = std::add_pointer_t<value_type>;
         using const_pointer_type = std::add_pointer_t<value_type const>;
 
@@ -32,6 +34,10 @@ namespace felspar::memory {
         const_pointer_type data() const {
             return reinterpret_cast<const_pointer_type>(pen.data());
         }
+        /// Returns the value. Undefined behaviour if there is nothing in the
+        /// storage
+        reference_type value() { return *data(); }
+        const_reference_type value() const { return *data(); }
 
         /// Constructs a new item in the memory passing the arguments to the
         /// constructor. This is undefined behaviour if the memory is already
@@ -46,6 +52,14 @@ namespace felspar::memory {
 
         /// ## Conditional operations
 
+        /// Conditionally assigns/constructs into the storage
+        reference_type assign_or_emplace(bool const holds, value_type t) {
+            if (holds) {
+                return (*data() = std::move(t));
+            } else {
+                return emplace(std::move(t));
+            }
+        }
         /// Conditionally destroys the held item
         void destroy_if(bool const destroy) {
             if (destroy) { std::destroy_at(data()); }
