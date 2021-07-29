@@ -20,10 +20,10 @@ namespace felspar::memory {
         std::array<std::byte, sizeof(T)> pen;
 
       public:
-        using value_type = std::remove_cv_t<T>;
+        using value_type = std::remove_cv_t<std::remove_reference_t<T>>;
+        using reference_type = std::add_lvalue_reference_t<value_type>;
         using pointer_type = std::add_pointer_t<value_type>;
         using const_pointer_type = std::add_pointer_t<value_type const>;
-        using reference_type = value_type &;
 
         /// Returns the memory location of any value stored in the storage
         pointer_type data() {
@@ -44,9 +44,11 @@ namespace felspar::memory {
             return *data();
         }
 
+        /// ## Conditional operations
+
         /// Conditionally destroys the held item
         void destroy_if(bool const destroy) {
-            if (destroy) { std::destroy_at(reinterpret_cast<T *>(pen.data())); }
+            if (destroy) { std::destroy_at(data()); }
         }
     };
 
