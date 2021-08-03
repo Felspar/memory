@@ -18,7 +18,9 @@ namespace felspar::memory {
         holding_pen() : holding{false} {}
         holding_pen(T &&t) : holding{true} { store.emplace(std::move(t)); }
         holding_pen(holding_pen const &) = delete;
-        holding_pen(holding_pen &&) = delete;
+        holding_pen(holding_pen &&h) : holding{h.holding} {
+            if (holding) { store.emplace(std::move(h.store.value())); }
+        }
         ~holding_pen() { reset(); }
 
         /// Access to the pen
