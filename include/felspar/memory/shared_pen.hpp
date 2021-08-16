@@ -21,7 +21,7 @@ namespace felspar::memory {
         shared_pen(shared_pen const &) = delete;
         shared_pen(shared_pen &&h) : pen{std::move(h)} {}
 
-        T value() const {
+        T value() {
             std::scoped_lock _{mutex};
             return pen.value();
         }
