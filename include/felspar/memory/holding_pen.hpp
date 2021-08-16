@@ -10,7 +10,7 @@ namespace felspar::memory {
     /// Optionally holds a value, but does not allow the value to be re-assigned
     /// without being explicitly cleared first
     template<typename T>
-    class holding_pen {
+    class holding_pen final {
         raw_storage<T> store;
         bool holding;
 
