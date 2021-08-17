@@ -2,6 +2,8 @@
 
 
 #include <array>
+
+#include <felspar/concepts.hpp>
 #include <felspar/exceptions.hpp>
 #include <felspar/memory/sizes.hpp>
 
@@ -90,9 +92,18 @@ namespace felspar::memory {
             }
             new (storage.data() + block_size * entries++) T{std::move(t)};
         }
-        void erase(iterator pos) {
+        void erase(iterator pos) requires
+                assignable_from<value_type &, value_type &&> {
             for (auto from = pos + 1u, e = end(); from != e; ++from, ++pos) {
                 *pos = std::move(*from);
+            }
+            std::destroy_at(pos);
+            --entries;
+        }
+        void erase(iterator pos) {
+            for (auto from = pos + 1u, e = end(); from != e; ++from, ++pos) {
+                std::destroy_at(pos);
+                new (pos) T(std::move(*from));
             }
             std::destroy_at(pos);
             --entries;

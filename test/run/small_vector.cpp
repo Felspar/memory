@@ -124,4 +124,15 @@ namespace {
     });
 
 
+    struct no_assign {
+        const std::string s;
+    };
+    auto const erase_m = suite.test("erase/no-assignment", [](auto check) {
+        felspar::memory::small_vector c1{no_assign{"a"}, no_assign{"b"}};
+        check(c1.size()) == 2u;
+        c1.erase(c1.begin());
+        check(c1.front().s) == "b";
+    });
+
+
 }
