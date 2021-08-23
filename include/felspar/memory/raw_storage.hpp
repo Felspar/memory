@@ -16,8 +16,8 @@ namespace felspar::memory {
      * user of this type.
      */
     template<typename T>
-    class alignas(T) raw_storage {
-        std::array<std::byte, sizeof(T)> pen;
+    class raw_storage {
+        std::array<std::byte, sizeof(T)> pen alignas(T);
 
       public:
         using value_type = std::remove_cv_t<std::remove_reference_t<T>>;
