@@ -36,10 +36,8 @@ namespace felspar::memory {
         /// ## Manipulating the holding pen
         holding_pen &operator=(holding_pen const &) = delete;
         holding_pen &operator=(holding_pen &&hp) {
-            if (hp.holding) {
-                holding = true;
+            if (holding = hp.holding; holding) {
                 assign(std::move(hp.store.value()));
-                hp.reset();
             } else {
                 reset();
             }
