@@ -60,9 +60,9 @@ namespace felspar::memory {
         /// Fetch the value then clear the pen
         holding_pen transfer_out() && {
             if (not holding) {
-                return holding_pen<T>{};
+                return holding_pen{};
             } else {
-                T r = std::move(value());
+                T r{std::move(value())};
                 reset();
                 return r;
             }
