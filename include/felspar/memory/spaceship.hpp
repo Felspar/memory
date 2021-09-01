@@ -11,7 +11,7 @@ namespace felspar::memory {
 
 
     template<numeric T>
-    auto spaceship(
+    constexpr inline auto spaceship(
             std::span<T const> const left, std::span<T const> const right) {
         for (typename std::span<T>::size_type index{}; true; ++index) {
             if (index == left.size()) {
