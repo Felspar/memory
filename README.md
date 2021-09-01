@@ -23,6 +23,11 @@ Similar to `holding_pen`, but includes a mutex for controlling access to the val
 A `std::vector` like type that has a single compile time specified capacity.
 
 
+## `spaceship`
+
+A function that implements three way strong ordering comparison for numeric types (integers, floats and pointers).
+
+
 ## `stack_storage`
 
 A basic allocator whose memory is embedded in the allocator itself. It is not intended to be used as a drop in allocator in `std::` containers etc.

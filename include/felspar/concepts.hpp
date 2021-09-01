@@ -19,4 +19,9 @@ namespace felspar {
     };
 
 
+    template<typename N>
+    concept numeric = std::is_integral_v<N> or std::is_floating_point_v<
+            N> or std::is_pointer_v<N>;
+
+
 }
