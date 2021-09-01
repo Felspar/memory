@@ -1,4 +1,5 @@
 add_library(memory-headers-tests STATIC EXCLUDE_FROM_ALL
+        concepts.cpp
         control.cpp
         holding_pen.cpp
         raw_storage.cpp
