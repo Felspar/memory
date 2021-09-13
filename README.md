@@ -3,6 +3,11 @@
 **Memory utilities for C++ 20**
 
 
+## `any_buffer`
+
+An `std::any` like type that can also be used with types that are not copyable. Items can only be placed in it when it's created
+
+
 ## `holding_pen`
 
 An `std::optional` like type that cannot be used to change a stored value, only placing a value when it's empty and then emptying again. This allows it to be used with movable types that are not assignable.
@@ -15,7 +20,7 @@ A simple type that abstracts the storage requirements for a type where the user 
 
 ## `shared_pen`
 
-Similar to `holding_pen`, but includes a mutex for controlling access to the value. As a consequence it has a very small interface.
+Similar to `holding_pen`, but includes a mutex for controlling access to the value.
 
 
 ## `small_vector`
