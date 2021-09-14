@@ -47,7 +47,9 @@ namespace felspar::memory {
         }
 
         /// Return true if there is a held object
-        explicit operator bool() const { return type and deleter; }
+        explicit operator bool() const {
+            return type and move_into and deleter;
+        }
 
         /// Retrieve the value out of the buffer
         template<typename T>
