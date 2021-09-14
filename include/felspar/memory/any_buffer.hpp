@@ -49,7 +49,7 @@ namespace felspar::memory {
             if (not type) {
                 return {};
             } else if (typeid(T) == *type) {
-                return {std::move(reinterpret_cast<T>(buffer.data()))};
+                return {std::move(*reinterpret_cast<T *>(buffer.data()))};
             } else {
                 return {};
             }
