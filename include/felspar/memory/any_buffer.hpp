@@ -16,7 +16,10 @@ namespace felspar::memory {
         static std::size_t constexpr buffer_size = 64;
 
         any_buffer() {}
-        any_buffer(any_buffer &&) = delete;
+        any_buffer(any_buffer &&o)
+        : type{o.type}, move_into{o.move_into}, deleter{o.deleter} {
+            if (move_into) { move_into(buffer.data(), o.buffer.data()); }
+        }
         any_buffer(any_buffer const &) = delete;
         ~any_buffer() {
             if (deleter) { deleter(buffer.data()); }
@@ -35,6 +38,9 @@ namespace felspar::memory {
                     sizeof(T) <= buffer_size,
                     "Large object support not yet implemented");
             new (buffer.data()) T{std::move(object)};
+            move_into = [](std::byte *into, std::byte *from) {
+                new (into) T{std::move(*reinterpret_cast<T *>(from))};
+            };
             deleter = [](std::byte *d) {
                 std::destroy_at(reinterpret_cast<T *>(d));
             };
@@ -66,6 +72,7 @@ namespace felspar::memory {
 
       private:
         std::type_info const *type = nullptr;
+        void (*move_into)(std::byte *, std::byte *) = nullptr;
         void (*deleter)(std::byte *) = nullptr;
         std::array<std::byte, buffer_size> buffer alignas(alignment);
     };
