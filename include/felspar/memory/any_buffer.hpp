@@ -12,7 +12,7 @@ namespace felspar::memory {
     /// A buffer that can be used to transport any type and from which a value
     /// of the correct type can be later retrieved
     struct any_buffer {
-        static std::size_t constexpr alignment = 8;
+        static std::size_t constexpr alignment = 16;
         static std::size_t constexpr buffer_size = 64;
 
         any_buffer() {}
