@@ -42,7 +42,7 @@ namespace felspar::memory {
                 new (into) T{std::move(*reinterpret_cast<T *>(from))};
             };
             deleter = [](std::byte *d) {
-                std::destroy_at(reinterpret_cast<T *>(d));
+                std::destroy_at(std::launder(reinterpret_cast<T *>(d)));
             };
         }
 
@@ -57,7 +57,7 @@ namespace felspar::memory {
             if (not type) {
                 return {};
             } else if (typeid(T) == *type) {
-                return {std::move(*reinterpret_cast<T *>(buffer.data()))};
+                return {std::move(*std::launder(reinterpret_cast<T *>(buffer.data())))};
             } else {
                 return {};
             }

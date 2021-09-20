@@ -54,10 +54,10 @@ namespace felspar::memory {
         reference_type operator[](std::size_t const i) { return *(data() + i); }
 
         const_pointer_type data() const noexcept {
-            return reinterpret_cast<T const *>(storage.data());
+            return std::launder(reinterpret_cast<T const *>(storage.data()));
         }
         pointer_type data() noexcept {
-            return reinterpret_cast<T *>(storage.data());
+            return std::launder(reinterpret_cast<T *>(storage.data()));
         }
 
         reference_type back() { return *(data() + entries - 1); }

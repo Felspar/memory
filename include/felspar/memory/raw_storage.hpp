@@ -36,10 +36,10 @@ namespace felspar::memory {
 
         /// Returns the memory location of any value stored in the storage
         pointer_type data() {
-            return reinterpret_cast<pointer_type>(pen.data());
+            return std::launder(reinterpret_cast<pointer_type>(pen.data()));
         }
         const_pointer_type data() const {
-            return reinterpret_cast<const_pointer_type>(pen.data());
+            return std::launder(reinterpret_cast<const_pointer_type>(pen.data()));
         }
         /// Returns the value. Undefined behaviour if there is nothing in the
         /// storage
