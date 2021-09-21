@@ -39,7 +39,8 @@ namespace felspar::memory {
             return std::launder(reinterpret_cast<pointer_type>(pen.data()));
         }
         const_pointer_type data() const {
-            return std::launder(reinterpret_cast<const_pointer_type>(pen.data()));
+            return std::launder(
+                    reinterpret_cast<const_pointer_type>(pen.data()));
         }
         /// Returns the value. Undefined behaviour if there is nothing in the
         /// storage
