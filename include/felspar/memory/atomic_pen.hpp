@@ -9,17 +9,18 @@
 namespace felspar::memory {
 
 
-    /// Mimics the `holding_pen`, but makes it thread safe. Acts like a `std::atomic`, but lifts most of the type requirements
+    /// Mimics the `holding_pen`, but makes it thread safe. Acts like a
+    /// `std::atomic`, but lifts most of the type requirements
     template<typename T>
     class atomic_pen final {
         std::mutex mutex;
         holding_pen<T> pen;
 
       public:
-        shared_pen() {}
-        shared_pen(T &&t) : pen{std::move(t)} {}
-        shared_pen(shared_pen const &) = delete;
-        shared_pen(shared_pen &&h) : pen{std::move(h)} {}
+        atomic_pen() {}
+        atomic_pen(T &&t) : pen{std::move(t)} {}
+        atomic_pen(atomic_pen const &) = delete;
+        atomic_pen(atomic_pen &&h) : pen{std::move(h)} {}
 
         T value() {
             std::scoped_lock _{mutex};
