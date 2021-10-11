@@ -9,9 +9,9 @@
 namespace felspar::memory {
 
 
-    /// Mimics the `holding_pen`, but makes it thread safe.
+    /// Mimics the `holding_pen`, but makes it thread safe. Acts like a `std::atomic`, but lifts most of the type requirements
     template<typename T>
-    class shared_pen final {
+    class atomic_pen final {
         std::mutex mutex;
         holding_pen<T> pen;
 
