@@ -12,6 +12,14 @@
 namespace felspar::memory {
 
 
+    /**
+     * ## Stack based allocator
+     *
+     * An allocator intended for use with small allocations where their
+     * lifetimes don't extend beyond the allocator.
+     *
+     * This allocator is not thread safe.
+     */
     template<std::size_t S = 1u << 20, std::size_t A = 32u, std::size_t CA = 8u>
     class stack_storage {
         /// Storage memory for the
