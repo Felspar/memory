@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace felspar::memory {
+namespace felspar {
 
 
     /**
@@ -10,7 +10,7 @@ namespace felspar::memory {
     template<std::size_t S = 16u << 10, std::size_t CA = 8u>
     class slab_storage {
         std::array<std::byte, S> storage alignas(CA);
-        std::byte *allocated_bytes = {};
+        std::size_t allocated_bytes = {};
 
       public:
         static std::size_t constexpr storage_bytes{S};
@@ -30,12 +30,15 @@ namespace felspar::memory {
 
         [[nodiscard]] std::byte *allocate(std::size_t bytes) {
             if (bytes > free()) {
-                throw std::bad_alloc{"Out of allocation bookkeeping slots"};
+                throw std::bad_alloc{};
             } else {
                 std::byte *base = storage.data() + allocated_bytes;
                 allocated_bytes += bytes;
                 return base;
             }
-            void deallocate(std::byte *) {}
-        };
-    }
+        }
+        void deallocate(std::byte *) {}
+    };
+
+
+}
