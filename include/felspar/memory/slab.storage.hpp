@@ -1,6 +1,11 @@
 #pragma once
 
 
+#include <felspar/memory/sizes.hpp>
+
+#include <array>
+
+
 namespace felspar::memory {
 
 
@@ -33,7 +38,7 @@ namespace felspar::memory {
                 throw std::bad_alloc{};
             } else {
                 std::byte *base = storage.data() + allocated_bytes;
-                allocated_bytes += bytes;
+                allocated_bytes += aligned_offset(bytes, alignment_size);
                 return base;
             }
         }
