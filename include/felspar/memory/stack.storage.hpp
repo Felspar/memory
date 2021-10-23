@@ -66,13 +66,8 @@ namespace felspar::memory {
             }
         }
         void deallocate(
-                std::byte *location,
-                std::size_t count = 1u,
+                void *location,
                 source_location loc = source_location::current()) {
-            if (count != 1u) /*[[unlikely]]*/ {
-                throw felspar::stdexcept::runtime_error{
-                        "Deallocation count must be 1", std::move(loc)};
-            }
             for (auto pos = allocations.begin(); pos != allocations.end();
                  ++pos) {
                 if (location >= pos->data()
