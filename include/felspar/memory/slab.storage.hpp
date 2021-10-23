@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace felspar {
+namespace felspar::memory {
 
 
     /**
