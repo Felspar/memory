@@ -1,4 +1,4 @@
-#include <felspar/memory/raw_storage.hpp>
+#include <felspar/memory/raw_memory.hpp>
 #include <felspar/test.hpp>
 
 
@@ -37,7 +37,7 @@ namespace {
 
     auto const cons = suite.test("construct & destroy", [](auto check) {
         count = {};
-        felspar::memory::raw_storage<counted> c;
+        felspar::memory::raw_memory<counted> c;
         check(count.construct) == 0u;
         check(count.copied) == 0u;
         check(count.moved) == 0u;
@@ -69,7 +69,7 @@ namespace {
 
     auto const assign = suite.test("assignment", [](auto check) {
         count = {};
-        felspar::memory::raw_storage<counted> c;
+        felspar::memory::raw_memory<counted> c;
         check(count.construct) == 0u;
         check(count.copied) == 0u;
         check(count.moved) == 0u;

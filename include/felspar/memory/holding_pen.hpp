@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include <felspar/memory/raw_storage.hpp>
+#include <felspar/memory/raw_memory.hpp>
 
 
 namespace felspar::memory {
@@ -11,7 +11,7 @@ namespace felspar::memory {
     /// without being explicitly cleared first
     template<typename T>
     class holding_pen final {
-        raw_storage<T> store;
+        raw_memory<T> store;
         bool holding;
 
       public:

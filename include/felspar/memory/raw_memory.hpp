@@ -11,12 +11,12 @@ namespace felspar::memory {
 
     /// Memory for storage of a type T
     /**
-     * The `raw_storage` does not have any way to know whether the storage is in
+     * The `raw_memory` does not have any way to know whether the storage is in
      * use or not. Tracking usage of the storage is the responsibility of the
      * user of this type.
      */
     template<typename T>
-    class raw_storage {
+    class raw_memory {
         std::array<std::byte, sizeof(T)> pen alignas(T);
 
       public:
@@ -28,11 +28,11 @@ namespace felspar::memory {
         using const_pointer_type = std::add_pointer_t<value_type const>;
 
         /// Users must use the APIs to manage copy and move themselves
-        raw_storage() = default;
-        raw_storage(raw_storage const &) = delete;
-        raw_storage(raw_storage &&) = delete;
-        raw_storage &operator=(raw_storage const &) = delete;
-        raw_storage &operator=(raw_storage &&) = delete;
+        raw_memory() = default;
+        raw_memory(raw_memory const &) = delete;
+        raw_memory(raw_memory &&) = delete;
+        raw_memory &operator=(raw_memory const &) = delete;
+        raw_memory &operator=(raw_memory &&) = delete;
 
         /// Returns the memory location of any value stored in the storage
         pointer_type data() {
