@@ -47,7 +47,7 @@ namespace felspar::memory {
         }
 
         /// Allocate a number of bytes
-        [[nodiscard]] std::byte *allocate(
+        [[nodiscard]] constexpr std::byte *allocate(
                 std::size_t bytes,
                 source_location loc = source_location::current()) {
             bytes = block_size(bytes, alignment_size);
@@ -65,7 +65,7 @@ namespace felspar::memory {
                 return alloc.data();
             }
         }
-        void deallocate(
+        constexpr void deallocate(
                 void *location,
                 source_location loc = source_location::current()) {
             for (auto pos = allocations.begin(); pos != allocations.end();
