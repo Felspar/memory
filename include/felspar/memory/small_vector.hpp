@@ -34,12 +34,12 @@ namespace felspar::memory {
         using const_pointer_type = std::add_pointer_t<value_type const>;
 
         /// Constructors
-        small_vector() noexcept {};
+        constexpr small_vector() noexcept {};
         template<typename... Args>
         small_vector(Args... args) {
             (push_back(std::forward<Args>(args)), ...);
         }
-        ~small_vector() {
+        constexpr ~small_vector() {
             for (auto &i : *this) { std::destroy_at(&i); }
         }
         /// No copy/move
@@ -49,36 +49,44 @@ namespace felspar::memory {
         small_vector &operator=(small_vector &&) = delete;
 
         /// Capacity and meta-data
-        auto capacity() const noexcept { return N; }
-        auto size() const noexcept { return entries; }
+        constexpr auto capacity() const noexcept { return N; }
+        constexpr auto size() const noexcept { return entries; }
 
         /// Access
-        const_reference_type operator[](std::size_t const i) const {
+        constexpr const_reference_type operator[](std::size_t const i) const {
             return *(data() + i);
         }
-        reference_type operator[](std::size_t const i) { return *(data() + i); }
+        constexpr reference_type operator[](std::size_t const i) {
+            return *(data() + i);
+        }
 
-        const_pointer_type data() const noexcept {
+        constexpr const_pointer_type data() const noexcept {
             return std::launder(reinterpret_cast<T const *>(storage.data()));
         }
-        pointer_type data() noexcept {
+        constexpr pointer_type data() noexcept {
             return std::launder(reinterpret_cast<T *>(storage.data()));
         }
 
-        reference_type back() { return *(data() + entries - 1); }
-        const_reference_type back() const { return *(data() + entries - 1); }
-        reference_type front() { return *data(); }
-        const_reference_type front() const { return *data(); }
+        constexpr reference_type back() { return *(data() + entries - 1); }
+        constexpr const_reference_type back() const {
+            return *(data() + entries - 1);
+        }
+        constexpr reference_type front() { return *data(); }
+        constexpr const_reference_type front() const { return *data(); }
 
         /// Iteration
         using iterator = pointer_type;
-        iterator begin() noexcept { return data(); }
-        iterator end() noexcept { return data() + size(); }
+        constexpr iterator begin() noexcept { return data(); }
+        constexpr iterator end() noexcept { return data() + size(); }
         using const_iterator = const_pointer_type;
-        const_iterator begin() const noexcept { return data(); }
-        const_iterator end() const noexcept { return data() + size(); }
-        const_iterator cbegin() const noexcept { return data(); }
-        const_iterator cend() const noexcept { return data() + size(); }
+        constexpr const_iterator begin() const noexcept { return data(); }
+        constexpr const_iterator end() const noexcept {
+            return data() + size();
+        }
+        constexpr const_iterator cbegin() const noexcept { return data(); }
+        constexpr const_iterator cend() const noexcept {
+            return data() + size();
+        }
 
         /// Modifiers
         template<typename... Args>

@@ -28,24 +28,26 @@ namespace felspar::memory {
         using const_pointer_type = std::add_pointer_t<value_type const>;
 
         /// Users must use the APIs to manage copy and move themselves
-        raw_memory() = default;
+        constexpr raw_memory() = default;
         raw_memory(raw_memory const &) = delete;
         raw_memory(raw_memory &&) = delete;
         raw_memory &operator=(raw_memory const &) = delete;
         raw_memory &operator=(raw_memory &&) = delete;
 
         /// Returns the memory location of any value stored in the storage
-        pointer_type data() {
+        constexpr pointer_type data() noexcept {
             return std::launder(reinterpret_cast<pointer_type>(pen.data()));
         }
-        const_pointer_type data() const {
+        constexpr const_pointer_type data() const noexcept {
             return std::launder(
                     reinterpret_cast<const_pointer_type>(pen.data()));
         }
         /// Returns the value. Undefined behaviour if there is nothing in the
         /// storage
-        reference_type value() { return *data(); }
-        const_reference_type value() const { return *data(); }
+        constexpr reference_type value() noexcept { return *data(); }
+        constexpr const_reference_type value() const noexcept {
+            return *data();
+        }
 
         /// Constructs a new item in the memory passing the arguments to the
         /// constructor. This is undefined behaviour if the memory is already
@@ -69,7 +71,7 @@ namespace felspar::memory {
             }
         }
         /// Conditionally destroys the held item
-        void destroy_if(bool const destroy) {
+        void destroy_if(bool const destroy) noexcept {
             if (destroy) { std::destroy_at(data()); }
         }
     };

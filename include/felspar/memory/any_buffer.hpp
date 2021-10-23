@@ -15,7 +15,7 @@ namespace felspar::memory {
         static std::size_t constexpr alignment = 16;
         static std::size_t constexpr buffer_size = 64;
 
-        any_buffer() {}
+        constexpr any_buffer() noexcept {}
         any_buffer(any_buffer &&o)
         : type{o.type}, move_into{o.move_into}, deleter{o.deleter} {
             if (move_into) { move_into(buffer.data(), o.buffer.data()); }
@@ -47,7 +47,7 @@ namespace felspar::memory {
         }
 
         /// Return true if there is a held object
-        explicit operator bool() const {
+        explicit operator bool() const noexcept {
             return type and move_into and deleter;
         }
 

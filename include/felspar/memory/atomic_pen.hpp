@@ -17,7 +17,7 @@ namespace felspar::memory {
         holding_pen<T> pen;
 
       public:
-        atomic_pen() {}
+        atomic_pen() noexcept {}
         atomic_pen(T &&t) : pen{std::move(t)} {}
         atomic_pen(atomic_pen const &) = delete;
         atomic_pen(atomic_pen &&h) : pen{std::move(h)} {}

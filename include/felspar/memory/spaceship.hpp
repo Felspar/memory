@@ -10,8 +10,9 @@
 namespace felspar::memory {
 
 
+    /// Lexicographical ordering for items in contiguous memory
     template<numeric T>
-    constexpr inline auto spaceship(
+    constexpr auto spaceship(
             std::span<T const> const left, std::span<T const> const right) {
         for (typename std::span<T>::size_type index{}; true; ++index) {
             if (index == left.size()) {

@@ -21,7 +21,7 @@ namespace felspar::memory {
         static std::size_t constexpr storage_bytes{S};
         static std::size_t constexpr alignment_size{CA};
 
-        slab_storage() noexcept = default;
+        constexpr slab_storage() noexcept = default;
         slab_storage(slab_storage const &) = delete;
         slab_storage(slab_storage &&) = delete;
 
@@ -29,11 +29,11 @@ namespace felspar::memory {
         slab_storage &operator=(slab_storage &&) = delete;
 
         /// Return the approximate number of free bytes
-        [[nodiscard]] std::size_t free() const noexcept {
+        [[nodiscard]] constexpr std::size_t free() const noexcept {
             return storage.size() - allocated_bytes;
         }
 
-        [[nodiscard]] std::byte *allocate(std::size_t bytes) {
+        [[nodiscard]] constexpr std::byte *allocate(std::size_t bytes) {
             if (bytes > free()) {
                 throw std::bad_alloc{};
             } else {
@@ -42,7 +42,7 @@ namespace felspar::memory {
                 return base;
             }
         }
-        void deallocate(void *) {}
+        constexpr void deallocate(void *) {}
     };
 
 

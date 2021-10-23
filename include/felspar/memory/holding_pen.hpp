@@ -15,7 +15,7 @@ namespace felspar::memory {
         bool holding;
 
       public:
-        holding_pen() : holding{false} {}
+        constexpr holding_pen() noexcept : holding{false} {}
         holding_pen(T &&t) : holding{true} { store.emplace(std::move(t)); }
         holding_pen(holding_pen const &) = delete;
         holding_pen(holding_pen &&h) : holding{h.holding} {
@@ -27,7 +27,7 @@ namespace felspar::memory {
         T &value() { return *store.data(); }
         T const &value() const { return *store.data(); }
 
-        explicit operator bool() const { return holding; }
+        explicit operator bool() const noexcept { return holding; }
         T *operator->() { return &value(); }
         T const *operator->() const { return &value(); }
         T &operator*() { return value(); }
@@ -55,7 +55,9 @@ namespace felspar::memory {
             return store.emplace(std::forward<Args>(args)...);
         }
         /// Destroy any held value
-        void reset() { store.destroy_if(std::exchange(holding, false)); }
+        void reset() noexcept {
+            store.destroy_if(std::exchange(holding, false));
+        }
 
         /// Fetch the value then clear the pen
         holding_pen transfer_out() && {

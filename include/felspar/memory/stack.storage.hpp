@@ -34,7 +34,7 @@ namespace felspar::memory {
         static std::size_t constexpr allocation_count{A};
         static std::size_t constexpr alignment_size{CA};
 
-        stack_storage() noexcept = default;
+        constexpr stack_storage() noexcept = default;
         stack_storage(stack_storage const &) = delete;
         stack_storage(stack_storage &&) = delete;
 
@@ -42,7 +42,7 @@ namespace felspar::memory {
         stack_storage &operator=(stack_storage &&) = delete;
 
         /// Return the amount of free memory remaining in the storage
-        [[nodiscard]] auto free() const noexcept {
+        [[nodiscard]] constexpr auto free() const noexcept {
             return allocations.back().size();
         }
 
