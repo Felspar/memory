@@ -9,20 +9,21 @@ namespace {
 
 
     auto const ga = suite.test("good alloc", [](auto check) {
-        felspar::memory::slab_storage slab;
-        check(slab.free()) == 16u << 10;
+        constexpr std::size_t size = 1u << 10;
+        felspar::memory::slab_storage<size, 8u> slab;
+        check(slab.free()) == size;
 
         auto a1 = slab.allocate(8u);
         check(a1) == reinterpret_cast<std::byte const *>(&slab);
-        check(slab.free()) == (16u << 10) - 8u;
+        check(slab.free()) == size - 8u;
 
         auto a2 = slab.allocate(1u);
         check(a2) == reinterpret_cast<std::byte const *>(&slab) + 8u;
-        check(slab.free()) == (16u << 10) - 16u;
+        check(slab.free()) == size - 16u;
 
         slab.deallocate(a1);
         slab.deallocate(a2);
-        check(slab.free()) == (16u << 10) - 16u;
+        check(slab.free()) == (1u << 10) - 16u;
     });
 
 

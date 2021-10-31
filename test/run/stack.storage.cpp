@@ -8,7 +8,7 @@ namespace {
     auto const suite = felspar::testsuite("stack.storage");
 
     auto const ga = suite.test("good alloc", [](auto check) {
-        felspar::memory::stack_storage stack;
+        felspar::memory::stack_storage<1u << 10, 4u, 8u> stack;
 
         auto a1 = stack.allocate(8u);
         check(a1) == reinterpret_cast<std::byte const *>(&stack);
@@ -45,7 +45,7 @@ namespace {
 
 
     auto const d = suite.test("deallocate", [](auto check) {
-        felspar::memory::stack_storage<64, 8> stack;
+        felspar::memory::stack_storage<64u, 8u, 8u> stack;
 
         auto a1 = stack.allocate(1u);
         check(a1) == reinterpret_cast<std::byte const *>(&stack);

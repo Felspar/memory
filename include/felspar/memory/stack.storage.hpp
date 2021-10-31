@@ -20,7 +20,10 @@ namespace felspar::memory {
      *
      * This allocator is not thread safe.
      */
-    template<std::size_t S = 1u << 20, std::size_t A = 32u, std::size_t CA = 8u>
+    template<
+            std::size_t S = 1u << 20,
+            std::size_t A = 32u,
+            std::size_t CA = alignof(std::max_align_t)>
     class stack_storage {
         /// Storage memory for the
         std::array<std::byte, S> storage alignas(CA);

@@ -12,7 +12,7 @@ namespace felspar::memory {
     /**
      * ## Slab storage
      */
-    template<std::size_t S = 16u << 10, std::size_t CA = 8u>
+    template<std::size_t S = 16u << 10, std::size_t CA = alignof(std::max_align_t)>
     class slab_storage {
         std::array<std::byte, S> storage alignas(CA);
         std::size_t allocated_bytes = {};
