@@ -26,9 +26,9 @@ namespace {
     auto const ba = suite.test("bad alloc", [](auto check) {
         felspar::memory::stack_storage<64, 2, 16> stack;
 
-        check([&]() {
-            [[maybe_unused]] auto _ = stack.allocate(65u);
-        }).throws(felspar::stdexcept::bad_alloc{"Out of free memory"});
+        check([&]() { [[maybe_unused]] auto _ = stack.allocate(65u); })
+                .throws(felspar::stdexcept::bad_alloc{
+                        "Out of free memory -- memory exhausted"});
 
         auto a1 = stack.allocate(1u);
         check(a1) == reinterpret_cast<std::byte const *>(&stack);
@@ -60,7 +60,7 @@ namespace {
 
         stack.deallocate(a1);
         auto a5 = stack.allocate(1u);
-        check(a5) == reinterpret_cast<std::byte const *>(&stack) + 24u;
+        check(a5) == reinterpret_cast<std::byte const *>(&stack);
 
         stack.deallocate(a2);
         stack.deallocate(a4);
