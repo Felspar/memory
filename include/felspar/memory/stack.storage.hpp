@@ -108,7 +108,9 @@ namespace felspar::memory {
                             allocations.erase(pos);
                             return;
                         } else if (free.data() + free.size() == pos->data()) {
-                            throw felspar::stdexcept::runtime_error{"not impl"};
+                            free = {free.data(), free.size() + pos->size()};
+                            allocations.erase(pos);
+                            return;
                         }
                     }
                     available.emplace_back(pos->data(), pos->size());

@@ -61,10 +61,10 @@ namespace {
         stack.deallocate(a1);
         auto a5 = stack.allocate(1u);
         check(a5) == reinterpret_cast<std::byte const *>(&stack);
+        stack.deallocate(a5);
 
         stack.deallocate(a2);
         stack.deallocate(a4);
-        stack.deallocate(a5);
         check(stack.free()) == 64u;
 
         auto a6 = stack.allocate(1u);
