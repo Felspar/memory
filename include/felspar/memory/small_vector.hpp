@@ -49,42 +49,53 @@ namespace felspar::memory {
         small_vector &operator=(small_vector &&) = delete;
 
         /// Capacity and meta-data
-        constexpr auto capacity() const noexcept { return N; }
-        constexpr auto size() const noexcept { return entries; }
+        [[nodiscard]] constexpr auto capacity() const noexcept { return N; }
+        [[nodiscard]] constexpr auto size() const noexcept { return entries; }
 
         /// Access
-        constexpr const_reference_type operator[](std::size_t const i) const {
+        [[nodiscard]] constexpr const_reference_type
+                operator[](std::size_t const i) const {
             return *(data() + i);
         }
-        constexpr reference_type operator[](std::size_t const i) {
+        [[nodiscard]] constexpr reference_type operator[](std::size_t const i) {
             return *(data() + i);
         }
 
-        constexpr const_pointer_type data() const noexcept {
+        [[nodiscard]] constexpr const_pointer_type data() const noexcept {
             return std::launder(reinterpret_cast<T const *>(storage.data()));
         }
-        constexpr pointer_type data() noexcept {
+        [[nodiscard]] constexpr pointer_type data() noexcept {
             return std::launder(reinterpret_cast<T *>(storage.data()));
         }
 
-        constexpr reference_type back() { return *(data() + entries - 1); }
-        constexpr const_reference_type back() const {
+        [[nodiscard]] constexpr reference_type back() {
             return *(data() + entries - 1);
         }
-        constexpr reference_type front() { return *data(); }
-        constexpr const_reference_type front() const { return *data(); }
+        [[nodiscard]] constexpr const_reference_type back() const {
+            return *(data() + entries - 1);
+        }
+        [[nodiscard]] constexpr reference_type front() { return *data(); }
+        [[nodiscard]] constexpr const_reference_type front() const {
+            return *data();
+        }
 
         /// Iteration
         using iterator = pointer_type;
-        constexpr iterator begin() noexcept { return data(); }
-        constexpr iterator end() noexcept { return data() + size(); }
-        using const_iterator = const_pointer_type;
-        constexpr const_iterator begin() const noexcept { return data(); }
-        constexpr const_iterator end() const noexcept {
+        [[nodiscard]] constexpr iterator begin() noexcept { return data(); }
+        [[nodiscard]] constexpr iterator end() noexcept {
             return data() + size();
         }
-        constexpr const_iterator cbegin() const noexcept { return data(); }
-        constexpr const_iterator cend() const noexcept {
+        using const_iterator = const_pointer_type;
+        [[nodiscard]] constexpr const_iterator begin() const noexcept {
+            return data();
+        }
+        [[nodiscard]] constexpr const_iterator end() const noexcept {
+            return data() + size();
+        }
+        [[nodiscard]] constexpr const_iterator cbegin() const noexcept {
+            return data();
+        }
+        [[nodiscard]] constexpr const_iterator cend() const noexcept {
             return data() + size();
         }
 
