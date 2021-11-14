@@ -49,6 +49,9 @@ namespace felspar::memory {
         small_vector &operator=(small_vector &&) = delete;
 
         /// Capacity and meta-data
+        [[nodiscard]] constexpr bool empty() const noexcept {
+            return entries == 0;
+        }
         [[nodiscard]] constexpr auto capacity() const noexcept { return N; }
         [[nodiscard]] constexpr auto size() const noexcept { return entries; }
 
