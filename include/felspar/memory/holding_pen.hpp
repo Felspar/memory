@@ -27,6 +27,16 @@ namespace felspar::memory {
         T &value() { return *store.data(); }
         T const &value() const { return *store.data(); }
 
+        /// Get pen value or default
+        template<typename U>
+        T value_or(U &&default_value) const {
+            if (holding) {
+                return *store.data();
+            } else {
+                return static_cast<T>(std::forward<U>(default_value));
+            }
+        }
+
         explicit operator bool() const noexcept { return holding; }
         T *operator->() { return &value(); }
         T const *operator->() const { return &value(); }
