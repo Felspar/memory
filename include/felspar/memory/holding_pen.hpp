@@ -54,6 +54,16 @@ namespace felspar::memory {
             return *this;
         }
 
+        bool operator==(const holding_pen &hp) const {
+            if (holding != hp.holding) {
+                return false;
+            } else if (not holding and not hp.holding) {
+                return true;
+            } else {
+                return *store.data() == *(hp.store).data();
+            }
+        }
+
         /// Assign a new value into the pen destroying any value already held
         void assign(T t) {
             store.destroy_if(std::exchange(holding, true));
