@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include <utility>
+#include <cstddef>
 
 
 namespace felspar::memory::bitmap {
