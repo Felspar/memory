@@ -1,5 +1,6 @@
 if(TARGET check)
     add_test_run(check felspar-memory TESTS
+            bitmap.cpp
             holding_pen.cpp
             raw_memory.cpp
             sizes.cpp
