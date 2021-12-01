@@ -42,7 +42,11 @@ namespace felspar::memory::bitmap {
 
 
     template<typename BM>
-    inline void free() {}
+    inline void free(
+            std::byte *ptr, BM &bm, std::byte *base, std::size_t blocksize) {
+        std::size_t const bit = (ptr - base) / blocksize;
+        bm &= ~(1 << bit);
+    }
 
 
 }
