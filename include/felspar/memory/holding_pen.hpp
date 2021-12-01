@@ -54,13 +54,13 @@ namespace felspar::memory {
             return *this;
         }
 
-        bool operator==(const holding_pen &hp) const {
-            if (holding != hp.holding) {
+        friend bool operator==(holding_pen const &l, holding_pen const &r) {
+            if (l.holding != r.holding) {
                 return false;
-            } else if (not holding and not hp.holding) {
+            } else if (not l.holding and not r.holding) {
                 return true;
             } else {
-                return *store.data() == *(hp.store).data();
+                return *(r.store).data() == *(l.store).data();
             }
         }
 
