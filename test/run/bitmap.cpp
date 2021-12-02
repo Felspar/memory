@@ -30,10 +30,10 @@ namespace {
         check(bm::allocate(blocks, memory.data(), 1u)) == memory.data() + 1;
         check(blocks) == 3u;
 
-        bm::free(memory.data(), blocks, memory.data(), 1u);
+        bm::deallocate(memory.data(), blocks, memory.data(), 1u);
         check(blocks) == 2u;
 
-        bm::free(memory.data() + 1, blocks, memory.data(), 1u);
+        bm::deallocate(memory.data() + 1, blocks, memory.data(), 1u);
         check(blocks) == 0u;
     });
 
