@@ -47,15 +47,20 @@ namespace felspar::memory {
 
         /// Return items from the buffer. All of these are undefined behaviour
         /// if the ring doesn't contain enough data
+        T &front() { return buffer[top].value(); }
         T const &front() const { return buffer[top].value(); }
+        T &back() { return buffer[increment(base)].value(); }
         T const &back() const { return buffer[increment(base)].value(); }
-        T const &operator[](std::size_t const s) const {
+        T &operator[](std::size_t const s) {
             std::size_t const p = base + 1u + s;
             if (p >= buffer_size) {
                 return buffer[p - buffer_size].value();
             } else {
                 return buffer[p].value();
             }
+        }
+        T const &operator[](std::size_t const s) const {
+            return (*const_cast<small_ring *>(this))[s];
         }
 
         /// Push an item to the head end of the buffer
