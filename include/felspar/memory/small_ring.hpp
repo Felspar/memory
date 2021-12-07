@@ -18,7 +18,7 @@ namespace felspar::memory {
         static constexpr std::size_t ring_size = S;
         static constexpr std::size_t buffer_size = ring_size + 1u;
 
-        std::array<raw_memory<T>, buffer_size> buffer;
+        std::array<raw_memory<T>, buffer_size> buffer{};
         std::size_t base{}, top{};
 
         /// Return the increment of top/base wrapping around at the top
@@ -31,6 +31,10 @@ namespace felspar::memory {
         }
 
       public:
+        ~small_ring() {
+            while (not empty()) { pop_back(); }
+        }
+
         /// Return true if the ring is empty
         bool empty() const noexcept { return base == top; }
         std::size_t size() const noexcept {
@@ -53,7 +57,7 @@ namespace felspar::memory {
         }
         /// Pop the item off the back of the ring
         void pop_back() {
-            buffer[base].destroy_if(true);
+            buffer[increment(base)].destroy_if(true);
             base = increment(base);
         }
     };
