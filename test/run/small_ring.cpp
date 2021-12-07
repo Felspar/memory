@@ -23,54 +23,75 @@ namespace {
         check(s3.size()) == 1u;
         check(s3.front()) == 1;
         check(s3.back()) == 1;
+        check(s3[0]) == 1;
 
         s3.push(2);
         check(s3.empty()) == false;
         check(s3.size()) == 2u;
         check(s3.front()) == 2;
         check(s3.back()) == 1;
+        check(s3[0]) == 1;
+        check(s3[1]) == 2;
 
         s3.push(3);
         check(s3.empty()) == false;
         check(s3.size()) == 3u;
         check(s3.front()) == 3;
         check(s3.back()) == 1;
+        check(s3[0]) == 1;
+        check(s3[1]) == 2;
+        check(s3[2]) == 3;
 
         s3.push(4);
         check(s3.empty()) == false;
         check(s3.size()) == 3u;
         check(s3.front()) == 4;
         check(s3.back()) == 2;
+        check(s3[0]) == 2;
+        check(s3[1]) == 3;
+        check(s3[2]) == 4;
 
         s3.push(5);
         check(s3.empty()) == false;
         check(s3.size()) == 3u;
         check(s3.front()) == 5;
         check(s3.back()) == 3;
+        check(s3[0]) == 3;
+        check(s3[1]) == 4;
+        check(s3[2]) == 5;
 
         s3.push(6);
         check(s3.empty()) == false;
         check(s3.size()) == 3u;
         check(s3.front()) == 6;
         check(s3.back()) == 4;
+        check(s3[0]) == 4;
+        check(s3[1]) == 5;
+        check(s3[2]) == 6;
 
         s3.push(7);
         check(s3.empty()) == false;
         check(s3.size()) == 3u;
         check(s3.front()) == 7;
         check(s3.back()) == 5;
+        check(s3[0]) == 5;
+        check(s3[1]) == 6;
+        check(s3[2]) == 7;
 
         s3.pop_back();
         check(s3.empty()) == false;
         check(s3.size()) == 2u;
         check(s3.front()) == 7;
         check(s3.back()) == 6;
+        check(s3[0]) == 6;
+        check(s3[1]) == 7;
 
         s3.pop_back();
         check(s3.empty()) == false;
         check(s3.size()) == 1u;
         check(s3.front()) == 7;
         check(s3.back()) == 7;
+        check(s3[0]) == 7;
 
         s3.pop_back();
         check(s3.empty()) == true;
@@ -86,54 +107,75 @@ namespace {
         check(s3.size()) == 1u;
         check(*s3.front()) == 1;
         check(*s3.back()) == 1;
+        check(*s3[0]) == 1;
 
         s3.push(std::make_unique<int>(2));
         check(s3.empty()) == false;
         check(s3.size()) == 2u;
         check(*s3.front()) == 2;
         check(*s3.back()) == 1;
+        check(*s3[0]) == 1;
+        check(*s3[1]) == 2;
 
         s3.push(std::make_unique<int>(3));
         check(s3.empty()) == false;
         check(s3.size()) == 3u;
         check(*s3.front()) == 3;
         check(*s3.back()) == 1;
+        check(*s3[0]) == 1;
+        check(*s3[1]) == 2;
+        check(*s3[2]) == 3;
 
         s3.push(std::make_unique<int>(4));
         check(s3.empty()) == false;
         check(s3.size()) == 3u;
         check(*s3.front()) == 4;
         check(*s3.back()) == 2;
+        check(*s3[0]) == 2;
+        check(*s3[1]) == 3;
+        check(*s3[2]) == 4;
 
         s3.push(std::make_unique<int>(5));
         check(s3.empty()) == false;
         check(s3.size()) == 3u;
         check(*s3.front()) == 5;
         check(*s3.back()) == 3;
+        check(*s3[0]) == 3;
+        check(*s3[1]) == 4;
+        check(*s3[2]) == 5;
 
         s3.push(std::make_unique<int>(6));
         check(s3.empty()) == false;
         check(s3.size()) == 3u;
         check(*s3.front()) == 6;
         check(*s3.back()) == 4;
+        check(*s3[0]) == 4;
+        check(*s3[1]) == 5;
+        check(*s3[2]) == 6;
 
         s3.push(std::make_unique<int>(7));
         check(s3.empty()) == false;
         check(s3.size()) == 3u;
         check(*s3.front()) == 7;
         check(*s3.back()) == 5;
+        check(*s3[0]) == 5;
+        check(*s3[1]) == 6;
+        check(*s3[2]) == 7;
 
         s3.pop_back();
         check(s3.empty()) == false;
         check(s3.size()) == 2u;
         check(*s3.front()) == 7;
         check(*s3.back()) == 6;
+        check(*s3[0]) == 6;
+        check(*s3[1]) == 7;
 
         s3.pop_back();
         check(s3.empty()) == false;
         check(s3.size()) == 1u;
         check(*s3.front()) == 7;
         check(*s3.back()) == 7;
+        check(*s3[0]) == 7;
 
         s3.pop_back();
         check(s3.empty()) == true;
