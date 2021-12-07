@@ -15,6 +15,14 @@ executors:
       CXX: clang++
       CXXFLAGS: "-stdlib=libc++"
       LD_FLAGS: "-stdlib=libc++"
+  clang-asan:
+    docker:
+    - image: fost/circleci
+    environment:
+      CC: clang
+      CXX: clang++
+      CXXFLAGS: "-stdlib=libc++ -fsanitize=address"
+      LD_FLAGS: "-stdlib=libc++ -fsanitize=address"
   gcc:
     docker:
     - image: fost/circleci
@@ -52,5 +60,5 @@ workflows:
       - build:
           matrix:
             parameters:
-              compiler: [gcc, clang, clang-libcpp]
+              compiler: [gcc, clang, clang-libcpp, clang-asan]
               variant: [Debug, Release]
