@@ -23,6 +23,11 @@ An `std::optional` like type that cannot be used to change a stored value, only 
 A simple type that abstracts the storage requirements for a type where the user tracks whether the storage is in use or not.
 
 
+## `small_ring`
+
+A small ring buffer that spills from the back when items are added to the front when full. Storage is embedded within the data structure using a compile time size.
+
+
 ## `small_vector`
 
 A `std::vector` like type that has a single compile time specified capacity.
