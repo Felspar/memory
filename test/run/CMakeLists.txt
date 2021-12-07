@@ -5,6 +5,7 @@ if(TARGET check)
             raw_memory.cpp
             sizes.cpp
             slab.storage.cpp
+            small_ring.cpp
             small_vector.cpp
             stack.storage.cpp
         )

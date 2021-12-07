@@ -7,6 +7,7 @@ add_library(memory-headers-tests STATIC EXCLUDE_FROM_ALL
         holding_pen.cpp
         raw_memory.cpp
         sizes.cpp
+        small_ring.cpp
         small_vector.cpp
         spaceship.cpp
         stack.storage.cpp
