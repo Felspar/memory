@@ -34,3 +34,13 @@ $CMAKE -B build.tmp/clang-debug-libc++ \
 $CMAKE -B build.tmp/clang-release-libc++ \
     -DCMAKE_INSTALL_PREFIX=dist/clang-release-libc++ \
     -DCMAKE_BUILD_TYPE=Release
+
+
+export CXXFLAGS="${CXXFLAGS} -fsanitize=address"
+
+$CMAKE -B build.tmp/clang-debug-asan \
+    -DCMAKE_INSTALL_PREFIX=dist/clang-debug-asan
+
+$CMAKE -B build.tmp/clang-release-asan \
+    -DCMAKE_INSTALL_PREFIX=dist/clang-release-asan \
+    -DCMAKE_BUILD_TYPE=Release

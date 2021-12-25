@@ -27,6 +27,9 @@ namespace felspar::memory {
         T &value() { return *store.data(); }
         T const &value() const { return *store.data(); }
 
+        bool has_value() const noexcept { return holding; }
+        explicit operator bool() const noexcept { return holding; }
+
         /// Get pen value or default
         template<typename U>
         T value_or(U &&default_value) const {
@@ -37,7 +40,6 @@ namespace felspar::memory {
             }
         }
 
-        explicit operator bool() const noexcept { return holding; }
         T *operator->() { return &value(); }
         T const *operator->() const { return &value(); }
         T &operator*() { return value(); }
