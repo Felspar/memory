@@ -5,6 +5,7 @@ add_library(memory-headers-tests STATIC EXCLUDE_FROM_ALL
         concepts.cpp
         control.cpp
         holding_pen.cpp
+        pmr.cpp
         raw_memory.cpp
         sizes.cpp
         small_ring.cpp

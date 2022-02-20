@@ -44,3 +44,13 @@ $CMAKE -B build.tmp/clang-debug-asan \
 $CMAKE -B build.tmp/clang-release-asan \
     -DCMAKE_INSTALL_PREFIX=dist/clang-release-asan \
     -DCMAKE_BUILD_TYPE=Release
+
+
+$CMAKE -B build.tmp/clang-debug-pmr-asan \
+    -DCMAKE_INSTALL_PREFIX=dist/clang-debug-asan \
+    -DFELSPAR_FORCE_PMR=YES
+
+$CMAKE -B build.tmp/clang-release-pmr-asan \
+    -DCMAKE_INSTALL_PREFIX=dist/clang-release-asan \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DFELSPAR_FORCE_PMR=YES
