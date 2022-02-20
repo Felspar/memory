@@ -10,6 +10,9 @@
 
 namespace felspar::pmr {
     using memory_resource = std::pmr::memory_resource;
+    inline auto *new_delete_resource() noexcept {
+        return std::pmr::new_delete_resource();
+    }
 }
 
 
@@ -23,7 +26,8 @@ namespace felspar::pmr {
 #ifdef FELSPAR_FORCE_PMR
 
 
-#include <cstddef>
+#include <typeinfo>
+#include <new>
 
 
 namespace felspar::pmr {
@@ -53,6 +57,29 @@ namespace felspar::pmr {
             return do_is_equal(other);
         }
     };
+
+
+    namespace detail {
+        class new_delete_allocator : public memory_resource {
+            void *do_allocate(std::size_t bytes, std::size_t alignment) {
+                return ::operator new(
+                        bytes, static_cast<std::align_val_t>(alignment));
+            }
+            void do_deallocate(
+                    void *p, std::size_t bytes, std::size_t alignment) {
+                ::operator delete(
+                        p, bytes, static_cast<std::align_val_t>(alignment));
+            }
+
+            bool do_is_equal(memory_resource const &other) const noexcept {
+                return typeid(other) == typeid(*this);
+            }
+        };
+        inline new_delete_allocator g_new_delete_allocator;
+    }
+    inline auto *new_delete_resource() noexcept {
+        return &detail::g_new_delete_allocator;
+    }
 
 
 }
