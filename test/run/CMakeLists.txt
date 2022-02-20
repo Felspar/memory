@@ -1,5 +1,5 @@
-if(TARGET check)
-    add_test_run(check felspar-memory TESTS
+if(TARGET felspar-check)
+    add_test_run(felspar-check felspar-memory TESTS
             bitmap.cpp
             holding_pen.cpp
             raw_memory.cpp
