@@ -21,8 +21,8 @@ namespace {
         check(a2) == reinterpret_cast<std::byte const *>(&slab) + 8u;
         check(slab.free()) == size - 16u;
 
-        slab.deallocate(a1);
-        slab.deallocate(a2);
+        slab.deallocate(a1, 8u);
+        slab.deallocate(a2, 1u);
         check(slab.free()) == (1u << 10) - 16u;
     });
 

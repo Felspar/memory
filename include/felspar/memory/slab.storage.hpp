@@ -42,7 +42,7 @@ namespace felspar::memory {
                 return base;
             }
         }
-        constexpr void deallocate(void *) {}
+        constexpr void deallocate(void *, std::size_t) {}
     };
 
 

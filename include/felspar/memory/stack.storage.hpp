@@ -98,6 +98,7 @@ namespace felspar::memory {
         }
         constexpr void deallocate(
                 void *location,
+                std::size_t,
                 source_location loc = source_location::current()) {
             for (auto pos = allocations.begin(); pos != allocations.end();
                  ++pos) {
