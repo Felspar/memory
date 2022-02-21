@@ -59,7 +59,7 @@ jobs:
           command: ninja -C build.tmp/
       - run:
           name: check tests
-          command: ninja -C build.tmp/ check
+          command: ninja -C build.tmp/ felspar-check
 
 workflows:
   all-tests:
