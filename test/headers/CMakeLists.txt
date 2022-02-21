@@ -4,7 +4,9 @@ add_library(memory-headers-tests STATIC EXCLUDE_FROM_ALL
         bitmap.strategy.cpp
         concepts.cpp
         control.cpp
+        fixed-pool.pmr.cpp
         holding_pen.cpp
+        pmr.cpp
         raw_memory.cpp
         sizes.cpp
         small_ring.cpp
@@ -13,4 +15,4 @@ add_library(memory-headers-tests STATIC EXCLUDE_FROM_ALL
         stack.storage.cpp
     )
 target_link_libraries(memory-headers-tests felspar-memory)
-add_dependencies(check memory-headers-tests)
+add_dependencies(felspar-check memory-headers-tests)

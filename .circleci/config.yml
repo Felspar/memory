@@ -29,6 +29,13 @@ executors:
     environment:
       CC: gcc-10
       CXX: g++-10
+  gcc-pmr:
+    docker:
+    - image: fost/circleci
+    environment:
+      CC: gcc-10
+      CXX: g++-10
+      FELSPAR_FORCE_PMR: YES
 
 jobs:
   build:
@@ -52,7 +59,7 @@ jobs:
           command: ninja -C build.tmp/
       - run:
           name: check tests
-          command: ninja -C build.tmp/ check
+          command: ninja -C build.tmp/ felspar-check
 
 workflows:
   all-tests:
@@ -60,5 +67,5 @@ workflows:
       - build:
           matrix:
             parameters:
-              compiler: [gcc, clang, clang-libcpp, clang-asan]
+              compiler: [gcc, clang, clang-libcpp, clang-asan, gcc-pmr]
               variant: [Debug, Release]

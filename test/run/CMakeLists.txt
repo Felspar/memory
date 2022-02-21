@@ -1,7 +1,9 @@
-if(TARGET check)
-    add_test_run(check felspar-memory TESTS
+if(TARGET felspar-check)
+    add_test_run(felspar-check felspar-memory TESTS
             bitmap.cpp
+            fixed-pool.pmr.cpp
             holding_pen.cpp
+            pmr.cpp
             raw_memory.cpp
             sizes.cpp
             slab.storage.cpp

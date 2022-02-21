@@ -54,22 +54,22 @@ namespace {
         auto a3 = stack.allocate(1u);
         check(a3) == reinterpret_cast<std::byte const *>(&stack) + 16u;
 
-        stack.deallocate(a3);
+        stack.deallocate(a3, 1u);
         auto a4 = stack.allocate(1u);
         check(a4) == a3;
 
-        stack.deallocate(a1);
+        stack.deallocate(a1, 1u);
         auto a5 = stack.allocate(1u);
         check(a5) == reinterpret_cast<std::byte const *>(&stack);
-        stack.deallocate(a5);
+        stack.deallocate(a5, 1u);
 
-        stack.deallocate(a2);
-        stack.deallocate(a4);
+        stack.deallocate(a2, 1u);
+        stack.deallocate(a4, 1u);
         check(stack.free()) == 64u;
 
         auto a6 = stack.allocate(1u);
         check(a6) == reinterpret_cast<std::byte const *>(&stack);
-        stack.deallocate(a6);
+        stack.deallocate(a6, 1u);
         check(stack.free()) == 64u;
     });
 
