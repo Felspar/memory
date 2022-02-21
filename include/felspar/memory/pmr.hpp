@@ -8,11 +8,8 @@
 #include <memory_resource>
 
 
-namespace felspar::pmr {
-    using memory_resource = std::pmr::memory_resource;
-    inline auto *new_delete_resource() noexcept {
-        return std::pmr::new_delete_resource();
-    }
+namespace felspar {
+    namespace pmr = std::pmr;
 }
 
 
