@@ -4,6 +4,7 @@ add_library(memory-headers-tests STATIC EXCLUDE_FROM_ALL
         bitmap.strategy.cpp
         concepts.cpp
         control.cpp
+        fixed-pool.pmr.cpp
         holding_pen.cpp
         pmr.cpp
         raw_memory.cpp
