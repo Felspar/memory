@@ -2,7 +2,6 @@
 
 
 #include <felspar/memory/control.hpp>
-#include <felspar/memory/raw_memory.hpp>
 
 #include <vector>
 
@@ -27,8 +26,14 @@ namespace felspar::memory {
 
         /// Construction, destruction and assignment
         shared_buffer() {}
-        shared_buffer(shared_buffer const &) = delete;
-        shared_buffer &operator=(shared_buffer const &) = delete;
+        shared_buffer(shared_buffer const &sb)
+        : buffer{sb.buffer}, owner{control_type::increment(sb.owner)} {}
+        shared_buffer &operator=(shared_buffer const &sb) {
+            buffer = sb.buffer;
+            control_type::decrement(owner);
+            owner = control_type::increment(sb.owner);
+            return *this;
+        }
         shared_buffer(shared_buffer &&sb)
         : buffer{std::exchange(sb.buffer, {})},
           owner{std::exchange(sb.owner, {})} {}
@@ -36,9 +41,10 @@ namespace felspar::memory {
         ~shared_buffer() { control_type::decrement(owner); }
 
         /// Allocation
-        static shared_buffer allocate(std::size_t const count) {
-            auto alloc =
-                    control_type::wrap_existing(std::vector<value_type>(count));
+        template<typename V = value_type>
+        static shared_buffer allocate(std::size_t const count, V &&v = {}) {
+            auto alloc = control_type::wrap_existing(
+                    std::vector<value_type>(count, std::forward<V>(v)));
             shared_buffer sb;
             sb.owner = alloc.first.release();
             sb.buffer = {alloc.second->data(), count};
@@ -50,6 +56,14 @@ namespace felspar::memory {
         auto size() const noexcept { return buffer.size(); }
         /// Return the memory control block
         control_type *control_block() const noexcept { return owner; }
+
+        /// Access to the buffer
+        value_type &operator[](std::size_t const i) { return buffer[i]; }
+        value_type const &operator[](std::size_t const i) const {
+            return buffer[i];
+        }
+        auto begin() { return buffer.begin(); }
+        auto end() { return buffer.end(); }
 
       private:
         buffer_type buffer;
