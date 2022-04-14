@@ -10,9 +10,12 @@ namespace felspar::memory {
     /// A buffer into which data can be accumulated at the end, and consumed
     /// from the front
     template<typename T>
-    class accumulation_buffer {
+    class accumulation_buffer final {
         using buffer_type = shared_buffer<T>;
-        buffer_type buffer;
+        using vector_type = typename buffer_type::vector_type;
+        buffer_type buffer = {};
+        std::span<T> occupied = {};
+        vector_type *pvector = {};
 
       public:
         using value_type = T;
@@ -23,11 +26,17 @@ namespace felspar::memory {
 
         /// Grow the buffer
         template<typename V = value_type>
-        void ensure_length(std::size_t const count, V &&v = {}) {
+        void ensure_length(std::size_t const count, V &&t = {}) {
             if (buffer.size() < count) {
-                auto nb = buffer_type::allocate(count, std::forward<V>(v));
-                std::copy(buffer.begin(), buffer.end(), nb.begin());
-                buffer = nb;
+                vector_type v;
+                v.reserve(count + buffer.size());
+                v.insert(v.begin(), buffer.begin(), buffer.end());
+                v.insert(v.begin() + v.size(), count - v.size(), t);
+                auto alloc =
+                        buffer_type::control_type::wrap_existing(std::move(v));
+                pvector = alloc.second;
+                buffer = buffer_type{std::move(alloc)};
+                occupied = buffer;
             }
         }
 

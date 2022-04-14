@@ -61,6 +61,10 @@ namespace {
         check(strings.size()) == 0u;
         strings.ensure_length(10, "hello");
         check(strings.size()) == 10u;
+        strings.ensure_length(20, "world");
+        check(strings.size()) == 20u;
+        check(strings[9]) == "hello";
+        check(strings[10]) == "world";
     });
 
 
