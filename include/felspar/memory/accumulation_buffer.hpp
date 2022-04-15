@@ -13,6 +13,7 @@ namespace felspar::memory {
     class accumulation_buffer final {
         using buffer_type = shared_buffer<T>;
         using vector_type = typename buffer_type::vector_type;
+
         buffer_type buffer = {};
         std::span<T> occupied = {};
         vector_type *pvector = {};
@@ -21,16 +22,16 @@ namespace felspar::memory {
         using value_type = T;
 
         /// Information about the current state of the buffer
-        bool empty() const noexcept { return buffer.empty(); }
-        auto size() const noexcept { return buffer.size(); }
+        bool empty() const noexcept { return occupied.empty(); }
+        auto size() const noexcept { return occupied.size(); }
 
         /// Grow the buffer
         template<typename V = value_type>
         void ensure_length(std::size_t const count, V &&t = {}) {
-            if (buffer.size() < count) {
+            if (occupied.size() < count) {
                 vector_type v;
-                v.reserve(count + buffer.size());
-                v.insert(v.begin(), buffer.begin(), buffer.end());
+                v.reserve(count + occupied.size());
+                v.insert(v.begin(), occupied.begin(), occupied.end());
                 v.insert(v.begin() + v.size(), count - v.size(), t);
                 auto alloc =
                         buffer_type::control_type::wrap_existing(std::move(v));
@@ -41,9 +42,18 @@ namespace felspar::memory {
         }
 
         /// Access to the buffer
-        value_type &operator[](std::size_t const i) { return buffer[i]; }
+        value_type &operator[](std::size_t const i) { return occupied[i]; }
         value_type const &operator[](std::size_t const i) const {
-            return buffer[i];
+            return occupied[i];
+        }
+        auto begin() { return occupied.begin(); }
+        auto end() { return occupied.end(); }
+
+        /// Split the buffer
+        auto first(std::size_t const count) {
+            auto const part = occupied.first(count);
+            occupied = occupied.subspan(count);
+            return buffer_type{buffer.owner, part};
         }
     };
 

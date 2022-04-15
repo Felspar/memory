@@ -61,10 +61,15 @@ namespace {
         check(strings.size()) == 0u;
         strings.ensure_length(10, "hello");
         check(strings.size()) == 10u;
-        strings.ensure_length(20, "world");
-        check(strings.size()) == 20u;
-        check(strings[9]) == "hello";
-        check(strings[10]) == "world";
+        auto const first = strings.first(5);
+
+        strings.ensure_length(10, "world");
+        check(strings.size()) == 10u;
+        check(strings[4]) == "hello";
+        check(strings[5]) == "world";
+        auto const second = strings.first(5);
+        check(strings.size()) == 5u;
+        check(strings[0]) == "world";
     });
 
 

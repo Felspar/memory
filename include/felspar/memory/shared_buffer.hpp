@@ -30,6 +30,8 @@ namespace felspar::memory {
                 std::pair<std::unique_ptr<control>, vector_type *> alloc)
         : buffer{alloc.second->data(), alloc.second->size()},
           owner{alloc.first.release()} {}
+        shared_buffer(control_type *o, buffer_type b)
+        : buffer{b}, owner{control_type::increment(o)} {}
 
       public:
         using value_type = T;
