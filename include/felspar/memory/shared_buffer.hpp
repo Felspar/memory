@@ -78,6 +78,8 @@ namespace felspar::memory {
         auto begin() { return buffer.begin(); }
         auto end() { return buffer.end(); }
 
+        value_type const *data() const noexcept { return buffer.data(); }
+
         /// Implicit conversions
         operator std::span<value_type>() { return buffer; }
 

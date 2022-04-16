@@ -75,4 +75,14 @@ namespace {
     });
 
 
+    auto const ds = suite.test("access/shared_buffer", [](auto check) {
+        auto strings = felspar::memory::shared_buffer<std::string>::allocate(
+                20, "hello");
+        auto const &cstrings = strings;
+
+        check(strings.data()) == cstrings.data();
+        check(strings.size()) == cstrings.size();
+    });
+
+
 }
