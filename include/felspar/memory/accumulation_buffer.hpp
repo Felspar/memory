@@ -17,9 +17,19 @@ namespace felspar::memory {
         buffer_type buffer = {};
         std::span<T> occupied = {};
         vector_type *pvector = {};
+        std::size_t min_buffer = 100;
 
       public:
         using value_type = T;
+
+        /// Constructors
+        explicit accumulation_buffer(std::size_t mb) : min_buffer{mb} {}
+        accumulation_buffer(accumulation_buffer const &) = default;
+        accumulation_buffer(accumulation_buffer &&) = default;
+
+        /// Assignment
+        accumulation_buffer &operator=(accumulation_buffer const &) = default;
+        accumulation_buffer &operator=(accumulation_buffer &&) = default;
 
         /// Information about the current state of the buffer
         bool empty() const noexcept { return occupied.empty(); }
@@ -29,15 +39,23 @@ namespace felspar::memory {
         template<typename V = value_type>
         void ensure_length(std::size_t const count, V &&t = {}) {
             if (occupied.size() < count) {
-                vector_type v;
-                v.reserve(count + occupied.size());
-                v.insert(v.begin(), occupied.begin(), occupied.end());
-                v.insert(v.begin() + v.size(), count - v.size(), t);
-                auto alloc =
-                        buffer_type::control_type::wrap_existing(std::move(v));
-                pvector = alloc.second;
-                buffer = buffer_type{std::move(alloc)};
-                occupied = buffer;
+                auto const needed = count - occupied.size();
+                if (not pvector
+                    or pvector->size() + needed > pvector->capacity()) {
+                    vector_type v;
+                    v.reserve(std::max(count, min_buffer) + occupied.size());
+                    v.insert(v.begin(), occupied.begin(), occupied.end());
+                    v.insert(v.begin() + v.size(), count - v.size(), t);
+                    auto alloc = buffer_type::control_type::wrap_existing(
+                            std::move(v));
+                    pvector = alloc.second;
+                    buffer = buffer_type{std::move(alloc)};
+                    occupied = buffer;
+                } else {
+                    pvector->insert(
+                            pvector->begin() + pvector->size(), needed, t);
+                    occupied = {occupied.data(), count};
+                }
             }
         }
 

@@ -24,7 +24,7 @@ namespace {
         check(cview.size()) == 0u;
         check(cview.control_block()) == nullptr;
 
-        felspar::memory::accumulation_buffer<std::byte> acc;
+        felspar::memory::accumulation_buffer<std::byte> acc{10};
         check(acc.empty()) == true;
         check(acc.size()) == 0u;
     });
@@ -51,13 +51,13 @@ namespace {
         check(cstrings[1]) == "world";
     });
     auto const aa = suite.test("allocate/accumulation_buffer", [](auto check) {
-        felspar::memory::accumulation_buffer<std::byte> bytes;
+        felspar::memory::accumulation_buffer<std::byte> bytes{1024};
         check(bytes.size()) == 0u;
         bytes.ensure_length(1024);
         check(bytes.size()) == 1024;
         check(bytes[0]) == std::byte{};
 
-        felspar::memory::accumulation_buffer<std::string> strings;
+        felspar::memory::accumulation_buffer<std::string> strings{30};
         check(strings.size()) == 0u;
         strings.ensure_length(10, "hello");
         check(strings.size()) == 10u;
@@ -70,6 +70,8 @@ namespace {
         auto const second = strings.first(5);
         check(strings.size()) == 5u;
         check(strings[0]) == "world";
+
+        check(first.control_block()) == second.control_block();
     });
 
 
