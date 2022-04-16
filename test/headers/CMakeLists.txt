@@ -1,4 +1,5 @@
 add_library(memory-headers-tests STATIC EXCLUDE_FROM_ALL
+        accumulation_buffer.cpp
         any_buffer.cpp
         atomic_pen.cpp
         bitmap.strategy.cpp
@@ -8,6 +9,7 @@ add_library(memory-headers-tests STATIC EXCLUDE_FROM_ALL
         holding_pen.cpp
         pmr.cpp
         raw_memory.cpp
+        shared_buffer.cpp
         sizes.cpp
         small_ring.cpp
         small_vector.cpp
