@@ -3,6 +3,11 @@
 **Memory utilities for C++ 20**
 
 
+## `accumulation_buffer`
+
+A shared buffer into which data can be added at the end and a `shared_buffer` can be consumed from the front.
+
+
 ## `any_buffer`
 
 An `std::any` like type that can also be used with types that are not copyable. Items can only be placed in it when it's created
@@ -21,6 +26,11 @@ An `std::optional` like type that cannot be used to change a stored value, only 
 ## `raw_storage`
 
 A simple type that abstracts the storage requirements for a type where the user tracks whether the storage is in use or not.
+
+
+## `shared_buffer` and `shared_buffer_view`
+
+A region of contiguous memory that whose ownership is reference counted.
 
 
 ## `small_ring`
