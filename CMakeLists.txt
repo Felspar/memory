@@ -12,10 +12,7 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
     include(requirements.cmake)
 endif()
 
-add_library(felspar-memory INTERFACE)
-target_include_directories(felspar-memory INTERFACE include)
-target_compile_features(felspar-memory INTERFACE cxx_std_20)
-target_link_libraries(felspar-memory INTERFACE felspar-exceptions)
+add_subdirectory(src)
 
 if(TARGET felspar-check)
     add_subdirectory(test)

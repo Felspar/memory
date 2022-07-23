@@ -13,6 +13,15 @@ An `std::any` like type that can also be used with types that are not copyable. 
 Similar to `holding_pen` and a `std::atomic`. It includes a mutex for controlling access to the value which means it lifts the type requirements that `std::atomic` imposes.
 
 
+## `hexdump`
+
+A function that takes a `std::span<std::byte>` and prints a hex dump of the memory content to the supplied stream.
+
+```cpp
+hexdump(std::cout, span);
+```
+
+
 ## `holding_pen`
 
 An `std::optional` like type that cannot be used to change a stored value, only placing a value when it's empty and then emptying again. This allows it to be used with movable types that are not assignable.
