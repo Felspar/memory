@@ -33,6 +33,11 @@ namespace felspar::memory {
 
     /// The following code allows for the use of hexdump as a wrapper when used
     /// with `operator<<` to print to a stream.
+    /**
+     * ```cpp
+     * std::cout << felspar::memory::hexdump(myarray);
+     * ```
+     */
     namespace detail {
         template<typename C>
         struct hexdump_proxy {
