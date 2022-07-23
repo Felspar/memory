@@ -4,7 +4,7 @@
 
 
 std::ostream &felspar::memory::hexdump(
-        std::ostream &s, std::span<std::byte> b, std::size_t const l) {
+        std::ostream &s, std::span<std::byte const> b, std::size_t const l) {
     if (b.size() > l) { b = b.first(l); }
     s << b.size() << " bytes\n" << std::hex << std::setw(2);
     while (b.size()) {
