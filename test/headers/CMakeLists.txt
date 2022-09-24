@@ -1,12 +1,13 @@
 add_library(memory-headers-tests STATIC EXCLUDE_FROM_ALL
         any_buffer.cpp
         atomic_pen.cpp
+        auto-pool.pmr.cpp
         bitmap.strategy.cpp
         concepts.cpp
         control.cpp
-        fixed-pool.pmr.cpp
         holding_pen.cpp
         pmr.cpp
+        pool.strategy.cpp
         raw_memory.cpp
         sizes.cpp
         small_ring.cpp

@@ -1,15 +1,15 @@
-#include <felspar/memory/fixed-pool.pmr.hpp>
+#include <felspar/memory/auto-pool.pmr.hpp>
 #include <felspar/test.hpp>
 
 
 namespace {
 
 
-    auto const suite = felspar::testsuite("fixed-pool.pmr");
+    auto const suite = felspar::testsuite("auto-pool.pmr");
 
 
     auto const s = suite.test("small", [](auto check) {
-        felspar::memory::fixed_pool fp{
+        felspar::memory::auto_pool::pmr fp{
                 512, felspar::pmr::new_delete_resource()};
 
         void *a1 = fp.allocate(100);
@@ -25,7 +25,7 @@ namespace {
 
 
     auto const b = suite.test("big", [](auto check) {
-        felspar::memory::fixed_pool fp{
+        felspar::memory::auto_pool::pmr fp{
                 512, felspar::pmr::new_delete_resource()};
 
         void *a1 = fp.allocate(1000);
