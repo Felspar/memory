@@ -6,10 +6,10 @@ namespace felspar::memory::pool {
 
     /// Low level implementation of the pool
     template<typename SL>
-    inline void *allocate(SL &stack) {
-        if (not stack.empty()) {
-            void *const item = stack.back();
-            stack.pop_back();
+    [[nodiscard]] inline void *allocate(SL &p) noexcept {
+        if (not p.empty()) {
+            void *const item = p.back();
+            p.pop_back();
             return item;
         } else {
             return nullptr;
@@ -17,9 +17,16 @@ namespace felspar::memory::pool {
     }
 
 
+    /// We put the memory back into the pool only if the underlying `pool` will
+    /// be able to take it. Otherwise the user of this strategy will need to
     template<typename SL>
-    inline void deallocate(SL &stack, void *ptr) {
-        stack.push_back(ptr);
+    [[nodiscard]] inline bool deallocate(SL &p, void *ptr) {
+        if (p.size() < p.max_size()) {
+            p.push_back(ptr);
+            return true;
+        } else {
+            return false;
+        }
     }
 
 

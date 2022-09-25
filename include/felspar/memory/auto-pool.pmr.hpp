@@ -32,9 +32,7 @@ namespace felspar::memory::auto_pool {
         }
         void do_deallocate(
                 void *p, std::size_t const bytes, std::size_t) override {
-            if (bytes <= max_size) {
-                pool::deallocate(pool, p);
-            } else {
+            if (bytes > max_size or not pool::deallocate(pool, p)) {
                 allocator->deallocate(p, bytes);
             }
         }
