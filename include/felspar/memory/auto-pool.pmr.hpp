@@ -45,8 +45,8 @@ namespace felspar::memory::auto_pool {
         std::vector<void *> pool;
 
       public:
-        pmr(std::size_t const max_size, pmr::memory_resource *const allocator)
-        : max_size{max_size}, allocator{allocator} {}
+        pmr(std::size_t const max_size, pmr::memory_resource &allocator)
+        : max_size{max_size}, allocator{&allocator} {}
         ~pmr() {
             if (allocator) {
                 for (auto v : pool) { allocator->deallocate(v, max_size); }

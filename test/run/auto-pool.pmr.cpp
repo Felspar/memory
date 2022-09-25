@@ -10,7 +10,7 @@ namespace {
 
     auto const s = suite.test("small", [](auto check) {
         felspar::memory::auto_pool::pmr fp{
-                512, felspar::pmr::new_delete_resource()};
+                512, *felspar::pmr::new_delete_resource()};
 
         void *a1 = fp.allocate(100);
         void *a2 = fp.allocate(100);
@@ -26,7 +26,7 @@ namespace {
 
     auto const b = suite.test("big", [](auto check) {
         felspar::memory::auto_pool::pmr fp{
-                512, felspar::pmr::new_delete_resource()};
+                512, *felspar::pmr::new_delete_resource()};
 
         void *a1 = fp.allocate(1000);
         void *a2 = fp.allocate(1000);
