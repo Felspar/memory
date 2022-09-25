@@ -15,7 +15,7 @@ namespace felspar::memory::auto_pool {
     /// to the backing allocator
     class pmr : public felspar::pmr::memory_resource {
         void *do_allocate(
-                std::size_t const bytes, std::size_t alignment) override {
+                std::size_t const bytes, std::size_t const alignment) override {
             if (alignment > alignof(std::max_align_t)) {
                 throw std::logic_error{
                         "Requested over-aligned memory from the pool of "
