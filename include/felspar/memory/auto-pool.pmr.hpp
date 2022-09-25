@@ -57,6 +57,12 @@ namespace felspar::memory::auto_pool {
 
         pmr(pmr const &) = delete;
         pmr &operator=(pmr const &) = delete;
+
+        pmr(pmr &&o)
+        : max_size{o.max_size},
+          allocator{std::exchange(o.allocator, nullptr)},
+          pool{std::move(o.pool)} {}
+        pmr &operator=(pmr &&) = delete;
     };
 
 
