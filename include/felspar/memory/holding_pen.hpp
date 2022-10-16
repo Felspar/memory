@@ -3,6 +3,8 @@
 
 #include <felspar/memory/raw_memory.hpp>
 
+#include <utility>
+
 
 namespace felspar::memory {
 

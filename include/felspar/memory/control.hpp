@@ -13,6 +13,7 @@
 #include <iterator>
 #include <memory>
 #include <span>
+#include <utility>
 
 #ifndef assert
 #include <cassert>
