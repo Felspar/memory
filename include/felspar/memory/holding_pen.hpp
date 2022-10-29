@@ -42,8 +42,10 @@ namespace felspar::memory {
             }
         }
 
-        T *operator->() { return &value(); }
-        T const *operator->() const { return &value(); }
+        std::remove_reference_t<T> *operator->() { return &value(); }
+        std::remove_reference_t<T> const *operator->() const {
+            return &value();
+        }
         T &operator*() { return value(); }
         T const &operator*() const { return value(); }
 
