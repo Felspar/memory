@@ -35,7 +35,6 @@ namespace {
         fp.deallocate(a2, 1000);
 
         void *a3 = fp.allocate(2000);
-        check(a3) != a2;
         fp.deallocate(a3, 2000);
     });
 
