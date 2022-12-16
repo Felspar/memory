@@ -3,13 +3,13 @@ version: 2.1
 executors:
   clang:
     docker:
-    - image: fost/circleci
+    - image: kayess/cpp
     environment:
       CC: clang
       CXX: clang++
   clang-libcpp:
     docker:
-    - image: fost/circleci
+    - image: kayess/cpp
     environment:
       CC: clang
       CXX: clang++
@@ -17,7 +17,7 @@ executors:
       LD_FLAGS: "-stdlib=libc++"
   clang-asan:
     docker:
-    - image: fost/circleci
+    - image: kayess/cpp
     environment:
       CC: clang
       CXX: clang++
@@ -25,16 +25,16 @@ executors:
       LD_FLAGS: "-stdlib=libc++ -fsanitize=address"
   gcc:
     docker:
-    - image: fost/circleci
+    - image: kayess/cpp
     environment:
-      CC: gcc-10
-      CXX: g++-10
+      CC: gcc
+      CXX: g++
   gcc-pmr:
     docker:
-    - image: fost/circleci
+    - image: kayess/cpp
     environment:
-      CC: gcc-10
-      CXX: g++-10
+      CC: gcc
+      CXX: g++
       FELSPAR_FORCE_PMR: YES
 
 jobs:
