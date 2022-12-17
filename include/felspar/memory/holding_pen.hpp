@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include <felspar/exceptions.hpp>
 #include <felspar/memory/raw_memory.hpp>
 
 #include <utility>
@@ -26,8 +27,26 @@ namespace felspar::memory {
         ~holding_pen() { reset(); }
 
         /// Access to the pen
-        T &value() { return *store.data(); }
-        T const &value() const { return *store.data(); }
+        T &
+                value(felspar::source_location const &loc =
+                              felspar::source_location::current()) {
+            if (holding) [[likely]] {
+                return *store.data();
+            } else {
+                throw stdexcept::runtime_error{
+                        "The holding  pen is empty", loc};
+            }
+        }
+        T const &
+                value(felspar::source_location const &loc =
+                              felspar::source_location::current()) const {
+            if (holding) [[likely]] {
+                return *store.data();
+            } else {
+                throw stdexcept::runtime_error{
+                        "The holding  pen is empty", loc};
+            }
+        }
 
         bool has_value() const noexcept { return holding; }
         explicit operator bool() const noexcept { return holding; }
