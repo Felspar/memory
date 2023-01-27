@@ -11,8 +11,11 @@
 namespace felspar::memory {
 
 
-    /// # Stack allocated dynamic vector
+    /// ## Stack allocated dynamic vector
     /**
+     * Grows up to a fixed size determined at compile time. Attempts to add more
+     * items than the vector can support will lead to an exception being thrown.
+     *
      * Because the storage area is embedded iterators are never invalidated by
      * adding or removing items to the array, but they are invalided by moving
      * the `small_vector`.
@@ -26,6 +29,7 @@ namespace felspar::memory {
         std::array<std::byte, block_size * N> storage alignas(T);
 
       public:
+        /// ### Types
         using value_type = std::remove_reference_t<T>;
         using reference_type = std::add_lvalue_reference_t<value_type>;
         using const_reference_type =
@@ -33,29 +37,31 @@ namespace felspar::memory {
         using pointer_type = std::add_pointer_t<value_type>;
         using const_pointer_type = std::add_pointer_t<value_type const>;
 
-        /// Constructors
+        /// ### Constructors
         constexpr small_vector() noexcept {};
         template<typename... Args>
         small_vector(Args... args) {
             (push_back(std::forward<Args>(args)), ...);
         }
+        small_vector(small_vector &&sv) {
+            for (auto &&i : sv) { push_back(std::move(i)); }
+        }
         constexpr ~small_vector() {
             for (auto &i : *this) { std::destroy_at(&i); }
         }
-        /// No copy/move
+        /// ### No copy/move
         small_vector(small_vector const &) = delete;
-        small_vector(small_vector &&) = delete;
         small_vector &operator=(small_vector const &) = delete;
         small_vector &operator=(small_vector &&) = delete;
 
-        /// Capacity and meta-data
+        /// ### Capacity and meta-data
         [[nodiscard]] constexpr bool empty() const noexcept {
             return entries == 0;
         }
         [[nodiscard]] constexpr auto capacity() const noexcept { return N; }
         [[nodiscard]] constexpr auto size() const noexcept { return entries; }
 
-        /// Access
+        /// ### Access
         [[nodiscard]] constexpr const_reference_type
                 operator[](std::size_t const i) const {
             return *(data() + i);
@@ -82,7 +88,7 @@ namespace felspar::memory {
             return *data();
         }
 
-        /// Iteration
+        /// ### Iteration
         using iterator = pointer_type;
         [[nodiscard]] constexpr iterator begin() noexcept { return data(); }
         [[nodiscard]] constexpr iterator end() noexcept {
@@ -102,7 +108,7 @@ namespace felspar::memory {
             return data() + size();
         }
 
-        /// Modifiers
+        /// ### Modifiers
         template<typename... Args>
         void emplace_back(Args... args) {
             if (entries >= capacity()) {
