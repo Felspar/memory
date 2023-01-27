@@ -125,6 +125,10 @@ namespace felspar::memory {
             }
             new (storage.data() + block_size * entries++) T{std::move(t)};
         }
+        void clear() {
+            entries = {};
+            for (auto &v : storage) { std::destroy_at(&v); }
+        }
         void erase(iterator pos)
             requires assignable_from<value_type &, value_type &&>
         {
