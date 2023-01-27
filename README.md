@@ -1,4 +1,4 @@
-# Felspar memory utilities
+# Felspar Memory Utilities
 
 **Memory utilities for C++ 20**
 
