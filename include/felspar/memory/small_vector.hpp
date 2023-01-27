@@ -108,7 +108,7 @@ namespace felspar::memory {
             return data() + size();
         }
 
-        /// ### Modifiers
+        /// ### Adding data
         template<typename... Args>
         void emplace_back(Args... args) {
             if (entries >= capacity()) {
@@ -125,6 +125,7 @@ namespace felspar::memory {
             }
             new (storage.data() + block_size * entries++) T{std::move(t)};
         }
+        /// ### Removing data
         void clear() {
             entries = {};
             for (auto &v : storage) { std::destroy_at(&v); }
