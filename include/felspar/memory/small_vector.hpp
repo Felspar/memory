@@ -127,8 +127,8 @@ namespace felspar::memory {
         }
         /// ### Removing data
         void clear() {
+            for (auto &v : *this) { std::destroy_at(&v); }
             entries = {};
-            for (auto &v : storage) { std::destroy_at(&v); }
         }
         void erase(iterator pos)
             requires assignable_from<value_type &, value_type &&>
