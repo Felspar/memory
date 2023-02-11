@@ -48,8 +48,12 @@ namespace felspar::memory {
             struct sub : public control {
                 std::byte *memory;
                 sub(std::byte *m) noexcept : memory{m} {}
-                ~sub() { delete[] memory; }
-                void free() noexcept { this->~sub(); }
+                ~sub() = default;
+                void free() noexcept {
+                    auto *const m = memory;
+                    this->~sub();
+                    delete[] m;
+                }
             };
             std::byte *made = new std::byte[sizeof(sub) + bytes];
             return std::pair{
@@ -79,6 +83,7 @@ namespace felspar::memory {
     };
 
 
+    /// ## `owner_tracking_iterator`
     /**
         This type can be used to wrap an iterator so that it will also carry
         a pointer to a control block.
