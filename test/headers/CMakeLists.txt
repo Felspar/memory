@@ -8,6 +8,8 @@ add_library(memory-headers-tests STATIC EXCLUDE_FROM_ALL
         holding_pen.cpp
         pmr.cpp
         raw_memory.cpp
+        shared_view.cpp
+        shared_vector.cpp
         sizes.cpp
         small_ring.cpp
         small_vector.cpp
