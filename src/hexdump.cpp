@@ -5,8 +5,10 @@
 
 std::ostream &felspar::memory::hexdump(
         std::ostream &s, std::span<std::byte const> b, std::size_t const l) {
+    s << "Showing " << std::min(l, b.size()) << " bytes out of " << b.size()
+      << '\n'
+      << std::hex << std::setw(2);
     if (b.size() > l) { b = b.first(l); }
-    s << b.size() << " bytes\n" << std::hex << std::setw(2);
     while (b.size()) {
         auto const length = std::min(b.size(), std::size_t{16u});
         auto const line = b.first(length);
