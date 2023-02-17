@@ -2,6 +2,7 @@
 
 #include <ostream>
 #include <span>
+#include <sstream>
 
 
 namespace felspar::memory {
@@ -42,6 +43,12 @@ namespace felspar::memory {
         template<typename C>
         struct hexdump_proxy {
             std::span<C const> b;
+            std::size_t bytes;
+            operator std::string() const {
+                std::stringstream ss;
+                hexdump(ss, b, bytes);
+                return ss.str();
+            }
         };
         template<typename C>
         inline std::ostream &operator<<(std::ostream &s, hexdump_proxy<C> p) {
@@ -50,12 +57,16 @@ namespace felspar::memory {
     }
 
     template<typename C, std::size_t N>
-    inline detail::hexdump_proxy<C> hexdump(std::array<C, N> const &b) {
-        return {b};
+    inline detail::hexdump_proxy<C>
+            hexdump(std::array<C, N> const &b,
+                    std::size_t bytes = default_hexdump_byte_range) {
+        return {b, bytes};
     }
     template<typename C>
-    inline detail::hexdump_proxy<C> hexdump(std::span<C> b) {
-        return {b};
+    inline detail::hexdump_proxy<C>
+            hexdump(std::span<C> b,
+                    std::size_t bytes = default_hexdump_byte_range) {
+        return {b, bytes};
     }
 
 
