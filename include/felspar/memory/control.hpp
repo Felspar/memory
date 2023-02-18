@@ -1,6 +1,9 @@
 #pragma once
 
 
+#include <felspar/memory/sizes.hpp>
+
+
 #include <atomic>
 #include <iterator>
 #include <memory>
@@ -30,7 +33,7 @@ namespace felspar::memory {
          */
         template<typename S>
         static std::pair<std::unique_ptr<control>, S *> wrap_existing(S &&s) {
-            struct sub : public control {
+            struct sub final : public control {
                 S item;
                 sub(S &&s) : item{std::move(s)} {}
                 ~sub() = default;
@@ -44,8 +47,9 @@ namespace felspar::memory {
          Allocate a chunk of memory. Return the control block together with a
          span that encompasses the memory allocated.
          */
-        static auto allocate(std::size_t bytes) {
-            struct sub : public control {
+        static auto
+                allocate(std::size_t const bytes, std::size_t const alignment) {
+            struct sub final : public control {
                 std::byte *memory;
                 sub(std::byte *m) noexcept : memory{m} {}
                 ~sub() = default;
@@ -55,10 +59,11 @@ namespace felspar::memory {
                     delete[] m;
                 }
             };
-            std::byte *made = new std::byte[sizeof(sub) + bytes];
+            std::size_t const data_offset = block_size(sizeof(sub), alignment);
+            std::byte *made = new std::byte[data_offset + bytes];
             return std::pair{
                     std::unique_ptr<control>(new (made) sub{made}),
-                    std::span<std::byte>{made + sizeof(sub), bytes}};
+                    std::span<std::byte>{made + data_offset, bytes}};
         }
 
         /**
@@ -89,7 +94,7 @@ namespace felspar::memory {
         a pointer to a control block.
      */
     template<typename Iter, typename Control>
-    struct owner_tracking_iterator {
+    struct owner_tracking_iterator final {
         using difference_type =
                 typename std::iterator_traits<Iter>::difference_type;
         using value_type = typename std::iterator_traits<Iter>::value_type;
