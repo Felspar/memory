@@ -54,7 +54,7 @@ namespace {
         felspar::memory::accumulation_buffer<std::byte> bytes{1024};
         check(bytes.size()) == 0u;
         bytes.ensure_length(1024);
-        check(bytes.size()) == 1024;
+        check(bytes.size()) == 1024u;
         check(bytes[0]) == std::byte{};
 
         felspar::memory::accumulation_buffer<std::string> strings{30};
