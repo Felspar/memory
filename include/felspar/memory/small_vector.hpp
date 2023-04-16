@@ -2,6 +2,7 @@
 
 
 #include <array>
+#include <span>
 
 #include <felspar/concepts.hpp>
 #include <felspar/exceptions.hpp>
@@ -86,6 +87,12 @@ namespace felspar::memory {
         [[nodiscard]] constexpr reference_type front() { return *data(); }
         [[nodiscard]] constexpr const_reference_type front() const {
             return *data();
+        }
+
+        /// ### Automatic conversion
+        operator std::span<value_type>() noexcept { return {data(), size()}; }
+        operator std::span<value_type const>() const noexcept {
+            return {data(), size()};
         }
 
         /// ### Iteration
