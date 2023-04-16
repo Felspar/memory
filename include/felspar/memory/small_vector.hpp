@@ -131,6 +131,18 @@ namespace felspar::memory {
         }
 
         /// ### Adding data
+        template<typename V>
+        void resize(std::size_t const new_size, V const &v) {
+            if (new_size < size()) {
+                do { erase(data() + size() - 1u); } while (new_size < size());
+            } else if (new_size > size()) {
+                do { push_back(v); } while (new_size > size());
+            }
+        }
+        void resize(std::size_t const new_size) {
+            resize(new_size, value_type{});
+        }
+
         template<typename... Args>
         void emplace_back(Args... args) {
             if (entries >= capacity()) {
