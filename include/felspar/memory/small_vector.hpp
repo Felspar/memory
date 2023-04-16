@@ -70,18 +70,21 @@ namespace felspar::memory {
         [[nodiscard]] constexpr reference_type operator[](std::size_t const i) {
             return *(data() + i);
         }
-        [[nodiscard]] constexpr const_reference_type
-                at(std::size_t const i) const {
+        [[nodiscard]] constexpr const_reference_type at(
+                std::size_t const i,
+                source_location const &loc = source_location::current()) const {
             if (i >= size()) {
                 throw felspar::stdexcept::length_error{
-                        "Out of bounds access to small_vector"};
+                        "Out of bounds access to small_vector", loc};
             }
             return (*this)[i];
         }
-        [[nodiscard]] constexpr reference_type at(std::size_t const i) {
+        [[nodiscard]] constexpr reference_type
+                at(std::size_t const i,
+                   source_location const &loc = source_location::current()) {
             if (i >= size()) {
                 throw felspar::stdexcept::length_error{
-                        "Out of bounds access to small_vector"};
+                        "Out of bounds access to small_vector", loc};
             }
             return (*this)[i];
         }
@@ -152,10 +155,11 @@ namespace felspar::memory {
             new (storage.data() + block_size * entries++)
                     T{std::forward<Args>(args)...};
         }
-        void push_back(T t) {
+        void push_back(
+                T t, source_location const &loc = source_location::current()) {
             if (entries >= capacity()) {
                 throw felspar::stdexcept::length_error{
-                        "Over small_vector capacity"};
+                        "Over small_vector capacity", loc};
             }
             new (storage.data() + block_size * entries++) T{std::move(t)};
         }
