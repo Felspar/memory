@@ -70,6 +70,21 @@ namespace felspar::memory {
         [[nodiscard]] constexpr reference_type operator[](std::size_t const i) {
             return *(data() + i);
         }
+        [[nodiscard]] constexpr const_reference_type
+                at(std::size_t const i) const {
+            if (i >= size()) {
+                throw felspar::stdexcept::length_error{
+                        "Out of bounds access to small_vector"};
+            }
+            return (*this)[i];
+        }
+        [[nodiscard]] constexpr reference_type at(std::size_t const i) {
+            if (i >= size()) {
+                throw felspar::stdexcept::length_error{
+                        "Out of bounds access to small_vector"};
+            }
+            return (*this)[i];
+        }
 
         [[nodiscard]] constexpr const_pointer_type data() const noexcept {
             return std::launder(reinterpret_cast<T const *>(storage.data()));
