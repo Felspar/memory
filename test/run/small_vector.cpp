@@ -135,4 +135,24 @@ namespace {
     });
 
 
+    auto const resize = suite.test("resize", [](auto check) {
+        felspar::memory::small_vector c1{1, 2, 3};
+        c1.resize(1);
+        check(c1.size()) == 1u;
+        check(c1.at(0)) == 1;
+
+        c1.resize(0);
+        check(c1.size()) == 0u;
+
+        c1.push_back(4);
+        check(c1.size()) == 1u;
+
+        c1.resize(3, 5);
+        check(c1.size()) == 3u;
+        check(c1.at(0)) == 4;
+        check(c1.at(1)) == 5;
+        check(c1.at(2)) == 5;
+    });
+
+
 }
