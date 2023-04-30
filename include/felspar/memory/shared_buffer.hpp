@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include <felspar/exceptions.hpp>
 #include <felspar/memory/control.hpp>
 
 #include <vector>
@@ -74,6 +75,26 @@ namespace felspar::memory {
         value_type &operator[](std::size_t const i) { return buffer[i]; }
         value_type const &operator[](std::size_t const i) const {
             return buffer[i];
+        }
+        value_type &
+                at(std::size_t const i,
+                   felspar::source_location const &loc =
+                           felspar::source_location::current()) {
+            if (i >= buffer.size()) {
+                throw felspar::stdexcept::logic_error{"Buffer overrun", loc};
+            } else {
+                return buffer[i];
+            }
+        }
+        value_type const &
+                at(std::size_t const i,
+                   felspar::source_location const &loc =
+                           felspar::source_location::current()) const {
+            if (i >= buffer.size()) {
+                throw felspar::stdexcept::logic_error{"Buffer overrun", loc};
+            } else {
+                return buffer[i];
+            }
         }
         auto begin() { return buffer.begin(); }
         auto end() { return buffer.end(); }

@@ -69,16 +69,22 @@ namespace felspar::memory {
         value_type const &operator[](std::size_t const i) const {
             return occupied[i];
         }
-        value_type &at(std::size_t const i) {
+        value_type &
+                at(std::size_t const i,
+                   felspar::source_location const &loc =
+                           felspar::source_location::current()) {
             if (i >= occupied.size()) {
-                throw felspar::stdexcept::logic_error{"Buffer overrun"};
+                throw felspar::stdexcept::logic_error{"Buffer overrun", loc};
             } else {
                 return occupied[i];
             }
         }
-        value_type const &at(std::size_t const i) const {
+        value_type const &
+                at(std::size_t const i,
+                   felspar::source_location const &loc =
+                           felspar::source_location::current()) const {
             if (i >= occupied.size()) {
-                throw felspar::stdexcept::logic_error{"Buffer overrun"};
+                throw felspar::stdexcept::logic_error{"Buffer overrun", loc};
             } else {
                 return occupied[i];
             }
