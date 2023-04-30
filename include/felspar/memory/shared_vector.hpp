@@ -11,8 +11,8 @@ namespace felspar::memory {
     /**
      * Allows for memory allocations of a vector like type to be shared between
      * instances. Access into the held data is not thread safe, but updates to
-     * the shared are, so immutable may be safely shared between `shared_vector`
-     * instances.
+     * the shared counts are, so immutable data may be safely shared between
+     * `shared_vector` instances.
      */
     template<typename T>
     class shared_vector final {
