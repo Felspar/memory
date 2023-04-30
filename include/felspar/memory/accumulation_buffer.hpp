@@ -26,6 +26,7 @@ namespace felspar::memory {
         using value_type = T;
 
         /// ### Constructors
+        accumulation_buffer() {}
         explicit accumulation_buffer(std::size_t mb) : min_buffer{mb} {}
         accumulation_buffer(accumulation_buffer const &) = default;
         accumulation_buffer(accumulation_buffer &&) = default;
