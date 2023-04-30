@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include <felspar/exceptions.hpp>
 #include <felspar/memory/shared_buffer.hpp>
 
 
@@ -67,6 +68,20 @@ namespace felspar::memory {
         value_type &operator[](std::size_t const i) { return occupied[i]; }
         value_type const &operator[](std::size_t const i) const {
             return occupied[i];
+        }
+        value_type &at(std::size_t const i) {
+            if (i >= occupied.size()) {
+                throw felspar::stdexcept::logic_error{"Buffer overrun"};
+            } else {
+                return occupied[i];
+            }
+        }
+        value_type const &at(std::size_t const i) const {
+            if (i >= occupied.size()) {
+                throw felspar::stdexcept::logic_error{"Buffer overrun"};
+            } else {
+                return occupied[i];
+            }
         }
         auto begin() { return occupied.begin(); }
         auto end() { return occupied.end(); }
