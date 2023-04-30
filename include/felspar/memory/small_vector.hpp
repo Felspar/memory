@@ -2,6 +2,7 @@
 
 
 #include <array>
+#include <span>
 
 #include <felspar/concepts.hpp>
 #include <felspar/exceptions.hpp>
@@ -69,6 +70,24 @@ namespace felspar::memory {
         [[nodiscard]] constexpr reference_type operator[](std::size_t const i) {
             return *(data() + i);
         }
+        [[nodiscard]] constexpr const_reference_type at(
+                std::size_t const i,
+                source_location const &loc = source_location::current()) const {
+            if (i >= size()) {
+                throw felspar::stdexcept::length_error{
+                        "Out of bounds access to small_vector", loc};
+            }
+            return (*this)[i];
+        }
+        [[nodiscard]] constexpr reference_type
+                at(std::size_t const i,
+                   source_location const &loc = source_location::current()) {
+            if (i >= size()) {
+                throw felspar::stdexcept::length_error{
+                        "Out of bounds access to small_vector", loc};
+            }
+            return (*this)[i];
+        }
 
         [[nodiscard]] constexpr const_pointer_type data() const noexcept {
             return std::launder(reinterpret_cast<T const *>(storage.data()));
@@ -86,6 +105,12 @@ namespace felspar::memory {
         [[nodiscard]] constexpr reference_type front() { return *data(); }
         [[nodiscard]] constexpr const_reference_type front() const {
             return *data();
+        }
+
+        /// ### Automatic conversion
+        operator std::span<value_type>() noexcept { return {data(), size()}; }
+        operator std::span<value_type const>() const noexcept {
+            return {data(), size()};
         }
 
         /// ### Iteration
@@ -109,6 +134,18 @@ namespace felspar::memory {
         }
 
         /// ### Adding data
+        template<typename V>
+        void resize(std::size_t const new_size, V const &v) {
+            if (new_size < size()) {
+                do { erase(data() + size() - 1u); } while (new_size < size());
+            } else if (new_size > size()) {
+                do { push_back(v); } while (new_size > size());
+            }
+        }
+        void resize(std::size_t const new_size) {
+            resize(new_size, value_type{});
+        }
+
         template<typename... Args>
         void emplace_back(Args... args) {
             if (entries >= capacity()) {
@@ -118,10 +155,11 @@ namespace felspar::memory {
             new (storage.data() + block_size * entries++)
                     T{std::forward<Args>(args)...};
         }
-        void push_back(T t) {
+        void push_back(
+                T t, source_location const &loc = source_location::current()) {
             if (entries >= capacity()) {
                 throw felspar::stdexcept::length_error{
-                        "Over small_vector capacity"};
+                        "Over small_vector capacity", loc};
             }
             new (storage.data() + block_size * entries++) T{std::move(t)};
         }

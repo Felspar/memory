@@ -1,6 +1,7 @@
 if(TARGET felspar-check)
     add_test_run(felspar-check felspar-memory TESTS
             bitmap.cpp
+            buffers.cpp
             fixed-pool.pmr.cpp
             hexdump.cpp
             holding_pen.cpp
