@@ -20,7 +20,7 @@ namespace felspar::memory {
         buffer_type buffer = {};
         std::span<T> occupied = {};
         vector_type *pvector = {};
-        std::size_t min_buffer = 100;
+        std::size_t min_buffer = 128;
 
       public:
         using value_type = T;
