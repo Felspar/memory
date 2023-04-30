@@ -83,6 +83,11 @@ namespace felspar::memory {
         /// ### Implicit conversions
         operator std::span<value_type>() { return buffer; }
 
+        /// ### Sharing the buffer
+        shared_buffer first(std::size_t const items) {
+            return {owner, buffer.first(items)};
+        }
+
       private:
         buffer_type buffer;
         control_type *owner = nullptr;
