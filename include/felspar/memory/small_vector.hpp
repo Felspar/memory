@@ -18,8 +18,7 @@ namespace felspar::memory {
      * items than the vector can support will lead to an exception being thrown.
      *
      * Because the storage area is embedded iterators are never invalidated by
-     * adding or removing items to the array, but they are invalided by moving
-     * the `small_vector`.
+     * adding or removing items to the end of the array.
      */
     template<typename T, std::size_t N = 32>
     class small_vector final {
@@ -37,6 +36,7 @@ namespace felspar::memory {
                 std::add_lvalue_reference_t<value_type const>;
         using pointer_type = std::add_pointer_t<value_type>;
         using const_pointer_type = std::add_pointer_t<value_type const>;
+
 
         /// ### Constructors
         constexpr small_vector() noexcept {};
@@ -61,6 +61,7 @@ namespace felspar::memory {
         }
         [[nodiscard]] constexpr auto capacity() const noexcept { return N; }
         [[nodiscard]] constexpr auto size() const noexcept { return entries; }
+
 
         /// ### Access
         [[nodiscard]] constexpr const_reference_type
@@ -107,11 +108,13 @@ namespace felspar::memory {
             return *data();
         }
 
+
         /// ### Automatic conversion
         operator std::span<value_type>() noexcept { return {data(), size()}; }
         operator std::span<value_type const>() const noexcept {
             return {data(), size()};
         }
+
 
         /// ### Iteration
         using iterator = pointer_type;
@@ -132,6 +135,7 @@ namespace felspar::memory {
         [[nodiscard]] constexpr const_iterator cend() const noexcept {
             return data() + size();
         }
+
 
         /// ### Adding data
         template<typename V>
@@ -163,6 +167,8 @@ namespace felspar::memory {
             }
             new (storage.data() + block_size * entries++) T{std::move(t)};
         }
+
+
         /// ### Removing data
         void clear() {
             for (auto &v : *this) { std::destroy_at(&v); }
