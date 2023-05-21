@@ -176,7 +176,7 @@ namespace felspar::memory {
 
         /// ### Removing data
         void clear() {
-            while (not empty()) {
+            while (entries) {
                 std::destroy_at(data() + size() - 1u);
                 --entries;
             }
