@@ -184,6 +184,7 @@ namespace felspar::memory {
         void erase(iterator pos)
             requires assignable_from<value_type &, value_type &&>
         {
+            if (pos == end()) { return; }
             for (auto from = pos + 1u, e = end(); from != e; ++from, ++pos) {
                 *pos = std::move(*from);
             }
@@ -191,6 +192,7 @@ namespace felspar::memory {
             --entries;
         }
         void erase(iterator pos) {
+            if (pos == end()) { return; }
             for (auto from = pos + 1u, e = end(); from != e; ++from, ++pos) {
                 std::destroy_at(pos);
                 new (pos) T(std::move(*from));
