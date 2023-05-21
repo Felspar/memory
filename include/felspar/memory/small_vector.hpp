@@ -44,6 +44,9 @@ namespace felspar::memory {
         small_vector(Args... args) {
             (push_back(std::forward<Args>(args)), ...);
         }
+        constexpr ~small_vector() { clear(); }
+
+
         small_vector(small_vector &&sv) {
             for (auto &&i : sv) { push_back(std::move(i)); }
         }
@@ -171,8 +174,10 @@ namespace felspar::memory {
 
         /// ### Removing data
         void clear() {
-            for (auto &v : *this) { std::destroy_at(&v); }
-            entries = {};
+            while (not empty()) {
+                std::destroy_at(data() + size() - 1u);
+                --entries;
+            }
         }
         void erase(iterator pos)
             requires assignable_from<value_type &, value_type &&>
