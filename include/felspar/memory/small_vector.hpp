@@ -47,16 +47,18 @@ namespace felspar::memory {
         constexpr ~small_vector() { clear(); }
 
 
+        /// ### Copy/move
+        small_vector(small_vector const &);
         small_vector(small_vector &&sv) {
             for (auto &&i : sv) { push_back(std::move(i)); }
         }
-        constexpr ~small_vector() {
-            for (auto &i : *this) { std::destroy_at(&i); }
+        small_vector &operator=(small_vector const &);
+        small_vector &operator=(small_vector &&sv) {
+            clear();
+            for (auto &&i : sv) { push_back(std::move(i)); }
+            return *this;
         }
-        /// ### No copy/move
-        small_vector(small_vector const &) = delete;
-        small_vector &operator=(small_vector const &) = delete;
-        small_vector &operator=(small_vector &&) = delete;
+
 
         /// ### Capacity and meta-data
         [[nodiscard]] constexpr bool empty() const noexcept {
