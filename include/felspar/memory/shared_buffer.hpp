@@ -25,6 +25,7 @@ namespace felspar::memory {
         using vector_type = std::vector<T>;
         using control_type = control;
         using buffer_type = std::span<T>;
+        using const_buffer_type = std::span<T const>;
 
         /// ### Private constructors
         explicit shared_buffer(
@@ -72,6 +73,8 @@ namespace felspar::memory {
         control_type *control_block() const noexcept { return owner; }
 
         /// ### Access to the buffer
+        const_buffer_type cmemory() const noexcept { return buffer; }
+
         value_type &operator[](std::size_t const i) { return buffer[i]; }
         value_type const &operator[](std::size_t const i) const {
             return buffer[i];
@@ -122,6 +125,7 @@ namespace felspar::memory {
         using value_type = T;
         using control_type = control;
         using buffer_type = std::span<T>;
+        using const_buffer_type = std::span<T const>;
 
         shared_buffer_view(shared_buffer<std::remove_cv_t<value_type>> const &sb)
         : buffer{sb.buffer}, owner{sb.owner} {}
@@ -129,6 +133,12 @@ namespace felspar::memory {
         /// ### Information about the buffer
         bool empty() const noexcept { return buffer.empty(); }
         auto size() const noexcept { return buffer.size(); }
+
+
+        /// ### Access to the buffer
+        const_buffer_type cmemory() const noexcept { return buffer; }
+
+
         /// ### Return the memory control block
         control_type *control_block() const noexcept { return owner; }
 

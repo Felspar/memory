@@ -65,6 +65,10 @@ namespace felspar::memory {
         }
 
         /// ### Access to the buffer
+        std::span<value_type> memory() noexcept { return occupied; }
+        std::span<value_type const> cmemory() const noexcept {
+            return occupied;
+        }
         value_type &operator[](std::size_t const i) { return occupied[i]; }
         value_type const &operator[](std::size_t const i) const {
             return occupied[i];
