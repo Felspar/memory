@@ -61,6 +61,7 @@ namespace felspar::memory {
         }
         ~shared_buffer() { control_type::decrement(owner); }
 
+
         /// ### Allocation
         template<typename V = value_type>
         static shared_buffer allocate(std::size_t const count, V &&v = {}) {
@@ -68,11 +69,13 @@ namespace felspar::memory {
                     vector_type(count, std::forward<V>(v)))};
         }
 
+
         /// ### Information about the buffer
         bool empty() const noexcept { return buffer.empty(); }
         auto size() const noexcept { return buffer.size(); }
         /// Return the memory control block
         control_type *control_block() const noexcept { return owner; }
+
 
         /// ### Access to the buffer
         const_buffer_type cmemory() const noexcept { return buffer; }
@@ -81,6 +84,7 @@ namespace felspar::memory {
         value_type const &operator[](std::size_t const i) const {
             return buffer[i];
         }
+
         value_type &
                 at(std::size_t const i,
                    felspar::source_location const &loc =
@@ -106,8 +110,10 @@ namespace felspar::memory {
 
         value_type const *data() const noexcept { return buffer.data(); }
 
+
         /// ### Implicit conversions
         operator std::span<value_type>() { return buffer; }
+
 
         /// ### Sharing the buffer
         shared_buffer first(std::size_t const items) {
@@ -129,8 +135,11 @@ namespace felspar::memory {
         using buffer_type = std::span<T>;
         using const_buffer_type = std::span<T const>;
 
+
+        /// ### Construction
         shared_buffer_view(shared_buffer<std::remove_cv_t<value_type>> const &sb)
         : buffer{sb.buffer}, owner{sb.owner} {}
+
 
         /// ### Information about the buffer
         bool empty() const noexcept { return buffer.empty(); }
@@ -143,6 +152,7 @@ namespace felspar::memory {
 
         /// ### Return the memory control block
         control_type *control_block() const noexcept { return owner; }
+
 
       private:
         buffer_type buffer;

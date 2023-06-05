@@ -26,19 +26,23 @@ namespace felspar::memory {
         using buffer_type = shared_buffer<T>;
         using value_type = T;
 
+
         /// ### Constructors
         accumulation_buffer() {}
         explicit accumulation_buffer(std::size_t mb) : min_buffer{mb} {}
         accumulation_buffer(accumulation_buffer const &) = default;
         accumulation_buffer(accumulation_buffer &&) = default;
 
+
         /// ### Assignment
         accumulation_buffer &operator=(accumulation_buffer const &) = default;
         accumulation_buffer &operator=(accumulation_buffer &&) = default;
 
+
         /// ### Information about the current state of the buffer
         bool empty() const noexcept { return occupied.empty(); }
         auto size() const noexcept { return occupied.size(); }
+
 
         /// ### Grow the buffer
         template<typename V = value_type>
@@ -95,6 +99,7 @@ namespace felspar::memory {
         }
         auto begin() { return occupied.begin(); }
         auto end() { return occupied.end(); }
+
 
         /// ### Split the buffer
         auto first(std::size_t const count) {
