@@ -15,15 +15,15 @@ namespace felspar::memory {
      */
     template<typename T>
     class accumulation_buffer final {
-        using buffer_type = shared_buffer<T>;
-        using vector_type = typename buffer_type::vector_type;
+        using vector_type = typename shared_buffer<T>::vector_type;
 
-        buffer_type buffer = {};
+        shared_buffer<T> buffer = {};
         std::span<T> occupied = {};
         vector_type *pvector = {};
         std::size_t min_buffer = 128;
 
       public:
+        using buffer_type = shared_buffer<T>;
         using value_type = T;
 
         /// ### Constructors

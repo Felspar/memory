@@ -37,6 +37,8 @@ namespace felspar::memory {
 
       public:
         using value_type = T;
+        using view_type = shared_buffer_view<T>;
+
 
         /// ### Construction, destruction and assignment
         shared_buffer() {}
