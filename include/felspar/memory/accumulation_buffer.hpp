@@ -15,16 +15,17 @@ namespace felspar::memory {
      */
     template<typename T>
     class accumulation_buffer final {
-        using buffer_type = shared_buffer<T>;
-        using vector_type = typename buffer_type::vector_type;
+        using vector_type = typename shared_buffer<T>::vector_type;
 
-        buffer_type buffer = {};
+        shared_buffer<T> buffer = {};
         std::span<T> occupied = {};
         vector_type *pvector = {};
         std::size_t min_buffer = 128;
 
       public:
+        using buffer_type = shared_buffer<T>;
         using value_type = T;
+
 
         /// ### Constructors
         accumulation_buffer() {}
@@ -32,13 +33,16 @@ namespace felspar::memory {
         accumulation_buffer(accumulation_buffer const &) = default;
         accumulation_buffer(accumulation_buffer &&) = default;
 
+
         /// ### Assignment
         accumulation_buffer &operator=(accumulation_buffer const &) = default;
         accumulation_buffer &operator=(accumulation_buffer &&) = default;
 
+
         /// ### Information about the current state of the buffer
         bool empty() const noexcept { return occupied.empty(); }
         auto size() const noexcept { return occupied.size(); }
+
 
         /// ### Grow the buffer
         template<typename V = value_type>
@@ -65,6 +69,10 @@ namespace felspar::memory {
         }
 
         /// ### Access to the buffer
+        std::span<value_type> memory() noexcept { return occupied; }
+        std::span<value_type const> cmemory() const noexcept {
+            return occupied;
+        }
         value_type &operator[](std::size_t const i) { return occupied[i]; }
         value_type const &operator[](std::size_t const i) const {
             return occupied[i];
@@ -91,6 +99,7 @@ namespace felspar::memory {
         }
         auto begin() { return occupied.begin(); }
         auto end() { return occupied.end(); }
+
 
         /// ### Split the buffer
         auto first(std::size_t const count) {
