@@ -18,9 +18,10 @@ namespace felspar::memory {
      * The buffer contains a small amount of memory meaning that the object can
      * be embedded.
      */
+    template<std::size_t BS = 128, std::size_t AL = 16>
     struct any_buffer {
-        static std::size_t constexpr alignment = 16;
-        static std::size_t constexpr buffer_size = 128;
+        static std::size_t constexpr alignment = AL;
+        static std::size_t constexpr buffer_size = BS;
 
 
         /// ### Construction
