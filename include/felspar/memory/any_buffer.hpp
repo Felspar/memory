@@ -27,7 +27,7 @@ namespace felspar::memory {
         /// ### Construction
         constexpr any_buffer() noexcept {}
         any_buffer(any_buffer &&o)
-        : type{o.type}, move_into{o.move_into}, deleter{o.deleter} {
+        : typeptr{o.typeptr}, move_into{o.move_into}, deleter{o.deleter} {
             if (move_into) { move_into(buffer.data(), o.buffer.data()); }
         }
         any_buffer(any_buffer const &) = delete;
@@ -41,7 +41,7 @@ namespace felspar::memory {
 
         any_buffer &operator=(any_buffer &&o) {
             destroy();
-            type = std::exchange(o.type, nullptr);
+            typeptr = std::exchange(o.typeptr, nullptr);
             move_into = std::exchange(o.move_into, nullptr);
             deleter = std::exchange(o.deleter, nullptr);
             if (o.move_into) { move_into(buffer.data(), o.buffer.data()); }
@@ -64,7 +64,7 @@ namespace felspar::memory {
             static_assert(
                     sizeof(T) <= buffer_size,
                     "Large object support not yet implemented");
-            type = &typeid(T);
+            typeptr = &typeid(T);
             new (buffer.data()) T{std::forward<Args>(args)...};
             move_into = [](std::byte *into, std::byte *from) {
                 new (into) T{std::move(*reinterpret_cast<T *>(from))};
@@ -78,16 +78,15 @@ namespace felspar::memory {
 
         /// #### Return true if there is a held object
         explicit operator bool() const noexcept {
-            return type and move_into and deleter;
+            return typeptr and move_into and deleter;
         }
 
         /// #### The typeid for the held object
-        auto const &held_type() const {
-            if (not type) {
-                throw felspar::stdexcept::logic_error{
-                        "There is no held object"};
+        auto const &type() const {
+            if (not typeptr) {
+                return typeid(void);
             } else {
-                return *type;
+                return *typeptr;
             }
         }
 
@@ -97,7 +96,7 @@ namespace felspar::memory {
         /// #### Return a reference to the contained object
         template<typename T>
         T &value() {
-            if (typeid(T) == *type) {
+            if (typeid(T) == *typeptr) {
                 return unsafe_value<T>();
             } else {
                 throw felspar::stdexcept::logic_error{
@@ -106,7 +105,7 @@ namespace felspar::memory {
         }
         template<typename T>
         T const &value() const {
-            if (typeid(T) == *type) {
+            if (typeid(T) == *typeptr) {
                 return unsafe_value<T>();
             } else {
                 throw felspar::stdexcept::logic_error{
@@ -129,7 +128,7 @@ namespace felspar::memory {
         }
 
         std::array<std::byte, buffer_size> buffer alignas(alignment);
-        std::type_info const *type = nullptr;
+        std::type_info const *typeptr = nullptr;
         void (*move_into)(std::byte *, std::byte *) = nullptr;
         void (*deleter)(std::byte *) = nullptr;
     };
