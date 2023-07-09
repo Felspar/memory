@@ -39,47 +39,14 @@ namespace felspar::memory {
             emplace<T>(std::move(object));
         }
 
-        any_buffer &operator=(any_buffer &&o) {
-            destroy();
-            typeptr = std::exchange(o.typeptr, nullptr);
-            move_into = std::exchange(o.move_into, nullptr);
-            deleter = std::exchange(o.deleter, nullptr);
-            if (o.move_into) { move_into(buffer.data(), o.buffer.data()); }
-            return *this;
-        }
-        template<typename T>
-        any_buffer &operator=(T t) {
-            destroy();
-            emplace<T>(std::move(t));
-            return *this;
-        }
-
-        any_buffer &operator=(any_buffer const &) = delete;
-
-        template<typename T, typename... Args>
-        void emplace(Args... args) {
-            static_assert(
-                    std::alignment_of_v<T> <= alignment,
-                    "Alignment requirement of held type is too high");
-            static_assert(
-                    sizeof(T) <= buffer_size,
-                    "Large object support not yet implemented");
-            typeptr = &typeid(T);
-            new (buffer.data()) T{std::forward<Args>(args)...};
-            move_into = [](std::byte *into, std::byte *from) {
-                new (into) T{std::move(*reinterpret_cast<T *>(from))};
-            };
-            deleter = [](std::byte *d) {
-                std::destroy_at(std::launder(reinterpret_cast<T *>(d)));
-            };
-        }
 
         /// ### Queries
 
         /// #### Return true if there is a held object
-        explicit operator bool() const noexcept {
+        bool has_value() const noexcept {
             return typeptr and move_into and deleter;
         }
+        explicit operator bool() const noexcept { return has_value(); }
 
         /// #### The typeid for the held object
         auto const &type() const {
@@ -89,9 +56,6 @@ namespace felspar::memory {
                 return *typeptr;
             }
         }
-
-
-        /// ### Modification
 
         /// #### Return a reference to the contained object
         template<typename T>
@@ -112,6 +76,44 @@ namespace felspar::memory {
                         "This any_buffer is empty"};
             }
         }
+
+
+        /// ### Modification
+
+        template<typename T, typename... Args>
+        void emplace(Args... args) {
+            static_assert(
+                    std::alignment_of_v<T> <= alignment,
+                    "Alignment requirement of held type is too high");
+            static_assert(
+                    sizeof(T) <= buffer_size,
+                    "Large object support not yet implemented");
+            typeptr = &typeid(T);
+            new (buffer.data()) T{std::forward<Args>(args)...};
+            move_into = [](std::byte *into, std::byte *from) {
+                new (into) T{std::move(*reinterpret_cast<T *>(from))};
+            };
+            deleter = [](std::byte *d) {
+                std::destroy_at(std::launder(reinterpret_cast<T *>(d)));
+            };
+        }
+
+        any_buffer &operator=(any_buffer &&o) {
+            destroy();
+            typeptr = std::exchange(o.typeptr, nullptr);
+            move_into = std::exchange(o.move_into, nullptr);
+            deleter = std::exchange(o.deleter, nullptr);
+            if (o.move_into) { move_into(buffer.data(), o.buffer.data()); }
+            return *this;
+        }
+        template<typename T>
+        any_buffer &operator=(T t) {
+            destroy();
+            emplace<T>(std::move(t));
+            return *this;
+        }
+
+        any_buffer &operator=(any_buffer const &) = delete;
 
 
       private:
