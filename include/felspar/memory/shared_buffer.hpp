@@ -27,6 +27,7 @@ namespace felspar::memory {
         using buffer_type = std::span<T>;
         using const_buffer_type = std::span<T const>;
 
+
         /// ### Private constructors
         explicit shared_buffer(
                 std::pair<std::unique_ptr<control_type>, vector_type *> alloc)
@@ -34,6 +35,7 @@ namespace felspar::memory {
           owner{alloc.first.release()} {}
         shared_buffer(control_type *o, buffer_type b)
         : buffer{b}, owner{control_type::increment(o)} {}
+
 
       public:
         using value_type = T;
@@ -68,6 +70,9 @@ namespace felspar::memory {
             return shared_buffer{control_type::wrap_existing(
                     vector_type(count, std::forward<V>(v)))};
         }
+        static shared_buffer wrap(vector_type v) {
+            return shared_buffer{control_type::wrap_existing(std::move(v))};
+        }
 
 
         /// ### Information about the buffer
@@ -78,6 +83,7 @@ namespace felspar::memory {
 
 
         /// ### Access to the buffer
+        buffer_type memory() noexcept { return buffer; }
         const_buffer_type cmemory() const noexcept { return buffer; }
 
         value_type &operator[](std::size_t const i) { return buffer[i]; }
@@ -85,6 +91,7 @@ namespace felspar::memory {
             return buffer[i];
         }
 
+        /// #### Access an element with a bounds check
         value_type &
                 at(std::size_t const i,
                    felspar::source_location const &loc =
@@ -119,6 +126,7 @@ namespace felspar::memory {
         shared_buffer first(std::size_t const items) {
             return {owner, buffer.first(items)};
         }
+
 
       private:
         buffer_type buffer;

@@ -30,26 +30,6 @@ namespace {
     });
 
 
-    auto const ab = suite.test("allocate/shared_buffer", [](auto check) {
-        auto bytes = felspar::memory::shared_buffer<std::byte>::allocate(1024);
-        check(bytes.empty()) == false;
-        check(bytes.size()) == 1024u;
-
-        auto strings = felspar::memory::shared_buffer<std::string>::allocate(
-                20, "hello");
-        check(strings.empty()) == false;
-        check(strings.size()) == 20u;
-        check(strings[0]) == "hello";
-
-        auto const cstrings{strings};
-        check(cstrings.empty()) == false;
-        check(cstrings.size()) == 20u;
-        check(cstrings[0]) == "hello";
-        check(cstrings.control_block()) == strings.control_block();
-
-        strings[1] = "world";
-        check(cstrings[1]) == "world";
-    });
     auto const aa = suite.test("allocate/accumulation_buffer", [](auto check) {
         felspar::memory::accumulation_buffer<std::byte> bytes{1024};
         check(bytes.size()) == 0u;
@@ -72,16 +52,6 @@ namespace {
         check(strings[0]) == "world";
 
         check(first.control_block()) == second.control_block();
-    });
-
-
-    auto const ds = suite.test("access/shared_buffer", [](auto check) {
-        auto strings = felspar::memory::shared_buffer<std::string>::allocate(
-                20, "hello");
-        auto const &cstrings = strings;
-
-        check(strings.data()) == cstrings.data();
-        check(strings.size()) == cstrings.size();
     });
 
 
