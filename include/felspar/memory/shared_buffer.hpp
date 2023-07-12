@@ -81,6 +81,7 @@ namespace felspar::memory {
 
 
         /// ### Access to the buffer
+        buffer_type memory() noexcept { return buffer; }
         const_buffer_type cmemory() const noexcept { return buffer; }
 
         value_type &operator[](std::size_t const i) { return buffer[i]; }
