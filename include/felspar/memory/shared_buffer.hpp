@@ -68,6 +68,9 @@ namespace felspar::memory {
             return shared_buffer{control_type::wrap_existing(
                     vector_type(count, std::forward<V>(v)))};
         }
+        static shared_buffer wrap(vector_type v) {
+            return shared_buffer{control_type::wrap_existing(std::move(v))};
+        }
 
 
         /// ### Information about the buffer

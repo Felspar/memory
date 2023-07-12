@@ -7,6 +7,7 @@ if(TARGET felspar-check)
             holding_pen.cpp
             pmr.cpp
             raw_memory.cpp
+            shared_buffer.cpp
             sizes.cpp
             slab.storage.cpp
             small_ring.cpp
