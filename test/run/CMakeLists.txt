@@ -12,6 +12,7 @@ if(TARGET felspar-check)
             slab.storage.cpp
             small_ring.cpp
             small_vector.cpp
+            stable_vector.cpp
             stack.storage.cpp
         )
 endif()
