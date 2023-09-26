@@ -16,6 +16,9 @@ namespace felspar::memory {
      * This vector type mimics a `std::vector` except that the cells themselves
      * have stable memory addresses even when the vector is appended to. To
      * achieve this the vector isn't contiguous though.
+     *
+     * Memory is not reclaimed when `clear` is called, when means that re-use of
+     * the vector can be more efficient by eliding memory allocations.
      */
     template<typename T, std::size_t S>
     class stable_vector {
