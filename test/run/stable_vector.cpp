@@ -11,6 +11,8 @@ namespace {
     auto const c = suite.test("construction", [](auto check) {
         felspar::memory::stable_vector<int, 8> sv1, sv2(20, 123);
         check(sv1.empty()) == true;
+        check(sv2.empty()) == false;
+        check(sv1.size()) == 0u;
         check(sv2.size()) == 20u;
         for (std::size_t index{}; index < 20; ++index) {
             check(sv2[index]) == 123;
