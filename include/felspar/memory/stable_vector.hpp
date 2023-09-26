@@ -60,6 +60,12 @@ namespace felspar::memory {
 
 
         /// ### Mutation
+        void reserve(std::size_t const size) {
+            m_storage.reserve((size + section_size - 1) / section_size);
+            while (capacity() < size) {
+                m_storage.push_back(std::make_unique<sv_type>());
+            }
+        }
         void clear() {
             for (auto &s : m_storage) { s->clear(); }
             m_size = 0;

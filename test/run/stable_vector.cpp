@@ -46,4 +46,15 @@ namespace {
     });
 
 
+    auto const r = suite.test("reserve", [](auto check) {
+        felspar::memory::stable_vector<int, 8> sv;
+        sv.reserve(0);
+        check(sv.capacity()) == 0u;
+        sv.reserve(1);
+        check(sv.capacity()) == 8u;
+        sv.reserve(20);
+        check(sv.capacity()) == 24u;
+    });
+
+
 }
