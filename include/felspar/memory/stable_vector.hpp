@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include <felspar/exceptions.hpp>
 #include <felspar/memory/small_vector.hpp>
 
 #include <memory>
@@ -43,6 +44,13 @@ namespace felspar::memory {
         value_type const &operator[](std::size_t const idx) const {
             return (*m_storage.at(v_index(idx)))[sv_index(idx)];
         }
+        value_type const &at(std::size_t const idx) const {
+            if (idx >= m_size) {
+                throw felspar::stdexcept::logic_error{"Array bounds exceeded"};
+            } else {
+                return (*m_storage[v_index(idx)])[sv_index(idx)];
+            }
+        }
 
 
         /// ### Mutation
@@ -53,6 +61,13 @@ namespace felspar::memory {
         value_type &push_back(value_type t) {
             auto const section = grow_storage_if_needed(m_size++);
             return m_storage[section]->push_back(std::move(t));
+        }
+        value_type &at(std::size_t const idx) {
+            if (idx >= m_size) {
+                throw felspar::stdexcept::logic_error{"Array bounds exceeded"};
+            } else {
+                return (*m_storage[v_index(idx)])[sv_index(idx)];
+            }
         }
 
 
