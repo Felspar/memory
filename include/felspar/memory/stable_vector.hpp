@@ -45,7 +45,7 @@ namespace felspar::memory {
         bool empty() const noexcept { return m_size == 0u; }
         auto size() const noexcept { return m_size; }
         value_type const &operator[](std::size_t const idx) const {
-            return (*m_storage.at(v_index(idx)))[sv_index(idx)];
+            return (*m_storage[v_index(idx)])[sv_index(idx)];
         }
         value_type const &at(std::size_t const idx) const {
             if (idx >= m_size) {
@@ -70,6 +70,9 @@ namespace felspar::memory {
         value_type &push_back(value_type t) {
             auto const section = grow_storage_if_needed(m_size++);
             return m_storage[section]->push_back(std::move(t));
+        }
+        value_type &operator[](std::size_t const idx) {
+            return (*m_storage[v_index(idx)])[sv_index(idx)];
         }
         value_type &at(std::size_t const idx) {
             if (idx >= m_size) {
