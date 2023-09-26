@@ -58,6 +58,12 @@ namespace felspar::memory {
             for (auto &s : m_storage) { s->clear(); }
             m_size = 0;
         }
+        template<typename... Args>
+        value_type &emplace_back(Args... args) {
+            auto const section = grow_storage_if_needed(m_size++);
+            return m_storage[section]->emplace_back(
+                    std::forward<Args>(args)...);
+        }
         value_type &push_back(value_type t) {
             auto const section = grow_storage_if_needed(m_size++);
             return m_storage[section]->push_back(std::move(t));
