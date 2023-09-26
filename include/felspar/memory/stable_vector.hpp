@@ -32,12 +32,24 @@ namespace felspar::memory {
 
         /// ### Construction
         stable_vector() {}
-        explicit stable_vector(std::size_t const m) { grow_to(m); }
+        explicit stable_vector(std::size_t const m, value_type const &v = {}) {
+            grow_to(m, v);
+        }
 
 
         /// ### Queries
         bool empty() const noexcept { return m_size == 0u; }
         auto size() const noexcept { return m_size; }
+        value_type const &operator[](std::size_t const idx) const {
+            return (*m_storage.at(v_index(idx)))[sv_index(idx)];
+        }
+
+
+        /// ### Mutation
+        value_type &push_back(value_type t) {
+            auto const section = grow_storage_if_needed(m_size++);
+            return m_storage[section]->push_back(std::move(t));
+        }
 
 
       private:
@@ -47,13 +59,18 @@ namespace felspar::memory {
         std::size_t sv_index(std::size_t const s) const noexcept {
             return s % section_size;
         }
-        void grow_to(std::size_t const target) {
+        void grow_to(std::size_t const target, value_type const &v) {
             for (; m_size < target; ++m_size) {
-                if (m_storage.size() <= v_index(m_size)) {
-                    m_storage.push_back(std::make_unique<sv_type>());
-                }
-                m_storage.back()->push_back({});
+                auto const section = grow_storage_if_needed(m_size);
+                m_storage[section]->push_back(v);
             }
+        }
+        std::size_t grow_storage_if_needed(std::size_t const target) {
+            auto const section = v_index(target);
+            if (m_storage.size() <= section) {
+                m_storage.push_back(std::make_unique<sv_type>());
+            }
+            return section;
         }
     };
 
