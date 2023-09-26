@@ -27,4 +27,16 @@ namespace {
     });
 
 
+    auto const e = suite.test("clear", [](auto check) {
+        felspar::memory::stable_vector<int, 8> sv(20, 123);
+        sv.clear();
+        check(sv.empty()) == true;
+        for (int index{}; index < 10; ++index) {
+            sv.push_back(index);
+            check(sv[index]) == index;
+        }
+        check(sv.size()) == 10u;
+    });
+
+
 }

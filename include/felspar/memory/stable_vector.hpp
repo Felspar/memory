@@ -46,6 +46,10 @@ namespace felspar::memory {
 
 
         /// ### Mutation
+        void clear() {
+            for (auto &s : m_storage) { s->clear(); }
+            m_size = 0;
+        }
         value_type &push_back(value_type t) {
             auto const section = grow_storage_if_needed(m_size++);
             return m_storage[section]->push_back(std::move(t));
