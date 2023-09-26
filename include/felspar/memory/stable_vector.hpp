@@ -44,6 +44,9 @@ namespace felspar::memory {
         /// ### Queries
         bool empty() const noexcept { return m_size == 0u; }
         auto size() const noexcept { return m_size; }
+        std::size_t capacity() const noexcept {
+            return m_storage.size() * section_size;
+        }
         value_type const &operator[](std::size_t const idx) const {
             return (*m_storage[v_index(idx)])[sv_index(idx)];
         }
