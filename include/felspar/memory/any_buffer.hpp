@@ -126,7 +126,7 @@ namespace felspar::memory {
         }
         template<typename T>
         T const &unsafe_value() const {
-            return *reinterpret_cast<T *>(buffer.data());
+            return *reinterpret_cast<T const *>(buffer.data());
         }
 
         std::array<std::byte, buffer_size> buffer alignas(alignment);
