@@ -48,7 +48,9 @@ namespace felspar::memory {
 
 
         /// ### Copy/move
-        small_vector(small_vector const &);
+        small_vector(small_vector const &sv) {
+            for (auto const &i : sv) { push_back(i); }
+        }
         small_vector(small_vector &&sv) {
             for (auto &&i : sv) { push_back(std::move(i)); }
         }
