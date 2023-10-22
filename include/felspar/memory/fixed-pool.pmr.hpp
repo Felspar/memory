@@ -3,6 +3,7 @@
 
 #include <felspar/memory/pmr.hpp>
 
+#include <stdexcept>
 #include <string>
 #include <vector>
 
