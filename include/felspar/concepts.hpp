@@ -16,10 +16,8 @@ namespace felspar {
 
     template<class LHS, class RHS>
     concept assignable_from = requires(LHS lhs, RHS &&rhs) {
-                                  {
-                                      lhs = std::forward<RHS>(rhs)
-                                      } -> same_as<LHS>;
-                              };
+        { lhs = std::forward<RHS>(rhs) } -> same_as<LHS>;
+    };
 
 
     template<typename N>
