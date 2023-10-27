@@ -110,6 +110,27 @@ namespace felspar::memory {
                 return (*m_storage[v_index(idx)])[sv_index(idx)];
             }
         }
+        template<typename Predicate>
+        void erase_if(Predicate pred) {
+            /// TODO This would be more efficient if small_vector also had some
+            /// erase_if support
+            for (std::size_t idx{}; idx < m_size;) {
+                auto vidx = v_index(idx);
+                auto *pos = &(*m_storage[vidx])[sv_index(idx)];
+                if (pred(*pos)) {
+                    m_storage[vidx]->erase(pos);
+                    --m_size;
+                    while (++vidx < m_storage.size()
+                           and not m_storage[vidx]->empty()) {
+                        m_storage[vidx - 1]->push_back(
+                                std::move(m_storage[vidx]->front()));
+                        m_storage[vidx]->erase(m_storage[vidx]->begin());
+                    }
+                } else {
+                    ++idx;
+                }
+            }
+        }
 
 
       private:
