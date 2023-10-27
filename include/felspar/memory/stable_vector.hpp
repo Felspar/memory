@@ -110,6 +110,7 @@ namespace felspar::memory {
                 return (*m_storage[v_index(idx)])[sv_index(idx)];
             }
         }
+        /// #### Erase any item that the predicate matches
         template<typename Predicate>
         std::size_t erase_if(Predicate pred) {
             std::size_t erased{};
