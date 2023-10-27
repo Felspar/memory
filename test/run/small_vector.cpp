@@ -133,6 +133,30 @@ namespace {
                 check(c1.size()) == 2u;
                 c1.erase(c1.begin());
                 check(c1.front().s) == "b";
+            },
+            [](auto check) {
+                felspar::memory::small_vector<int> v{1, 2, 3};
+                check(v.erase_if([](int i) { return i == 2; })) == 1u;
+                check(v.size()) == 2u;
+                check(v[0]) == 1;
+                check(v[1]) == 3;
+                check(v.erase_if([](int i) { return i == 2; })) == 0u;
+                check(v.size()) == 2u;
+                check(v.erase_if([](int i) { return i == 1; })) == 1u;
+                check(v.erase_if([](int i) { return i == 3; })) == 1u;
+                check(v.empty()) == true;
+            },
+            [](auto check) {
+                felspar::memory::small_vector<int> v{1, 2, 2, 3};
+                check(v.erase_if([](int i) { return i == 2; })) == 2u;
+                check(v.size()) == 2u;
+                check(v.erase_if([](int i) { return i == 2; })) == 0u;
+            },
+            [](auto check) {
+                felspar::memory::small_vector<int> v{1, 2, 3, 2};
+                check(v.erase_if([](int i) { return i == 2; })) == 2u;
+                check(v.size()) == 2u;
+                check(v.erase_if([](int i) { return i == 2; })) == 0u;
             });
 
 
