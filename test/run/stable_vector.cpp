@@ -8,7 +8,7 @@ namespace {
     auto const suite = felspar::testsuite("stable_vector");
 
 
-    auto const c = suite.test("construction", [](auto check) {
+    auto const construction = suite.test("construction", [](auto check) {
         felspar::memory::stable_vector<int, 8> sv1, sv2(20, 123);
         check(sv1.empty()) == true;
         check(sv2.empty()) == false;
@@ -22,7 +22,7 @@ namespace {
     });
 
 
-    auto const a = suite.test("mutation", [](auto check) {
+    auto const mutation = suite.test("mutation", [](auto check) {
         felspar::memory::stable_vector<int, 8> sv;
         for (int index{}; index < 20; ++index) {
             sv.push_back(index);
@@ -32,7 +32,7 @@ namespace {
     });
 
 
-    auto const e = suite.test("clear", [](auto check) {
+    auto const clear = suite.test("clear", [](auto check) {
         felspar::memory::stable_vector<int, 8> sv(20, 123);
         sv.clear();
         check(sv.capacity()) == 24u;
@@ -46,7 +46,7 @@ namespace {
     });
 
 
-    auto const r = suite.test("reserve", [](auto check) {
+    auto const reserve = suite.test("reserve", [](auto check) {
         felspar::memory::stable_vector<int, 8> sv;
         sv.reserve(0);
         check(sv.capacity()) == 0u;

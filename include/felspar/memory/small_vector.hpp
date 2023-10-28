@@ -28,6 +28,7 @@ namespace felspar::memory {
         std::size_t entries = {};
         std::array<std::byte, block_size * N> storage alignas(T);
 
+
       public:
         /// ### Types
         using value_type = std::remove_reference_t<T>;
@@ -158,7 +159,7 @@ namespace felspar::memory {
         }
 
         template<typename... Args>
-        T &emplace_back(Args... args) {
+        value_type &emplace_back(Args... args) {
             if (entries >= capacity()) {
                 throw felspar::stdexcept::length_error{
                         "Over small_vector capacity"};
@@ -166,8 +167,9 @@ namespace felspar::memory {
             return *(new (storage.data() + block_size * entries++)
                              T{std::forward<Args>(args)...});
         }
-        T &push_back(
-                T t, source_location const &loc = source_location::current()) {
+        value_type &push_back(
+                value_type t,
+                source_location const &loc = source_location::current()) {
             if (entries >= capacity()) {
                 throw felspar::stdexcept::length_error{
                         "Over small_vector capacity", loc};
@@ -198,12 +200,36 @@ namespace felspar::memory {
             if (pos == end()) { return; }
             for (auto from = pos + 1u, e = end(); from != e; ++from, ++pos) {
                 std::destroy_at(pos);
-                new (pos) T(std::move(*from));
+                new (pos) value_type(std::move(*from));
             }
             std::destroy_at(pos);
             --entries;
         }
+        /// #### Erase any item that the predicate matches
+        template<typename Predicate>
+        std::size_t erase_if(Predicate pred) {
+            for (std::size_t idx{}; idx < entries; ++idx) {
+                if (pred((*this)[idx])) {
+                    std::size_t erased{1};
+                    std::destroy_at(data() + idx);
+                    for (std::size_t from{idx + 1}; from < entries; ++from) {
+                        if (not pred((*this)[from])) {
+                            new (data() + idx)
+                                    value_type(std::move((*this)[from]));
+                            ++idx;
+                        } else {
+                            std::destroy_at(data() + from);
+                            ++erased;
+                        }
+                    }
+                    entries -= erased;
+                    return erased;
+                }
+            }
+            return {};
+        }
     };
+
 
     template<typename... Args>
     small_vector(Args...) -> small_vector<std::common_type_t<Args...>>;

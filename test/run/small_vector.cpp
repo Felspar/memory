@@ -99,40 +99,65 @@ namespace {
     });
 
 
-    auto const erase = suite.test("erase", [](auto check) {
-        felspar::memory::small_vector c1{1, 2, 3};
-        c1.erase(c1.begin());
-        check(c1.size()) == 2u;
-        check(c1[0]) == 2;
-        check(c1[1]) == 3;
-        c1.erase(c1.begin() + 1);
-        check(c1.size()) == 1u;
-        check(c1[0]) == 2;
-        c1.erase(c1.begin());
-        check(c1.size()) == 0u;
-
-        {
-            felspar::memory::small_vector cd{
-                    count_destruction{}, count_destruction{}};
-            count_destruction::count = 0u;
-            cd.erase(cd.begin());
-            check(count_destruction::count) == 1u;
-            cd.erase(cd.begin());
-            check(count_destruction::count) == 2u;
-        }
-        check(count_destruction::count) == 2u;
-    });
-
-
     struct no_assign {
         const std::string s;
     };
-    auto const erase_m = suite.test("erase/no-assignment", [](auto check) {
-        felspar::memory::small_vector c1{no_assign{"a"}, no_assign{"b"}};
-        check(c1.size()) == 2u;
-        c1.erase(c1.begin());
-        check(c1.front().s) == "b";
-    });
+    auto const erase = suite.test(
+            "erase",
+            [](auto check) {
+                felspar::memory::small_vector c1{1, 2, 3};
+                c1.erase(c1.begin());
+                check(c1.size()) == 2u;
+                check(c1[0]) == 2;
+                check(c1[1]) == 3;
+                c1.erase(c1.begin() + 1);
+                check(c1.size()) == 1u;
+                check(c1[0]) == 2;
+                c1.erase(c1.begin());
+                check(c1.size()) == 0u;
+
+                {
+                    felspar::memory::small_vector cd{
+                            count_destruction{}, count_destruction{}};
+                    count_destruction::count = 0u;
+                    cd.erase(cd.begin());
+                    check(count_destruction::count) == 1u;
+                    cd.erase(cd.begin());
+                    check(count_destruction::count) == 2u;
+                }
+                check(count_destruction::count) == 2u;
+            },
+            [](auto check) {
+                felspar::memory::small_vector c1{
+                        no_assign{"a"}, no_assign{"b"}};
+                check(c1.size()) == 2u;
+                c1.erase(c1.begin());
+                check(c1.front().s) == "b";
+            },
+            [](auto check) {
+                felspar::memory::small_vector<int> v{1, 2, 3};
+                check(v.erase_if([](int i) { return i == 2; })) == 1u;
+                check(v.size()) == 2u;
+                check(v[0]) == 1;
+                check(v[1]) == 3;
+                check(v.erase_if([](int i) { return i == 2; })) == 0u;
+                check(v.size()) == 2u;
+                check(v.erase_if([](int i) { return i == 1; })) == 1u;
+                check(v.erase_if([](int i) { return i == 3; })) == 1u;
+                check(v.empty()) == true;
+            },
+            [](auto check) {
+                felspar::memory::small_vector<int> v{1, 2, 2, 3};
+                check(v.erase_if([](int i) { return i == 2; })) == 2u;
+                check(v.size()) == 2u;
+                check(v.erase_if([](int i) { return i == 2; })) == 0u;
+            },
+            [](auto check) {
+                felspar::memory::small_vector<int> v{1, 2, 3, 2};
+                check(v.erase_if([](int i) { return i == 2; })) == 2u;
+                check(v.size()) == 2u;
+                check(v.erase_if([](int i) { return i == 2; })) == 0u;
+            });
 
 
     auto const resize = suite.test("resize", [](auto check) {

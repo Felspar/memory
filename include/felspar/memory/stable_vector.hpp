@@ -59,6 +59,26 @@ namespace felspar::memory {
         }
 
 
+        /// ### Iteration
+        class iterator {
+            stable_vector *self;
+            std::size_t index{};
+
+          public:
+            iterator(stable_vector *v, std::size_t const s)
+            : self{v}, index{s} {}
+
+            void operator++() { ++index; }
+            auto &operator*() { return self->at(index); }
+
+            friend constexpr bool
+                    operator==(iterator const &, iterator const &) = default;
+        };
+        friend class iterator;
+        iterator begin() { return {this, {}}; }
+        iterator end() { return {this, size()}; }
+
+
         /// ### Mutation
         void reserve(std::size_t const size) {
             m_storage.reserve((size + section_size - 1) / section_size);
