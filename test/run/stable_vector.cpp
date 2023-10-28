@@ -57,38 +57,4 @@ namespace {
     });
 
 
-    auto const erase = suite.test(
-            "erase",
-            [](auto check) {
-                felspar::memory::stable_vector<int, 8> sv;
-                for (int v{}; v < 4; ++v) { sv.push_back(v); }
-                check(sv.erase_if([](int i) { return i == 2; })) == 1u;
-                check(sv.size()) == 3u;
-            },
-            [](auto check) {
-                felspar::memory::stable_vector<int, 8> sv;
-                for (int v{}; v < 8; ++v) { sv.push_back(v); }
-                check(sv.erase_if([](int i) { return i == 7; })) == 1u;
-                check(sv.size()) == 7u;
-            },
-            [](auto check) {
-                felspar::memory::stable_vector<int, 8> sv;
-                for (int v{}; v < 33; ++v) { sv.push_back(v % 8); }
-                check(sv.erase_if([](int i) { return i == 0; })) == 5u;
-                check(sv.size()) == 28u;
-            },
-            [](auto check) {
-                felspar::memory::stable_vector<int, 8> sv;
-                for (int v{}; v < 33; ++v) { sv.push_back(v % 8); }
-                check(sv.erase_if([](int i) { return i == 1; })) == 4u;
-                check(sv.size()) == 29u;
-            },
-            [](auto check) {
-                felspar::memory::stable_vector<int, 8> sv;
-                for (int v{}; v < 33; ++v) { sv.push_back(1); }
-                check(sv.erase_if([](int i) { return i == 1; })) == 33u;
-                check(sv.empty()) == true;
-            });
-
-
 }

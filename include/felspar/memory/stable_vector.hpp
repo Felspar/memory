@@ -110,26 +110,6 @@ namespace felspar::memory {
                 return (*m_storage[v_index(idx)])[sv_index(idx)];
             }
         }
-        /// #### Erase any item that the predicate matches
-        template<typename Predicate>
-        std::size_t erase_if(Predicate pred) {
-            std::size_t erased{};
-            for (std::size_t vidx{}; vidx < m_storage.size(); ++vidx) {
-                auto &sv = *m_storage[vidx];
-                erased += sv.erase_if(pred);
-                if (vidx + 1 < m_storage.size()) {
-                    auto &svn = *m_storage[vidx + 1];
-                    erased += svn.erase_if(pred);
-                    while (sv.size() < sv.capacity()
-                           and not m_storage[vidx + 1]->empty()) {
-                        sv.push_back(std::move(svn.front()));
-                        svn.erase(svn.begin());
-                    }
-                }
-            }
-            m_size -= erased;
-            return erased;
-        }
 
 
       private:
