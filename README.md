@@ -2,6 +2,10 @@
 
 **Memory utilities for C++ 20**
 
+[![Documentation](https://badgen.net/static/docs/felspar.com)](https://felspar.com/memory/)
+[![GitHub](https://badgen.net/badge/Github/felspar-memory/green?icon=github)](https://github.com/Felspar/memory)
+[![License](https://badgen.net/github/license/Felspar/memory)](https://github.com/Felspar/memory/blob/main/LICENSE_1_0.txt)
+[![Discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.gg/tKSabUa52v)
 
 ## `accumulation_buffer`
 
