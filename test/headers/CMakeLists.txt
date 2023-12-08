@@ -18,5 +18,5 @@ add_library(memory-headers-tests STATIC EXCLUDE_FROM_ALL
         spaceship.cpp
         stack.storage.cpp
     )
-target_link_libraries(memory-headers-tests felspar-memory)
+target_link_libraries(memory-headers-tests PRIVATE felspar-memory)
 add_dependencies(felspar-check memory-headers-tests)
