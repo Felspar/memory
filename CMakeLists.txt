@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 3.10)
-project(felspar-memory)
+cmake_minimum_required(VERSION 3.14...3.28)
+project(felspar-memory LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
 
 
-set(FELSPAR_FORCE_PMR NO CACHE BOOL
-    "Force use of polyfilled version of std::pmr")
-
+option(FELSPAR_FORCE_PMR "Force use of polyfilled version of std::pmr" OFF)
 
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
     add_custom_target(felspar-check)
