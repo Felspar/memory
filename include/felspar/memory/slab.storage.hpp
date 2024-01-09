@@ -4,6 +4,7 @@
 #include <felspar/memory/sizes.hpp>
 
 #include <array>
+#include <new>
 
 
 namespace felspar::memory {
