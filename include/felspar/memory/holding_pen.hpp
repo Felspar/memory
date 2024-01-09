@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include <felspar/exceptions.hpp>
+#include <felspar/memory/exceptions.hpp>
 #include <felspar/memory/raw_memory.hpp>
 
 #include <utility>
@@ -10,12 +10,16 @@
 namespace felspar::memory {
 
 
-    /// Optionally holds a value, but does not allow the value to be re-assigned
-    /// without being explicitly cleared first
+    /// ## Holding pen
+    /**
+     * Optionally holds a value, but does not allow the value to be re-assigned
+     * without being explicitly cleared first
+     */
     template<typename T>
     class holding_pen final {
         raw_memory<T> store;
         bool holding;
+
 
       public:
         constexpr holding_pen() noexcept : holding{false} {}
@@ -26,15 +30,15 @@ namespace felspar::memory {
         }
         ~holding_pen() { reset(); }
 
-        /// Access to the pen
+
+        /// ### Access to the pen
         T &
                 value(felspar::source_location const &loc =
                               felspar::source_location::current()) {
             if (holding) [[likely]] {
                 return *store.data();
             } else {
-                throw stdexcept::runtime_error{
-                        "The holding  pen is empty", loc};
+                detail::throw_logic_error("The holding  pen is empty", loc);
             }
         }
         T const &
@@ -43,15 +47,11 @@ namespace felspar::memory {
             if (holding) [[likely]] {
                 return *store.data();
             } else {
-                throw stdexcept::runtime_error{
-                        "The holding  pen is empty", loc};
+                detail::throw_logic_error("The holding  pen is empty", loc);
             }
         }
 
-        bool has_value() const noexcept { return holding; }
-        explicit operator bool() const noexcept { return holding; }
-
-        /// Get pen value or default
+        /// #### Get pen value or default
         template<typename U>
         T value_or(U &&default_value) const {
             if (holding) {
@@ -68,16 +68,10 @@ namespace felspar::memory {
         T &operator*() { return value(); }
         T const &operator*() const { return value(); }
 
-        /// ## Manipulating the holding pen
-        holding_pen &operator=(holding_pen const &) = delete;
-        holding_pen &operator=(holding_pen &&hp) {
-            if (hp.holding) {
-                assign(std::move(hp.store.value()));
-            } else {
-                reset();
-            }
-            return *this;
-        }
+
+        /// ### Queries
+        bool has_value() const noexcept { return holding; }
+        explicit operator bool() const noexcept { return holding; }
 
         friend bool operator==(holding_pen const &l, holding_pen const &r) {
             if (l.holding != r.holding) {
@@ -89,7 +83,19 @@ namespace felspar::memory {
             }
         }
 
-        /// Assign a new value into the pen destroying any value already held
+
+        /// ### Manipulating the holding pen
+        holding_pen &operator=(holding_pen const &) = delete;
+        holding_pen &operator=(holding_pen &&hp) {
+            if (hp.holding) {
+                assign(std::move(hp.store.value()));
+            } else {
+                reset();
+            }
+            return *this;
+        }
+
+        /// #### Assign a new value into the pen destroying any value already held
         void assign(T t) {
             store.destroy_if(std::exchange(holding, true));
             store.emplace(std::move(t));
@@ -99,12 +105,13 @@ namespace felspar::memory {
             store.destroy_if(std::exchange(holding, true));
             return store.emplace(std::forward<Args>(args)...);
         }
-        /// Destroy any held value
+        /// #### Destroy any held value
         void reset() noexcept {
             store.destroy_if(std::exchange(holding, false));
         }
 
-        /// Fetch the value then clear the pen
+        /// #### Fetch the value then clear the pen
+        /// TODO Deprecate?
         holding_pen transfer_out() && {
             if (not holding) {
                 return holding_pen{};

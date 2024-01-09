@@ -1,4 +1,5 @@
 add_library(felspar-memory
+        exceptions.cpp
         hexdump.cpp
     )
 target_compile_features(felspar-memory INTERFACE cxx_std_20)

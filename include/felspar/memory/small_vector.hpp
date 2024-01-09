@@ -1,12 +1,14 @@
 #pragma once
 
 
-#include <array>
-#include <span>
-
 #include <felspar/concepts.hpp>
-#include <felspar/exceptions.hpp>
+#include <felspar/memory/exceptions.hpp>
 #include <felspar/memory/sizes.hpp>
+
+#include <array>
+#include <memory>
+#include <new>
+#include <span>
 
 
 namespace felspar::memory {
@@ -83,8 +85,8 @@ namespace felspar::memory {
                 std::size_t const i,
                 source_location const &loc = source_location::current()) const {
             if (i >= size()) {
-                throw felspar::stdexcept::length_error{
-                        "Out of bounds access to small_vector", loc};
+                detail::throw_length_error(
+                        "Out of bounds access to small_vector", loc);
             }
             return (*this)[i];
         }
@@ -92,8 +94,8 @@ namespace felspar::memory {
                 at(std::size_t const i,
                    source_location const &loc = source_location::current()) {
             if (i >= size()) {
-                throw felspar::stdexcept::length_error{
-                        "Out of bounds access to small_vector", loc};
+                detail::throw_length_error(
+                        "Out of bounds access to small_vector", loc);
             }
             return (*this)[i];
         }
@@ -161,8 +163,9 @@ namespace felspar::memory {
         template<typename... Args>
         value_type &emplace_back(Args... args) {
             if (entries >= capacity()) {
-                throw felspar::stdexcept::length_error{
-                        "Over small_vector capacity"};
+                detail::throw_length_error(
+                        "Over small_vector capacity",
+                        source_location::current());
             }
             return *(new (storage.data() + block_size * entries++)
                              T{std::forward<Args>(args)...});
@@ -171,8 +174,7 @@ namespace felspar::memory {
                 value_type t,
                 source_location const &loc = source_location::current()) {
             if (entries >= capacity()) {
-                throw felspar::stdexcept::length_error{
-                        "Over small_vector capacity", loc};
+                detail::throw_length_error("Over small_vector capacity", loc);
             }
             return *(new (storage.data() + block_size * entries++)
                              T{std::move(t)});

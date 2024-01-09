@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include <felspar/memory/exceptions.hpp>
 #include <felspar/memory/pmr.hpp>
 
 #include <stdexcept>
@@ -16,9 +17,8 @@ namespace felspar::memory {
     class fixed_pool : public pmr::memory_resource {
         void *do_allocate(std::size_t bytes, std::size_t alignment) override {
             if (alignment > alignof(std::max_align_t)) {
-                throw std::logic_error{
-                        "Requested over-aligned memory from the pool of "
-                        + std::to_string(alignment) + " bytes"};
+                detail::throw_overaligned_memory(
+                        alignment, source_location::current());
             } else if (bytes <= max_size and not pool.empty()) {
                 std::byte *const v = pool.back();
                 pool.pop_back();
