@@ -1,10 +1,10 @@
 #pragma once
 
 
+#include <felspar/memory/exceptions.hpp>
 #include <felspar/memory/sizes.hpp>
 
 #include <array>
-#include <new>
 
 
 namespace felspar::memory {
@@ -36,7 +36,7 @@ namespace felspar::memory {
 
         [[nodiscard]] constexpr std::byte *allocate(std::size_t bytes) {
             if (bytes > free()) {
-                throw std::bad_alloc{};
+                detail::throw_bad_alloc();
             } else {
                 std::byte *base = storage.data() + allocated_bytes;
                 allocated_bytes += aligned_offset(bytes, alignment_size);
