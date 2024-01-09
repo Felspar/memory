@@ -36,7 +36,9 @@ namespace felspar::memory {
 
         [[nodiscard]] constexpr std::byte *allocate(std::size_t bytes) {
             if (bytes > free()) {
-                detail::throw_bad_alloc();
+                detail::throw_bad_alloc(
+                        "Not enough free space in slab",
+                        source_location::current());
             } else {
                 std::byte *base = storage.data() + allocated_bytes;
                 allocated_bytes += aligned_offset(bytes, alignment_size);

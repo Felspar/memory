@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include <felspar/exceptions.hpp>
+#include <felspar/memory/exceptions.hpp>
 #include <felspar/memory/small_vector.hpp>
 
 #include <memory>
@@ -50,9 +50,11 @@ namespace felspar::memory {
         value_type const &operator[](std::size_t const idx) const {
             return (*m_storage[v_index(idx)])[sv_index(idx)];
         }
-        value_type const &at(std::size_t const idx) const {
+        value_type const &at(
+                std::size_t const idx,
+                source_location const &loc = source_location::current()) const {
             if (idx >= m_size) {
-                throw felspar::stdexcept::logic_error{"Array bounds exceeded"};
+                detail::throw_logic_error("Array bounds exceeded", loc);
             } else {
                 return (*m_storage[v_index(idx)])[sv_index(idx)];
             }
@@ -103,9 +105,11 @@ namespace felspar::memory {
         value_type &operator[](std::size_t const idx) {
             return (*m_storage[v_index(idx)])[sv_index(idx)];
         }
-        value_type &at(std::size_t const idx) {
+        value_type &
+                at(std::size_t const idx,
+                   source_location const &loc = source_location::current()) {
             if (idx >= m_size) {
-                throw felspar::stdexcept::logic_error{"Array bounds exceeded"};
+                detail::throw_logic_error("Array bounds exceeded", loc);
             } else {
                 return (*m_storage[v_index(idx)])[sv_index(idx)];
             }

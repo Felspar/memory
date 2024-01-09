@@ -1,6 +1,8 @@
 #include <felspar/memory/stack.storage.hpp>
 #include <felspar/test.hpp>
 
+#include <felspar/exceptions.hpp>
+
 
 namespace {
 

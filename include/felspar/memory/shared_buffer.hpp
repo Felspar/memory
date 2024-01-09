@@ -1,8 +1,8 @@
 #pragma once
 
 
-#include <felspar/exceptions.hpp>
 #include <felspar/memory/control.hpp>
+#include <felspar/memory/exceptions.hpp>
 
 #include <vector>
 
@@ -94,20 +94,18 @@ namespace felspar::memory {
         /// #### Access an element with a bounds check
         value_type &
                 at(std::size_t const i,
-                   felspar::source_location const &loc =
-                           felspar::source_location::current()) {
+                   source_location const &loc = source_location::current()) {
             if (i >= buffer.size()) {
-                throw felspar::stdexcept::logic_error{"Buffer overrun", loc};
+                detail::throw_logic_error("Buffer overrun", loc);
             } else {
                 return buffer[i];
             }
         }
-        value_type const &
-                at(std::size_t const i,
-                   felspar::source_location const &loc =
-                           felspar::source_location::current()) const {
+        value_type const &at(
+                std::size_t const i,
+                source_location const &loc = source_location::current()) const {
             if (i >= buffer.size()) {
-                throw felspar::stdexcept::logic_error{"Buffer overrun", loc};
+                detail::throw_logic_error("Buffer overrun", loc);
             } else {
                 return buffer[i];
             }
@@ -166,6 +164,7 @@ namespace felspar::memory {
         buffer_type buffer;
         control_type *owner = nullptr;
     };
+
     template<typename T>
     shared_buffer_view(shared_buffer<T>) -> shared_buffer_view<T>;
 

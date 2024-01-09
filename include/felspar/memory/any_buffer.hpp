@@ -1,10 +1,12 @@
 #pragma once
 
 
-#include <felspar/exceptions.hpp>
+#include <felspar/memory/exceptions.hpp>
 
 #include <array>
+#include <memory>
 #include <typeinfo>
+#include <utility>
 
 
 namespace felspar::memory {
@@ -59,21 +61,20 @@ namespace felspar::memory {
 
         /// #### Return a reference to the contained object
         template<typename T>
-        T &value() {
+        T &value(source_location const &loc = source_location::current()) {
             if (typeid(T) == *typeptr) {
                 return unsafe_value<T>();
             } else {
-                throw felspar::stdexcept::logic_error{
-                        "This any_buffer is empty"};
+                detail::throw_logic_error("This any_buffer is empty", loc);
             }
         }
         template<typename T>
-        T const &value() const {
+        T const &value(
+                source_location const &loc = source_location::current()) const {
             if (typeid(T) == *typeptr) {
                 return unsafe_value<T>();
             } else {
-                throw felspar::stdexcept::logic_error{
-                        "This any_buffer is empty"};
+                detail::throw_logic_error("This any_buffer is empty", loc);
             }
         }
 

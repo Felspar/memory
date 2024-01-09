@@ -1,20 +1,16 @@
 #pragma once
 
 
-#include <felspar/exceptions/bad_alloc.hpp>
 #include <felspar/memory/small_vector.hpp>
 
 #include <array>
-#include <stdexcept>
 #include <span>
 
 
 namespace felspar::memory {
 
-
+    /// ## Stack based allocator
     /**
-     * ## Stack based allocator
-     *
      * An allocator intended for use with small allocations where their
      * lifetimes don't extend beyond the allocator.
      *
@@ -32,11 +28,13 @@ namespace felspar::memory {
                                     available = {allocation{
                                             storage.data(), storage.size()}};
 
+
       public:
-        /// The size of the usable storage in bytes
+        /// ### The size of the usable storage in bytes
         static std::size_t constexpr storage_bytes{S};
         static std::size_t constexpr allocation_count{A};
         static std::size_t constexpr alignment_size{CA};
+
 
         constexpr stack_storage() noexcept = default;
         stack_storage(stack_storage const &) = delete;
@@ -45,17 +43,19 @@ namespace felspar::memory {
         stack_storage &operator=(stack_storage const &) = delete;
         stack_storage &operator=(stack_storage &&) = delete;
 
-        /// Return the amount of free memory remaining in the storage
+
+        /// ### Return the amount of free memory remaining in the storage
         [[nodiscard]] constexpr auto free() const noexcept {
             std::size_t f{};
             for (auto a : available) { f += a.size(); }
             return f;
         }
 
-        /// Allocate a number of bytes
+
+        /// ### Allocate a number of bytes
         [[nodiscard]] constexpr std::byte *allocate(
                 std::size_t const abytes,
-                source_location loc = source_location::current()) {
+                source_location const &loc = source_location::current()) {
             auto const bytes = block_size(abytes, alignment_size);
             /// Search through available blocks for the smallest that satisfies
             /// the allocation
@@ -69,21 +69,19 @@ namespace felspar::memory {
             }
             if (best_pos == available.end()) /*[[unlikely]]*/ {
                 if (bytes > free()) {
-                    throw felspar::stdexcept::bad_alloc{
-                            "Out of free memory -- memory exhausted",
-                            std::move(loc)};
+                    detail::throw_bad_alloc(
+                            "Out of free memory -- memory exhausted", loc);
                 } else {
-                    throw felspar::stdexcept::bad_alloc{
-                            "Out of free memory -- memory fragmentation",
-                            std::move(loc)};
+                    detail::throw_bad_alloc(
+                            "Out of free memory -- memory fragmentation", loc);
                 }
             }
 
             /// Do the bookkeeping needed to record the allocation and remove
             /// from the available memory
             if (allocations.size() == allocations.capacity()) /*[[unlikely]]*/ {
-                throw felspar::stdexcept::bad_alloc{
-                        "Out of allocation bookkeeping slots", std::move(loc)};
+                detail::throw_bad_alloc(
+                        "Out of allocation bookkeeping slots", loc);
             } else {
                 auto const alloc = best_pos->first(bytes);
                 if (auto const remaining = best_pos->subspan(bytes);
@@ -99,7 +97,7 @@ namespace felspar::memory {
         constexpr void deallocate(
                 void *location,
                 std::size_t,
-                source_location loc = source_location::current()) {
+                source_location const &loc = source_location::current()) {
             for (auto pos = allocations.begin(); pos != allocations.end();
                  ++pos) {
                 if (location == pos->data()) {
@@ -119,9 +117,8 @@ namespace felspar::memory {
                     return;
                 }
             }
-            throw felspar::stdexcept::runtime_error{
-                    "Bookkeeping entry for allocation not found",
-                    std::move(loc)};
+            detail::throw_logic_error(
+                    "Bookkeeping entry for allocation not found", loc);
         }
     };
 
