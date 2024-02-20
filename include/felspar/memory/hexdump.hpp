@@ -8,7 +8,7 @@
 namespace felspar::memory {
 
 
-    constexpr std::size_t default_hexdump_byte_range = 256;
+    inline constexpr std::size_t default_hexdump_byte_range = 256;
 
 
     /// Print a hex dump of the memory to the provided stream of only up to the
