@@ -1,6 +1,8 @@
 #include <felspar/memory/hexdump.hpp>
 #include <felspar/test.hpp>
 
+#include <array>
+
 
 namespace {
 
