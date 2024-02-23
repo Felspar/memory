@@ -8,7 +8,7 @@
 namespace felspar::memory {
 
 
-    constexpr std::size_t default_hexdump_byte_range = 256;
+    inline constexpr std::size_t default_hexdump_byte_range = 256;
 
 
     /// Print a hex dump of the memory to the provided stream of only up to the
@@ -59,13 +59,13 @@ namespace felspar::memory {
     template<typename C, std::size_t N>
     inline detail::hexdump_proxy<C>
             hexdump(std::array<C, N> const &b,
-                    std::size_t bytes = default_hexdump_byte_range) {
+                    std::size_t const bytes = default_hexdump_byte_range) {
         return {b, bytes};
     }
     template<typename C>
     inline detail::hexdump_proxy<C>
             hexdump(std::span<C> b,
-                    std::size_t bytes = default_hexdump_byte_range) {
+                    std::size_t const bytes = default_hexdump_byte_range) {
         return {b, bytes};
     }
 

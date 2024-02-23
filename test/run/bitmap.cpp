@@ -1,6 +1,7 @@
 #include <felspar/memory/bitmap.strategy.hpp>
 #include <felspar/test.hpp>
 
+#include <array>
 #include <cstdint>
 
 
