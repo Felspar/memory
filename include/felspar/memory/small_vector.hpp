@@ -57,7 +57,11 @@ namespace felspar::memory {
         small_vector(small_vector &&sv) {
             for (auto &&i : sv) { push_back(std::move(i)); }
         }
-        small_vector &operator=(small_vector const &);
+        small_vector &operator=(small_vector const &sv) {
+            clear();
+            for (auto &&i : sv) { push_back(i); }
+            return *this;
+        }
         small_vector &operator=(small_vector &&sv) {
             clear();
             for (auto &&i : sv) { push_back(std::move(i)); }
