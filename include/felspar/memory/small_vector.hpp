@@ -6,6 +6,7 @@
 #include <felspar/memory/sizes.hpp>
 
 #include <array>
+#include <concepts>
 #include <memory>
 #include <new>
 #include <span>
@@ -76,6 +77,20 @@ namespace felspar::memory {
         [[nodiscard]] constexpr auto capacity() const noexcept { return N; }
         [[nodiscard]] constexpr auto size() const noexcept { return entries; }
 
+
+        /// ### Comparison
+        friend bool operator==(small_vector const &l, small_vector const &r)
+            requires(std::equality_comparable<value_type>)
+        {
+            if (l.size() == r.size()) {
+                for (std::size_t index{}; index < l.size(); ++index) {
+                    if (l[index] != r[index]) { return false; }
+                }
+                return true;
+            } else {
+                return false;
+            }
+        }
 
         /// ### Access
         [[nodiscard]] constexpr const_reference_type
