@@ -130,7 +130,7 @@ namespace felspar::memory {
             return iterator != i.iterator;
         }
 
-        decltype(auto) operator-(const owner_tracking_iterator &it) {
+        decltype(auto) operator-(const owner_tracking_iterator & it) {
             return iterator - it.iterator;
         }
 
