@@ -117,7 +117,8 @@ namespace felspar::memory {
 
 
         /// ### Implicit conversions
-        operator std::span<value_type>() { return buffer; }
+        operator std::span<value_type>() noexcept { return buffer; }
+        operator std::span<value_type const>() const noexcept { return buffer; }
 
 
         /// ### Sharing the buffer
