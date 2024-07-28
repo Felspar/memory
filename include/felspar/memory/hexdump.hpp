@@ -3,6 +3,7 @@
 #include <ostream>
 #include <span>
 #include <sstream>
+#include <vector>
 
 
 namespace felspar::memory {
@@ -67,6 +68,12 @@ namespace felspar::memory {
             hexdump(std::span<C> b,
                     std::size_t const bytes = default_hexdump_byte_range) {
         return {b, bytes};
+    }
+    template<typename C>
+    inline detail::hexdump_proxy<C>
+            hexdump(std::vector<C> b,
+                    std::size_t const bytes = default_hexdump_byte_range) {
+        return {std::span{b.data(), b.size()}, bytes};
     }
 
 
