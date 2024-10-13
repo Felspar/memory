@@ -76,6 +76,9 @@ namespace felspar::memory {
         }
         [[nodiscard]] constexpr auto capacity() const noexcept { return N; }
         [[nodiscard]] constexpr auto size() const noexcept { return entries; }
+        [[nodiscard]] constexpr bool has_room() const noexcept {
+            return entries < capacity();
+        }
 
 
         /// ### Comparison
@@ -181,7 +184,7 @@ namespace felspar::memory {
 
         template<typename... Args>
         value_type &emplace_back(Args... args) {
-            if (entries >= capacity()) {
+            if (not has_room()) {
                 detail::throw_length_error(
                         "Over small_vector capacity",
                         source_location::current());
@@ -192,7 +195,7 @@ namespace felspar::memory {
         value_type &push_back(
                 value_type t,
                 source_location const &loc = source_location::current()) {
-            if (entries >= capacity()) {
+            if (not has_room()) {
                 detail::throw_length_error("Over small_vector capacity", loc);
             }
             return *(new (storage.data() + block_size * entries++)
