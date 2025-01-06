@@ -112,6 +112,8 @@ namespace felspar::memory {
         }
         auto begin() { return buffer.begin(); }
         auto end() { return buffer.end(); }
+        auto begin() const { return buffer.begin(); }
+        auto end() const { return buffer.end(); }
 
         value_type const *data() const noexcept { return buffer.data(); }
 
