@@ -22,6 +22,9 @@ namespace felspar::memory {
 
 
       public:
+        using value_type = T;
+
+
         constexpr holding_pen() noexcept : holding{false} {}
         holding_pen(T &&t) : holding{true} { store.emplace(std::move(t)); }
         holding_pen(holding_pen const &) = delete;
@@ -92,6 +95,15 @@ namespace felspar::memory {
             } else {
                 reset();
             }
+            return *this;
+        }
+        holding_pen &operator=(value_type &&v) {
+            assign(std::move(v));
+            return *this;
+        }
+        holding_pen &operator=(value_type const &v) {
+            store.destroy_if(std::exchange(holding, true));
+            store.copy(v);
             return *this;
         }
 
