@@ -3,6 +3,7 @@
 
 #include <array>
 #include <memory>
+#include <new>
 #include <type_traits>
 
 

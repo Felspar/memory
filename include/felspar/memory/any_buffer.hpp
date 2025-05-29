@@ -5,6 +5,7 @@
 
 #include <array>
 #include <memory>
+#include <new>
 #include <type_traits>
 #include <typeinfo>
 #include <utility>
@@ -16,7 +17,7 @@ namespace felspar::memory {
     /// ## A buffer for any object
     /**
      * A buffer that can be used to transport any type and from which a value of
-     * the correct type can be later retrieved.
+     * the correct type can be retrieved later.
      *
      * The buffer contains a small amount of memory meaning that the object can
      * be embedded.
