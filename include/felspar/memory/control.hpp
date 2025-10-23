@@ -75,13 +75,13 @@ namespace felspar::memory {
             if (c) { ++c->ownership_count; }
             return c;
         }
-        virtual void free() noexcept = 0;
         static void decrement(control *&cr) noexcept {
             control *c = std::exchange(cr, nullptr);
             if (c && --c->ownership_count == 0u) { c->free(); }
         }
 
       private:
+        virtual void free() noexcept = 0;
         std::atomic<std::size_t> ownership_count = 1u;
     };
 
