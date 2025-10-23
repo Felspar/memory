@@ -18,14 +18,20 @@
 namespace felspar::memory {
 
 
-    /// ## `control`
-    /// Control block for shared memory
+    /// ## Control block for shared memory
+    /**
+     * A thread safe control block that supports atomic increment and decrements
+     * on a counter. When the decrement reaches zero then the (virtual) `free()`
+     * function is called.
+     */
     struct control {
         /// Use a virtual destructor for type erasure
         virtual ~control() = default;
 
+
+        /// ### Creation
         /**
-         * Creates a new control block with an ownership count of 1 that wraps
+         * Creates a new control block with an ownership count of one that wraps
          * the specified object and returns a pointer to both the control block
          * and the object after it has been moved into its new location.
          */
@@ -43,7 +49,8 @@ namespace felspar::memory {
         }
         /**
          * Allocate a chunk of memory. Return the control block together with a
-         * span that encompasses the memory allocated.
+         * span that encompasses the memory allocated. The initial ownership
+         * count will be one.
          */
         static auto
                 allocate(std::size_t const bytes, std::size_t const alignment) {
@@ -64,6 +71,7 @@ namespace felspar::memory {
                     std::span<std::byte>{made + data_offset, bytes}};
         }
 
+        /// ### Count management
         /**
          * Increment and decrement the usage count. We never need to do anything
          * after the increment so we don't need to know the exact count.
@@ -80,13 +88,14 @@ namespace felspar::memory {
             if (c && --c->ownership_count == 0u) { c->free(); }
         }
 
+
       private:
         virtual void free() noexcept = 0;
         std::atomic<std::size_t> ownership_count = 1u;
     };
 
 
-    /// ## `owner_tracking_iterator`
+    /// ## Ownership tracking iterator
     /**
      * This type can be used to wrap an iterator so that it will also carry a
      * pointer to a control block.
