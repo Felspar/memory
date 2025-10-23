@@ -78,14 +78,28 @@ namespace felspar::memory {
          * Decrementing is another matter though as we have to get the exact
          * right count for zero as we will destruct the control block at that
          * point (which in turn will destruct the owned memory.
+         *
+         * [The memory ordering requirements are described by Raymond
+         * Chen.](https://devblogs.microsoft.com/oldnewthing/20251015-00/?p=111686)
          */
         static control *increment(control *c) noexcept {
-            if (c) { ++c->ownership_count; }
+            if (c) {
+                c->ownership_count.fetch_add(1, std::memory_order::release);
+            }
             return c;
         }
         static void decrement(control *&cr) noexcept {
             control *c = std::exchange(cr, nullptr);
-            if (c && --c->ownership_count == 0u) { c->free(); }
+            if (c
+                and c->ownership_count.fetch_sub(1, std::memory_order::acq_rel)
+                        == 1u) {
+                /**
+                 * The call to `fetch_sub` returns the old value, not the value
+                 * we set it to, so in practice the free needs to happen when
+                 * the old value was one.
+                 */
+                c->free();
+            }
         }
 
 
