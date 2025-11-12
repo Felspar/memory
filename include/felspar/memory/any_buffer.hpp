@@ -63,7 +63,9 @@ namespace felspar::memory {
 
         /// #### Return a reference to the contained object
         template<typename T>
-        T &value(source_location const &loc = source_location::current()) {
+        T &
+                value(std::source_location const &loc =
+                              std::source_location::current()) {
             if (typeid(T) == *typeptr) {
                 return unsafe_value<T>();
             } else {
@@ -71,8 +73,9 @@ namespace felspar::memory {
             }
         }
         template<typename T>
-        T const &value(
-                source_location const &loc = source_location::current()) const {
+        T const &
+                value(std::source_location const &loc =
+                              std::source_location::current()) const {
             if (typeid(T) == *typeptr) {
                 return unsafe_value<T>();
             } else {

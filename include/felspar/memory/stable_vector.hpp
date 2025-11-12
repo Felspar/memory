@@ -50,9 +50,10 @@ namespace felspar::memory {
         value_type const &operator[](std::size_t const idx) const {
             return (*m_storage[v_index(idx)])[sv_index(idx)];
         }
-        value_type const &at(
-                std::size_t const idx,
-                source_location const &loc = source_location::current()) const {
+        value_type const &
+                at(std::size_t const idx,
+                   std::source_location const &loc =
+                           std::source_location::current()) const {
             if (idx >= m_size) {
                 detail::throw_logic_error("Array bounds exceeded", loc);
             } else {
@@ -107,7 +108,8 @@ namespace felspar::memory {
         }
         value_type &
                 at(std::size_t const idx,
-                   source_location const &loc = source_location::current()) {
+                   std::source_location const &loc =
+                           std::source_location::current()) {
             if (idx >= m_size) {
                 detail::throw_logic_error("Array bounds exceeded", loc);
             } else {

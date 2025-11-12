@@ -94,16 +94,18 @@ namespace felspar::memory {
         /// #### Access an element with a bounds check
         value_type &
                 at(std::size_t const i,
-                   source_location const &loc = source_location::current()) {
+                   std::source_location const &loc =
+                           std::source_location::current()) {
             if (i >= buffer.size()) {
                 detail::throw_logic_error("Buffer overrun", loc);
             } else {
                 return buffer[i];
             }
         }
-        value_type const &at(
-                std::size_t const i,
-                source_location const &loc = source_location::current()) const {
+        value_type const &
+                at(std::size_t const i,
+                   std::source_location const &loc =
+                           std::source_location::current()) const {
             if (i >= buffer.size()) {
                 detail::throw_logic_error("Buffer overrun", loc);
             } else {

@@ -36,8 +36,8 @@ namespace felspar::memory {
 
         /// ### Access to the pen
         T &
-                value(felspar::source_location const &loc =
-                              felspar::source_location::current()) {
+                value(std::source_location const &loc =
+                              std::source_location::current()) {
             if (holding) [[likely]] {
                 return *store.data();
             } else {
@@ -45,8 +45,8 @@ namespace felspar::memory {
             }
         }
         T const &
-                value(felspar::source_location const &loc =
-                              felspar::source_location::current()) const {
+                value(std::source_location const &loc =
+                              std::source_location::current()) const {
             if (holding) [[likely]] {
                 return *store.data();
             } else {

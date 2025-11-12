@@ -103,9 +103,10 @@ namespace felspar::memory {
         [[nodiscard]] constexpr reference_type operator[](std::size_t const i) {
             return *(data() + i);
         }
-        [[nodiscard]] constexpr const_reference_type at(
-                std::size_t const i,
-                source_location const &loc = source_location::current()) const {
+        [[nodiscard]] constexpr const_reference_type
+                at(std::size_t const i,
+                   std::source_location const &loc =
+                           std::source_location::current()) const {
             if (i >= size()) {
                 detail::throw_length_error(
                         "Out of bounds access to small_vector", loc);
@@ -114,7 +115,8 @@ namespace felspar::memory {
         }
         [[nodiscard]] constexpr reference_type
                 at(std::size_t const i,
-                   source_location const &loc = source_location::current()) {
+                   std::source_location const &loc =
+                           std::source_location::current()) {
             if (i >= size()) {
                 detail::throw_length_error(
                         "Out of bounds access to small_vector", loc);
@@ -187,14 +189,15 @@ namespace felspar::memory {
             if (not has_room()) {
                 detail::throw_length_error(
                         "Over small_vector capacity",
-                        source_location::current());
+                        std::source_location::current());
             }
             return *(new (storage.data() + block_size * entries++)
                              T{std::forward<Args>(args)...});
         }
         value_type &push_back(
                 value_type t,
-                source_location const &loc = source_location::current()) {
+                std::source_location const &loc =
+                        std::source_location::current()) {
             if (not has_room()) {
                 detail::throw_length_error("Over small_vector capacity", loc);
             }

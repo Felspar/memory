@@ -18,7 +18,7 @@ namespace felspar::memory {
         void *do_allocate(std::size_t bytes, std::size_t alignment) override {
             if (alignment > alignof(std::max_align_t)) {
                 detail::throw_overaligned_memory(
-                        alignment, source_location::current());
+                        alignment, std::source_location::current());
             } else if (bytes <= max_size and not pool.empty()) {
                 std::byte *const v = pool.back();
                 pool.pop_back();
