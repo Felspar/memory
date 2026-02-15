@@ -48,6 +48,9 @@ namespace felspar::memory {
         small_vector(Args... args) {
             (push_back(std::forward<Args>(args)), ...);
         }
+        small_vector(std::span<T const> const s) {
+            for (auto &&i : s) { push_back(i); }
+        }
         constexpr ~small_vector() { clear(); }
 
 
