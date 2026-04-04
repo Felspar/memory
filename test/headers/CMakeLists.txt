@@ -17,6 +17,7 @@ add_library(memory-headers-tests STATIC EXCLUDE_FROM_ALL
         sizes.cpp
         small_ring.cpp
         small_vector.cpp
+        size_split.strategy.cpp
         spaceship.cpp
         stack.storage.cpp
     )
