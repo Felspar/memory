@@ -3,6 +3,7 @@ if(TARGET felspar-check)
             bitmap.cpp
             bitmap_strategy.cpp
             buffers.cpp
+            fallback.strategy.cpp
             fixed-pool.pmr.cpp
             hexdump.cpp
             holding_pen.cpp

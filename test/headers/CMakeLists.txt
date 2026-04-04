@@ -6,6 +6,7 @@ add_library(memory-headers-tests STATIC EXCLUDE_FROM_ALL
         concepts.cpp
         concepts-polyfill.cpp
         control.cpp
+        fallback.strategy.cpp
         fixed-pool.pmr.cpp
         holding_pen.cpp
         pmr.cpp
