@@ -80,6 +80,38 @@ namespace felspar::memory {
         }
 
 
+        /// ### Throwing over-allocation, routing by size threshold
+        [[nodiscard]] allocation_result
+                allocate_at_least(std::size_t const bytes)
+            requires overallocating_allocator_strategy<small_type>
+                and overallocating_allocator_strategy<large_type>
+        {
+            if (bytes <= threshold) {
+                return small.allocate_at_least(bytes);
+            } else {
+                return large.allocate_at_least(bytes);
+            }
+        }
+
+
+        /// ### Nullable over-allocation, routing by size threshold
+        [[nodiscard]] allocation_result
+                try_allocate_at_least(std::size_t const bytes) noexcept(
+                        noexcept(std::declval<small_type &>()
+                                         .try_allocate_at_least(bytes))
+                        and noexcept(std::declval<large_type &>()
+                                             .try_allocate_at_least(bytes)))
+            requires overallocating_allocator_strategy<small_type>
+                and overallocating_allocator_strategy<large_type>
+        {
+            if (bytes <= threshold) {
+                return small.try_allocate_at_least(bytes);
+            } else {
+                return large.try_allocate_at_least(bytes);
+            }
+        }
+
+
         /// ### Deallocate, routing by size threshold
         void deallocate(void *ptr, std::size_t const bytes) noexcept(
                 noexcept(std::declval<small_type &>().deallocate(ptr, bytes))

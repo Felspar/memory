@@ -95,9 +95,11 @@ namespace felspar::memory {
         [[nodiscard]] std::byte *try_allocate(std::size_t const bytes) noexcept {
             return try_allocate_at_least(bytes).ptr;
         }
-        [[nodiscard]] allocation_result try_allocate_at_least(std::size_t const bytes) noexcept {
+        [[nodiscard]] allocation_result
+                try_allocate_at_least(std::size_t const bytes) noexcept {
             if (bytes > m_blocksize) { return {nullptr, {}}; }
-            return {bitmap::allocate(m_bitmap, m_base, m_blocksize), m_blocksize};
+            return {bitmap::allocate(m_bitmap, m_base, m_blocksize),
+                    m_blocksize};
         }
 
 

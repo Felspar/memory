@@ -1,7 +1,24 @@
+#include <felspar/memory/bitmap.strategy.hpp>
+#include <felspar/memory/concepts.hpp>
 #include <felspar/memory/size_split.strategy.hpp>
 #include <felspar/memory/slab.storage.hpp>
 #include <felspar/memory/stack.storage.hpp>
 #include <felspar/test.hpp>
+
+#include <array>
+#include <cstdint>
+#include <memory>
+#include <tuple>
+
+
+static_assert(felspar::memory::overallocating_allocator_strategy<
+              felspar::memory::size_split_strategy<
+                      felspar::memory::bitmap_strategy<std::uint8_t>,
+                      felspar::memory::bitmap_strategy<std::uint8_t>>>);
+static_assert(not felspar::memory::overallocating_allocator_strategy<
+              felspar::memory::size_split_strategy<
+                      felspar::memory::stack_storage<>,
+                      felspar::memory::slab_storage<>>>);
 
 
 namespace {
@@ -117,6 +134,34 @@ namespace {
                 auto *p2 = strategy.allocate(64);
                 check(p2 != nullptr);
                 strategy.deallocate(p2, 64);
+            });
+
+
+    auto const alloc_at_least = suite.test(
+            "allocate_at_least routes and reports block size", [](auto check) {
+                std::array<std::byte, 16 * 8> small_storage;
+                auto large_storage = std::make_unique<std::byte[]>(64 * 8);
+
+                felspar::memory::size_split_strategy<
+                        felspar::memory::bitmap_strategy<std::uint8_t>,
+                        felspar::memory::bitmap_strategy<std::uint8_t>>
+                        strategy(
+                                std::piecewise_construct,
+                                std::make_tuple(small_storage.data(), 16),
+                                std::make_tuple(large_storage.get(), 64), 32);
+
+                // Small request routes to small strategy, block size reported
+                auto small_result = strategy.allocate_at_least(8);
+                check(small_result.ptr != nullptr);
+                check(small_result.bytes) == 16u;
+
+                // Large request routes to large strategy, block size reported
+                auto large_result = strategy.allocate_at_least(48);
+                check(large_result.ptr != nullptr);
+                check(large_result.bytes) == 64u;
+
+                strategy.deallocate(small_result.ptr, small_result.bytes);
+                strategy.deallocate(large_result.ptr, large_result.bytes);
             });
 
 

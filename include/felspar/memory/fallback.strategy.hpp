@@ -79,17 +79,17 @@ namespace felspar::memory {
                 return fallback.allocate(bytes, loc);
             }
         }
-
-
-        /// ### Deallocate a previously allocated block
-        void deallocate(void *ptr, std::size_t const bytes) noexcept(
-                noexcept(std::declval<primary_type &>().deallocate(ptr, bytes))
-                and noexcept(std::declval<fallback_type &>().deallocate(
-                        ptr, bytes))) {
-            if (primary.owns(ptr)) {
-                primary.deallocate(ptr, bytes);
+        [[nodiscard]] allocation_result allocate_at_least(
+                std::size_t const bytes,
+                std::source_location loc = std::source_location::current())
+            requires overallocating_allocator_strategy<primary_type>
+                and overallocating_allocator_strategy<fallback_type>
+        {
+            if (auto result = primary.try_allocate_at_least(bytes);
+                result.ptr != nullptr) {
+                return result;
             } else {
-                fallback.deallocate(ptr, bytes);
+                return fallback.allocate_at_least(bytes, loc);
             }
         }
 
@@ -109,6 +109,35 @@ namespace felspar::memory {
                 return ptr;
             } else {
                 return fallback.try_allocate(bytes);
+            }
+        }
+        [[nodiscard]] allocation_result
+                try_allocate_at_least(std::size_t const bytes) noexcept(
+                        noexcept(std::declval<primary_type &>()
+                                         .try_allocate_at_least(bytes))
+                        and noexcept(std::declval<fallback_type &>()
+                                             .try_allocate_at_least(bytes)))
+            requires overallocating_allocator_strategy<primary_type>
+                and overallocating_allocator_strategy<fallback_type>
+        {
+            if (auto result = primary.try_allocate_at_least(bytes);
+                result.ptr != nullptr) {
+                return result;
+            } else {
+                return fallback.try_allocate_at_least(bytes);
+            }
+        }
+
+
+        /// ### Deallocate a previously allocated block
+        void deallocate(void *ptr, std::size_t const bytes) noexcept(
+                noexcept(std::declval<primary_type &>().deallocate(ptr, bytes))
+                and noexcept(std::declval<fallback_type &>().deallocate(
+                        ptr, bytes))) {
+            if (primary.owns(ptr)) {
+                primary.deallocate(ptr, bytes);
+            } else {
+                fallback.deallocate(ptr, bytes);
             }
         }
 

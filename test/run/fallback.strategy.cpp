@@ -30,6 +30,14 @@ static_assert(felspar::memory::owning_allocator_strategy<
               felspar::memory::fallback_strategy<
                       felspar::memory::bitmap_strategy<std::uint8_t>,
                       felspar::memory::bitmap_strategy<std::uint8_t>>>);
+static_assert(felspar::memory::overallocating_allocator_strategy<
+              felspar::memory::fallback_strategy<
+                      felspar::memory::bitmap_strategy<std::uint8_t>,
+                      felspar::memory::bitmap_strategy<std::uint8_t>>>);
+static_assert(not felspar::memory::overallocating_allocator_strategy<
+              felspar::memory::fallback_strategy<
+                      felspar::memory::bitmap_strategy<std::uint8_t>,
+                      felspar::memory::stack_storage<>>>);
 
 
 namespace {
@@ -108,6 +116,36 @@ namespace {
                 auto *p_fallback2 = strategy.allocate(8);
                 check(strategy.get_primary().owns(p_fallback2)) == false;
                 strategy.deallocate(p_fallback2, 8);
+            });
+
+
+    auto const alloc_at_least = suite.test(
+            "allocate_at_least routes and reports block size", [](auto check) {
+                std::array<std::byte, 64> primary_storage;
+                auto fallback_storage = std::make_unique<std::byte[]>(512);
+
+                felspar::memory::fallback_strategy<
+                        felspar::memory::bitmap_strategy<std::uint8_t>,
+                        felspar::memory::bitmap_strategy<std::uint8_t>>
+                        strategy(
+                                std::piecewise_construct,
+                                std::make_tuple(primary_storage.data(), 8),
+                                std::make_tuple(fallback_storage.get(), 8));
+
+                // Fill primary, then allocate_at_least should fall back
+                for (std::size_t i = 0; i < 8; ++i) {
+                    auto result = strategy.allocate_at_least(4);
+                    check(result.ptr != nullptr);
+                    check(result.bytes) == 8u;
+                }
+
+                // Next must come from fallback — block size still reported
+                auto result = strategy.allocate_at_least(4);
+                check(result.ptr != nullptr);
+                check(result.bytes) == 8u;
+                check(strategy.get_primary().owns(result.ptr)) == false;
+
+                strategy.deallocate(result.ptr, result.bytes);
             });
 
 
