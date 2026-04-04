@@ -1,9 +1,9 @@
 #pragma once
 
 #include <felspar/memory/concepts.hpp>
-#include <felspar/memory/tuple.detail.hpp>
 
 #include <cstddef>
+#include <tuple>
 #include <type_traits>
 
 
@@ -45,8 +45,8 @@ namespace felspar::memory {
         size_split_strategy(std::piecewise_construct_t, std::tuple<SArgs...> sargs, std::tuple<LArgs...> largs, std::size_t t) noexcept(
                 std::is_nothrow_constructible_v<small_type, SArgs...>
                 and std::is_nothrow_constructible_v<large_type, LArgs...>)
-        : small(detail::construct_from_tuple<small_type>(std::move(sargs))),
-          large(detail::construct_from_tuple<large_type>(std::move(largs))),
+        : small(std::make_from_tuple<small_type>(std::move(sargs))),
+          large(std::make_from_tuple<large_type>(std::move(largs))),
           threshold(t) {}
 
 

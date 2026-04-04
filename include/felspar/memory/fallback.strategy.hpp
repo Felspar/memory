@@ -1,10 +1,10 @@
 #pragma once
 
 #include <felspar/memory/concepts.hpp>
-#include <felspar/memory/tuple.detail.hpp>
 
 #include <cstddef>
 #include <source_location>
+#include <tuple>
 #include <type_traits>
 
 
@@ -45,10 +45,8 @@ namespace felspar::memory {
         fallback_strategy(std::piecewise_construct_t, std::tuple<PArgs...> pargs, std::tuple<FArgs...> fargs) noexcept(
                 std::is_nothrow_constructible_v<primary_type, PArgs...>
                 and std::is_nothrow_constructible_v<fallback_type, FArgs...>)
-        : primary(detail::construct_from_tuple<primary_type>(std::move(pargs))),
-          fallback(
-                  detail::construct_from_tuple<fallback_type>(
-                          std::move(fargs))) {}
+        : primary(std::make_from_tuple<primary_type>(std::move(pargs))),
+          fallback(std::make_from_tuple<fallback_type>(std::move(fargs))) {}
 
 
         /// ### Non-copyable
