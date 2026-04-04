@@ -75,7 +75,7 @@ namespace felspar::memory {
       public:
         /// ### Construct with a base pointer and block size
         bitmap_strategy(std::byte *base, std::size_t blocksize) noexcept
-        : m_base(base), m_blocksize(blocksize) {}
+        : m_base{base}, m_blocksize{blocksize} {}
 
         /// #### Non-copyable and non-movable for safety
         bitmap_strategy(bitmap_strategy const &) = delete;
@@ -85,7 +85,7 @@ namespace felspar::memory {
 
 
         /// ### Nullable allocation
-        std::byte *try_allocate(std::size_t const bytes) noexcept {
+        [[nodiscard]] std::byte *try_allocate(std::size_t const bytes) noexcept {
             if (bytes > m_blocksize) { return nullptr; }
             return bitmap::allocate(m_bitmap, m_base, m_blocksize);
         }
@@ -106,8 +106,7 @@ namespace felspar::memory {
 
 
         /// ### Deallocate a previously allocated block
-        void deallocate(
-                void *ptr, [[maybe_unused]] std::size_t const bytes) noexcept {
+        void deallocate(void *ptr, std::size_t) noexcept {
             bitmap::deallocate(
                     static_cast<std::byte *>(ptr), m_bitmap, m_base,
                     m_blocksize);
@@ -115,7 +114,7 @@ namespace felspar::memory {
 
 
         /// ### Check if a pointer was allocated from this strategy
-        bool owns(void const *ptr) const noexcept {
+        [[nodiscard]] bool owns(void const *const ptr) const noexcept {
             auto const *bptr = static_cast<std::byte const *>(ptr);
             return bptr >= m_base
                     and bptr < m_base + m_blocksize * bitmap::bitcount<BM>;
