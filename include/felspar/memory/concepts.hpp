@@ -7,6 +7,18 @@
 namespace felspar::memory {
 
 
+    /// ## Result type for over-allocating strategies
+    /**
+     * Mirrors `std::allocation_result` from C++23 but is always available.
+     * `ptr` is the allocated block; `bytes` is the actual allocation size
+     * (>= the amount requested).
+     */
+    struct allocation_result {
+        std::byte *ptr;
+        std::size_t bytes;
+    };
+
+
     /// ## A basic allocator
     template<typename S>
     concept allocator_strategy = requires(S strategy, std::size_t bytes) {
@@ -31,6 +43,27 @@ namespace felspar::memory {
             && requires(S strategy, void const *p) {
                    { strategy.owns(p) } noexcept -> std::same_as<bool>;
                };
+
+
+    /// ## An allocator that can return more memory than requested
+    /**
+     * Strategies satisfying this concept may allocate more bytes than asked for
+     * and report the true size to the caller. Extends `allocator_strategy`
+     * orthogonally — independent of the `nullable_` and `owning_` chains.
+     *
+     * The canonical example is a fixed-block pool: every allocation consumes a
+     * full block, so the strategy can always report the true block size.
+     */
+    template<typename S>
+    concept overallocating_allocator_strategy =
+            allocator_strategy<S> && requires(S strategy, std::size_t bytes) {
+                {
+                    strategy.allocate_at_least(bytes)
+                } -> std::same_as<allocation_result>;
+                {
+                    strategy.try_allocate_at_least(bytes)
+                } -> std::same_as<allocation_result>;
+            };
 
 
 }

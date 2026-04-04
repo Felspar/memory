@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include <felspar/memory/concepts.hpp>
 #include <felspar/memory/exceptions.hpp>
 
 #include <cstddef>
@@ -68,13 +69,19 @@ namespace felspar::memory {
      *
      * A fixed-block pool allocator using a bitmap to track allocations.
      * All allocations must be for the same block size. Provides nullable
-     * and ownership semantics for composition.
+     * and ownership semantics for composition as well as over allocation.
      */
     template<typename BM>
-    class bitmap_strategy {
+    class bitmap_strategy final {
+        BM m_bitmap{};
+        std::byte *m_base;
+        std::size_t m_blocksize;
+
+
       public:
         /// ### Construct with a base pointer and block size
-        bitmap_strategy(std::byte *base, std::size_t blocksize) noexcept
+        bitmap_strategy(
+                std::byte *const base, std::size_t const blocksize) noexcept
         : m_base{base}, m_blocksize{blocksize} {}
 
         /// #### Non-copyable and non-movable for safety
@@ -86,27 +93,45 @@ namespace felspar::memory {
 
         /// ### Nullable allocation
         [[nodiscard]] std::byte *try_allocate(std::size_t const bytes) noexcept {
-            if (bytes > m_blocksize) { return nullptr; }
-            return bitmap::allocate(m_bitmap, m_base, m_blocksize);
+            return try_allocate_at_least(bytes).ptr;
+        }
+        [[nodiscard]] allocation_result try_allocate_at_least(std::size_t const bytes) noexcept {
+            if (bytes > m_blocksize) { return {nullptr, {}}; }
+            return {bitmap::allocate(m_bitmap, m_base, m_blocksize), m_blocksize};
         }
 
 
         /// ### Throwing allocation
         [[nodiscard]] std::byte *allocate(
                 std::size_t const bytes,
-                std::source_location loc = std::source_location::current()) {
-            auto *ptr = try_allocate(bytes);
+                std::source_location const loc =
+                        std::source_location::current()) {
+            return allocate_at_least(bytes, loc).ptr;
+        }
+
+
+        /// ### Allocate at least `bytes`, reporting the true block size
+        [[nodiscard]] allocation_result allocate_at_least(
+                std::size_t const bytes,
+                std::source_location const loc = std::source_location::current())
+        /**
+         * Because every allocation consumes a full block of `m_blocksize`
+         * bytes, the caller receives exactly `m_blocksize` bytes regardless
+         * of the amount requested.
+         */
+        {
+            auto *const ptr = try_allocate(bytes);
             if (ptr == nullptr) {
                 detail::throw_bad_alloc(
                         "bitmap_strategy pool exhausted or oversized allocation",
                         loc);
             }
-            return ptr;
+            return {ptr, m_blocksize};
         }
 
 
         /// ### Deallocate a previously allocated block
-        void deallocate(void *ptr, std::size_t) noexcept {
+        void deallocate(void *const ptr, std::size_t) noexcept {
             bitmap::deallocate(
                     static_cast<std::byte *>(ptr), m_bitmap, m_base,
                     m_blocksize);
@@ -125,11 +150,6 @@ namespace felspar::memory {
         constexpr std::size_t capacity() const noexcept {
             return bitmap::bitcount<BM>;
         }
-
-      private:
-        BM m_bitmap{};
-        std::byte *m_base;
-        std::size_t m_blocksize;
     };
 
 

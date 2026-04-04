@@ -23,6 +23,7 @@ namespace felspar::memory {
 
         template<typename U, allocator_strategy S>
         friend class allocator;
+        friend struct std::allocator_traits<allocator>;
 
         Strategy *strategy;
 
@@ -113,7 +114,13 @@ struct std::allocator_traits<felspar::memory::allocator<T, S>> {
 #ifdef __cpp_lib_allocate_at_least
     [[nodiscard]] static std::allocation_result<pointer>
             allocate_at_least(allocator_type &a, std::size_t const n) {
-        return {a.allocate(n), n};
+        if constexpr (felspar::memory::overallocating_allocator_strategy<S>) {
+            auto const result = a.strategy->allocate_at_least(n * sizeof(T));
+            return {reinterpret_cast<pointer>(result.ptr),
+                    result.bytes / sizeof(T)};
+        } else {
+            return {a.allocate(n), n};
+        }
     }
 #endif
 

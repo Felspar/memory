@@ -14,6 +14,8 @@ static_assert(felspar::memory::nullable_allocator_strategy<
               felspar::memory::bitmap_strategy<std::uint8_t>>);
 static_assert(felspar::memory::owning_allocator_strategy<
               felspar::memory::bitmap_strategy<std::uint8_t>>);
+static_assert(felspar::memory::overallocating_allocator_strategy<
+              felspar::memory::bitmap_strategy<std::uint8_t>>);
 
 
 namespace {
@@ -109,6 +111,20 @@ namespace {
 
         check(strategy.capacity()) == 8u;
     });
+
+
+    auto const alloc_at_least =
+            suite.test("allocate_at_least reports block size", [](auto check) {
+                std::array<std::byte, 64 * 8> storage;
+                felspar::memory::bitmap_strategy<std::uint8_t> strategy{
+                        storage.data(), 64};
+
+                auto result = strategy.allocate_at_least(10);
+                check(result.ptr != nullptr);
+                check(result.bytes) == 64u;
+
+                strategy.deallocate(result.ptr, result.bytes);
+            });
 
 
 }
