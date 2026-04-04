@@ -87,8 +87,25 @@ namespace felspar::memory {
         pool_strategy()
             requires std::is_default_constructible_v<Fallback>
         = default;
+
         explicit pool_strategy(Fallback fallback)
         : m_fallback{std::move(fallback)} {}
+
+        /// #### Construct via a factory lambda
+        template<typename Factory>
+            requires std::same_as<std::invoke_result_t<Factory>, Fallback>
+        explicit pool_strategy(Factory &&factory)
+        /**
+         * Pass a callable that returns a `Fallback` instance. The return value
+         * is constructed directly into `m_fallback` via guaranteed copy
+         * elision, so this works even when `Fallback` is neither copyable nor
+         * movable.
+         *
+         * ```cpp
+         * pool_strategy ps{[&]{ return MyFallback{params}; }};
+         * ```
+         */
+        : m_fallback{std::forward<Factory>(factory)()} {}
 
 
         /// ### Non-copyable
