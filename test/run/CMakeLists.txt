@@ -8,6 +8,7 @@ if(TARGET felspar-check)
             hexdump.cpp
             holding_pen.cpp
             pmr.cpp
+            pmr.allocator.cpp
             raw_memory.cpp
             shared_buffer.cpp
             sizes.cpp

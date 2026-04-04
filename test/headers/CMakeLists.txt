@@ -10,6 +10,7 @@ add_library(memory-headers-tests STATIC EXCLUDE_FROM_ALL
         fixed-pool.pmr.cpp
         holding_pen.cpp
         pmr.cpp
+        pmr.allocator.cpp
         raw_memory.cpp
         shared_buffer.cpp
         shared_view.cpp
