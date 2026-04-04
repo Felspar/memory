@@ -53,7 +53,7 @@ namespace felspar::memory {
         };
         template<typename C>
         inline std::ostream &operator<<(std::ostream &s, hexdump_proxy<C> p) {
-            return hexdump(s, p.b);
+            return hexdump(s, p.b, p.bytes);
         }
     }
 
