@@ -11,6 +11,8 @@ static_assert(felspar::memory::nullable_allocator_strategy<
               felspar::memory::pool<8, 16, 32>>);
 static_assert(not felspar::memory::owning_allocator_strategy<
               felspar::memory::pool<8, 16, 32>>);
+static_assert(felspar::memory::overallocating_allocator_strategy<
+              felspar::memory::pool<8, 16, 32>>);
 
 static_assert(not std::is_copy_constructible_v<felspar::memory::pool<8, 16>>);
 static_assert(std::is_move_constructible_v<felspar::memory::pool<8, 16>>);
@@ -82,6 +84,30 @@ namespace {
                 check([&]() { [[maybe_unused]] auto _ = ps.allocate(256); })
                         .throws(felspar::stdexcept::bad_alloc{
                                 "pool_strategy oversized allocation"});
+            });
+
+
+    auto const alloc_at_least = suite.test(
+            "allocate_at_least reports tier block size", [](auto check) {
+                felspar::memory::pool<16, 64> ps;
+
+                // Request smaller than first tier — reports actual tier size
+                auto small_result = ps.allocate_at_least(10);
+                check(small_result.ptr != nullptr);
+                check(small_result.bytes) == 16u;
+
+                // Request exactly at second tier boundary
+                auto large_result = ps.allocate_at_least(64);
+                check(large_result.ptr != nullptr);
+                check(large_result.bytes) == 64u;
+
+                // try_allocate_at_least returns {nullptr, 0} for oversized
+                auto oversized = ps.try_allocate_at_least(256);
+                check(oversized.ptr) == nullptr;
+                check(oversized.bytes) == 0u;
+
+                ps.deallocate(small_result.ptr, small_result.bytes);
+                ps.deallocate(large_result.ptr, large_result.bytes);
             });
 
 

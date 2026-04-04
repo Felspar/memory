@@ -135,42 +135,55 @@ namespace felspar::memory {
          * May throw if the fallback throws.
          */
         [[nodiscard]] std::byte *try_allocate(std::size_t const bytes) {
+            return try_allocate_at_least(bytes).ptr;
+        }
+        [[nodiscard]] allocation_result
+                try_allocate_at_least(std::size_t const bytes) {
             for (std::size_t i{}; i < N; ++i) {
                 if (Sizes[i] >= bytes) {
                     if (not m_pools[i].empty()) {
-                        auto *ptr = m_pools[i].back();
+                        auto *const ptr = m_pools[i].back();
                         m_pools[i].pop_back();
-                        return ptr;
+                        return {ptr, Sizes[i]};
                     }
-                    return m_fallback.allocate(Sizes[i]);
+                    return {m_fallback.allocate(Sizes[i]), Sizes[i]};
                 }
             }
-            return nullptr;
+            return {nullptr, {}};
         }
 
 
         /// ### Allocate, throwing for oversized requests
         /**
-         * Thin wrapper around `try_allocate`. Throws `std::bad_alloc` when
-         * `try_allocate` returns `nullptr` (oversized request, larger than
-         * every tier). Compose with `fallback_strategy` to handle those
-         * separately.
+         * Thin wrapper around `allocate_at_least`. Throws `std::bad_alloc`
+         * when the request is larger than every tier. Compose with
+         * `fallback_strategy` to handle those separately.
          */
         [[nodiscard]] std::byte *allocate(
                 std::size_t const bytes,
-                std::source_location loc = std::source_location::current()) {
-            if (auto *ptr = try_allocate(bytes); ptr) { return ptr; }
+                std::source_location const loc =
+                        std::source_location::current()) {
+            return allocate_at_least(bytes, loc).ptr;
+        }
+        [[nodiscard]] allocation_result allocate_at_least(
+                std::size_t const bytes,
+                std::source_location const loc =
+                        std::source_location::current()) {
+            if (auto result = try_allocate_at_least(bytes); result.ptr) {
+                return result;
+            }
             detail::throw_bad_alloc("pool_strategy oversized allocation", loc);
         }
 
 
         /// ### Return a block to the appropriate free list
+        void deallocate(void *const ptr, std::size_t const bytes)
         /**
          * The size must fit within one of the pool tiers. Passing an oversized
          * `bytes` value is undefined behaviour — it will never occur for
          * pointers obtained from `allocate`.
          */
-        void deallocate(void *const ptr, std::size_t const bytes) {
+        {
             for (std::size_t i{}; i < N; ++i) {
                 if (Sizes[i] >= bytes) {
                     m_pools[i].push_back(static_cast<std::byte *>(ptr));
