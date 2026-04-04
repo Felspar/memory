@@ -9,6 +9,7 @@ if(TARGET felspar-check)
             holding_pen.cpp
             new_delete.strategy.cpp
             pmr.cpp
+            pool.strategy.cpp
             pmr.allocator.cpp
             raw_memory.cpp
             shared_buffer.cpp
