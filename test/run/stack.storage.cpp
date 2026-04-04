@@ -1,4 +1,4 @@
-#include <felspar/memory/allocator.strategy.hpp>
+#include <felspar/memory/concepts.hpp>
 #include <felspar/memory/stack.storage.hpp>
 #include <felspar/test.hpp>
 

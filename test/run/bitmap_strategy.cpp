@@ -1,5 +1,5 @@
-#include <felspar/memory/allocator.strategy.hpp>
 #include <felspar/memory/bitmap.strategy.hpp>
+#include <felspar/memory/concepts.hpp>
 #include <felspar/test.hpp>
 
 #include <felspar/exceptions/bad_alloc.hpp>
