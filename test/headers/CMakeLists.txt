@@ -9,6 +9,7 @@ add_library(memory-headers-tests STATIC EXCLUDE_FROM_ALL
         fallback.strategy.cpp
         fixed-pool.pmr.cpp
         holding_pen.cpp
+        new_delete.strategy.cpp
         pmr.cpp
         pmr.allocator.cpp
         raw_memory.cpp

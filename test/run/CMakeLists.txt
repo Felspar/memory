@@ -7,6 +7,7 @@ if(TARGET felspar-check)
             fixed-pool.pmr.cpp
             hexdump.cpp
             holding_pen.cpp
+            new_delete.strategy.cpp
             pmr.cpp
             pmr.allocator.cpp
             raw_memory.cpp
