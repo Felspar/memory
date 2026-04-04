@@ -21,6 +21,7 @@ add_library(memory-headers-tests STATIC EXCLUDE_FROM_ALL
         size_split.strategy.cpp
         spaceship.cpp
         stack.storage.cpp
+        std.allocator.cpp
     )
 target_link_libraries(memory-headers-tests PRIVATE felspar-memory)
 add_dependencies(felspar-check memory-headers-tests)

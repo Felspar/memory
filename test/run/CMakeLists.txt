@@ -18,5 +18,6 @@ if(TARGET felspar-check)
             small_vector.cpp
             stable_vector.cpp
             stack.storage.cpp
+            std.allocator.cpp
         )
 endif()
