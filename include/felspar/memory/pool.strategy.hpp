@@ -5,10 +5,7 @@
 #include <felspar/memory/exceptions.hpp>
 #include <felspar/memory/new_delete.strategy.hpp>
 
-#include <algorithm>
 #include <array>
-#include <cstddef>
-#include <source_location>
 #include <type_traits>
 #include <vector>
 
@@ -18,6 +15,9 @@ namespace felspar::memory {
 
     /**
      * ## Pool allocator strategy — `pool_strategy` and `pool`
+     *
+     * A pooling memory manager that serves allocations up to the largest size
+     * bracket.
      *
      * Two types are provided here. `pool_strategy<Sizes, Fallback>` is the full
      * template where both the size array and the fallback allocator type are
@@ -37,8 +37,8 @@ namespace felspar::memory {
      * ```
      *
      * Both manage a set of size-class free lists backed by the fallback
-     * allocator. Pool tier sizes are sorted at compile time so the order in
-     * which they are listed does not matter.
+     * allocator. **Sizes must be listed in ascending order** — this is
+     * enforced at compile time via a `static_assert`.
      *
      * Each tier holds a `std::vector` of available blocks. On allocation the
      * smallest fitting tier is tried first; if it has a free block that block
@@ -66,12 +66,18 @@ namespace felspar::memory {
         requires std::same_as<typename decltype(Sizes)::value_type, std::size_t>
     class pool_strategy final {
         static constexpr std::size_t N = Sizes.size();
+        std::array<std::vector<std::byte *>, N> m_pools;
+        Fallback m_fallback;
 
-        static constexpr auto c_sizes = []() {
-            auto s = Sizes;
-            std::sort(s.begin(), s.end());
-            return s;
-        }();
+        static_assert(
+                []() {
+                    for (std::size_t i{1}; i < N; ++i) {
+                        if (Sizes[i] <= Sizes[i - 1]) { return false; }
+                    }
+                    return true;
+                }(),
+                "pool_strategy: Sizes must be strictly ascending");
+
 
       public:
         using fallback_type = Fallback;
@@ -105,7 +111,7 @@ namespace felspar::memory {
         ~pool_strategy() {
             for (std::size_t i{}; i < N; ++i) {
                 for (auto *ptr : m_pools[i]) {
-                    m_fallback.deallocate(ptr, c_sizes[i]);
+                    m_fallback.deallocate(ptr, Sizes[i]);
                 }
             }
         }
@@ -130,13 +136,13 @@ namespace felspar::memory {
          */
         [[nodiscard]] std::byte *try_allocate(std::size_t const bytes) {
             for (std::size_t i{}; i < N; ++i) {
-                if (c_sizes[i] >= bytes) {
+                if (Sizes[i] >= bytes) {
                     if (not m_pools[i].empty()) {
                         auto *ptr = m_pools[i].back();
                         m_pools[i].pop_back();
                         return ptr;
                     }
-                    return m_fallback.allocate(c_sizes[i]);
+                    return m_fallback.allocate(Sizes[i]);
                 }
             }
             return nullptr;
@@ -166,22 +172,12 @@ namespace felspar::memory {
          */
         void deallocate(void *const ptr, std::size_t const bytes) {
             for (std::size_t i{}; i < N; ++i) {
-                if (c_sizes[i] >= bytes) {
+                if (Sizes[i] >= bytes) {
                     m_pools[i].push_back(static_cast<std::byte *>(ptr));
                     return;
                 }
             }
         }
-
-
-        /// ### Access the fallback strategy
-        Fallback &get_fallback() noexcept { return m_fallback; }
-        Fallback const &get_fallback() const noexcept { return m_fallback; }
-
-
-      private:
-        std::array<std::vector<std::byte *>, N> m_pools;
-        Fallback m_fallback;
     };
 
 

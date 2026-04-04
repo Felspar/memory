@@ -109,20 +109,4 @@ namespace {
             });
 
 
-    auto const unsorted_input =
-            suite.test("sizes are sorted at compile time", [](auto check) {
-                // Sizes listed out of order — routing still works correctly
-                felspar::memory::pool<64, 8, 32> ps;
-
-                auto *p = ps.allocate(8);
-                check(p != nullptr);
-                ps.deallocate(p, 8);
-
-                // Must land in the 8-byte tier, not the 32 or 64 tier
-                auto *r = ps.try_allocate(8);
-                check(r) == p;
-                ps.deallocate(r, 8);
-            });
-
-
 }
