@@ -26,7 +26,7 @@ namespace felspar::memory {
             std::size_t A = 16u,
             std::size_t CA = alignof(std::max_align_t)>
     class stack_storage {
-        /// Storage memory for the
+        /// Storage memory for the allocator
         std::array<std::byte, S> storage alignas(CA);
         using allocation = std::span<std::byte>;
         small_vector<allocation, A> allocations = {},

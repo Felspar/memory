@@ -41,7 +41,7 @@ namespace felspar::memory {
             if (holding) [[likely]] {
                 return *store.data();
             } else {
-                detail::throw_logic_error("The holding  pen is empty", loc);
+                detail::throw_logic_error("The holding pen is empty", loc);
             }
         }
         T const &
@@ -50,7 +50,7 @@ namespace felspar::memory {
             if (holding) [[likely]] {
                 return *store.data();
             } else {
-                detail::throw_logic_error("The holding  pen is empty", loc);
+                detail::throw_logic_error("The holding pen is empty", loc);
             }
         }
 
