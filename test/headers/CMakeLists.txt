@@ -1,4 +1,5 @@
 add_library(memory-headers-tests STATIC EXCLUDE_FROM_ALL
+        allocator.strategy.cpp
         accumulation_buffer.cpp
         any_buffer.cpp
         atomic_pen.cpp

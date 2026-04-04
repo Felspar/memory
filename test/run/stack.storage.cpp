@@ -1,7 +1,12 @@
+#include <felspar/memory/allocator.strategy.hpp>
 #include <felspar/memory/stack.storage.hpp>
 #include <felspar/test.hpp>
 
 #include <felspar/exceptions.hpp>
+
+
+static_assert(
+        felspar::memory::allocator_strategy<felspar::memory::stack_storage<>>);
 
 
 namespace {

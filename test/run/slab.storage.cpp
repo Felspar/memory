@@ -1,5 +1,10 @@
+#include <felspar/memory/allocator.strategy.hpp>
 #include <felspar/memory/slab.storage.hpp>
 #include <felspar/test.hpp>
+
+
+static_assert(
+        felspar::memory::allocator_strategy<felspar::memory::slab_storage<>>);
 
 
 namespace {
