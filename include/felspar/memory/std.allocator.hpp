@@ -98,6 +98,7 @@ struct std::allocator_traits<felspar::memory::allocator<T, S>> {
             typename allocator_type::propagate_on_container_move_assignment;
     using propagate_on_container_swap =
             typename allocator_type::propagate_on_container_swap;
+    using is_always_equal = std::false_type;
 
     template<typename U>
     using rebind_alloc = felspar::memory::allocator<U, S>;
@@ -108,6 +109,13 @@ struct std::allocator_traits<felspar::memory::allocator<T, S>> {
             allocate(allocator_type &a, std::size_t const n) {
         return a.allocate(n);
     }
+
+#ifdef __cpp_lib_allocate_at_least
+    [[nodiscard]] static std::allocation_result<pointer>
+            allocate_at_least(allocator_type &a, std::size_t const n) {
+        return {a.allocate(n), n};
+    }
+#endif
 
     static void deallocate(
             allocator_type &a, pointer p, std::size_t const n) noexcept {
