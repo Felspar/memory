@@ -61,11 +61,6 @@ namespace felspar::memory {
         = default;
 
 
-        /// ### Access the owned strategy
-        strategy_type &get_strategy() noexcept { return strategy; }
-        strategy_type const &get_strategy() const noexcept { return strategy; }
-
-
       private:
         void *do_allocate(
                 std::size_t const bytes, std::size_t const alignment) override {

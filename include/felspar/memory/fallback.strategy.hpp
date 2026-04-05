@@ -27,8 +27,7 @@ namespace felspar::memory {
      * either strategy is non-movable.
      */
     template<owning_allocator_strategy Primary, allocator_strategy Fallback>
-    class fallback_strategy {
-      public:
+    struct fallback_strategy {
         using primary_type = Primary;
         using fallback_type = Fallback;
 
@@ -67,6 +66,11 @@ namespace felspar::memory {
             requires(std::is_move_assignable_v<primary_type>
                      and std::is_move_assignable_v<fallback_type>)
         = default;
+
+
+        /// ### Strategies
+        primary_type primary;
+        fallback_type fallback;
 
 
         /// ### Throwing allocation
@@ -155,19 +159,6 @@ namespace felspar::memory {
         {
             return primary.owns(ptr) or fallback.owns(ptr);
         }
-
-
-        /// ### Access the owned strategies
-        primary_type &get_primary() noexcept { return primary; }
-        primary_type const &get_primary() const noexcept { return primary; }
-
-        fallback_type &get_fallback() noexcept { return fallback; }
-        fallback_type const &get_fallback() const noexcept { return fallback; }
-
-
-      private:
-        primary_type primary;
-        fallback_type fallback;
     };
 
 

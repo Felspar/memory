@@ -60,28 +60,28 @@ namespace {
 
                 // First allocation should come from primary
                 auto *p1 = strategy.allocate(32);
-                check(strategy.get_primary().owns(p1)) == true;
+                check(strategy.primary.owns(p1)) == true;
 
                 // Second allocation should also come from primary
                 auto *p2 = strategy.allocate(32);
-                check(strategy.get_primary().owns(p2)) == true;
+                check(strategy.primary.owns(p2)) == true;
 
                 // Fill up the primary (8 blocks of 32 bytes)
                 for (std::size_t i = 2; i < 8; ++i) {
                     auto *p = strategy.allocate(32);
-                    check(strategy.get_primary().owns(p)) == true;
+                    check(strategy.primary.owns(p)) == true;
                 }
 
                 // Next allocation should fall through to fallback
                 auto *p_fallback = strategy.allocate(32);
-                check(strategy.get_primary().owns(p_fallback)) == false;
+                check(strategy.primary.owns(p_fallback)) == false;
 
                 // Deallocate primary-owned pointer should route to primary
                 strategy.deallocate(p1, 32);
 
                 // Next allocation should come from primary again (slot freed)
                 auto *p3 = strategy.allocate(32);
-                check(strategy.get_primary().owns(p3)) == true;
+                check(strategy.primary.owns(p3)) == true;
             });
 
 
@@ -102,19 +102,19 @@ namespace {
                 std::array<void *, 8> primary_ptrs{};
                 for (std::size_t i = 0; i < 8; ++i) {
                     primary_ptrs[i] = strategy.allocate(8);
-                    check(strategy.get_primary().owns(primary_ptrs[i])) == true;
+                    check(strategy.primary.owns(primary_ptrs[i])) == true;
                 }
 
                 // This allocation must come from fallback
                 auto *p_fallback = strategy.allocate(8);
-                check(strategy.get_primary().owns(p_fallback)) == false;
+                check(strategy.primary.owns(p_fallback)) == false;
 
                 // Deallocate the fallback allocation
                 strategy.deallocate(p_fallback, 8);
 
                 // Allocate and deallocate from fallback again
                 auto *p_fallback2 = strategy.allocate(8);
-                check(strategy.get_primary().owns(p_fallback2)) == false;
+                check(strategy.primary.owns(p_fallback2)) == false;
                 strategy.deallocate(p_fallback2, 8);
             });
 
@@ -143,7 +143,7 @@ namespace {
                 auto result = strategy.allocate_at_least(4);
                 check(result.ptr != nullptr);
                 check(result.bytes) == 8u;
-                check(strategy.get_primary().owns(result.ptr)) == false;
+                check(strategy.primary.owns(result.ptr)) == false;
 
                 strategy.deallocate(result.ptr, result.bytes);
             });
@@ -163,7 +163,7 @@ namespace {
 
                 // Request larger than block size should go directly to fallback
                 auto *p = strategy.allocate(64);
-                check(strategy.get_primary().owns(p)) == false;
+                check(strategy.primary.owns(p)) == false;
 
                 // And deallocation should route correctly
                 strategy.deallocate(p, 64);

@@ -35,8 +35,8 @@ namespace {
                         std::piecewise_construct, std::tuple<>{},
                         std::tuple<>{}, 128);
 
-        auto &small = strategy.get_small();
-        auto &large = strategy.get_large();
+        auto &small = strategy.small;
+        auto &large = strategy.large;
 
         // Get base pointers for range checking
         auto *small_base = reinterpret_cast<std::byte const *>(&small);
@@ -75,7 +75,7 @@ namespace {
                                 std::piecewise_construct, std::tuple<>{},
                                 std::tuple<>{}, 128);
 
-                auto &small = strategy.get_small();
+                auto &small = strategy.small;
                 auto *small_base = reinterpret_cast<std::byte const *>(&small);
 
                 // Exactly at threshold should go to small
@@ -86,7 +86,7 @@ namespace {
                                       1024>::storage_bytes);
 
                 // Just above threshold should go to large
-                auto &large = strategy.get_large();
+                auto &large = strategy.large;
                 auto *large_base = reinterpret_cast<std::byte const *>(&large);
                 auto *p_above = strategy.allocate(129);
                 check(p_above >= large_base);
@@ -112,7 +112,7 @@ namespace {
                                 std::piecewise_construct, std::tuple<>{},
                                 std::tuple<>{}, 128);
 
-                auto &small = strategy.get_small();
+                auto &small = strategy.small;
                 auto *small_base = reinterpret_cast<std::byte const *>(&small);
 
                 // Allocate from small
@@ -174,8 +174,8 @@ namespace {
                                 std::piecewise_construct, std::tuple<>{},
                                 std::tuple<>{}, 128);
 
-                auto &small = strategy.get_small();
-                auto &large = strategy.get_large();
+                auto &small = strategy.small;
+                auto &large = strategy.large;
                 auto *small_base = reinterpret_cast<std::byte const *>(&small);
                 auto *large_base = reinterpret_cast<std::byte const *>(&large);
 
