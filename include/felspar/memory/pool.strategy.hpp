@@ -81,6 +81,7 @@ namespace felspar::memory {
 
       public:
         using fallback_type = Fallback;
+        static std::array<std::size_t, N> constexpr sizes = Sizes;
 
 
         /// ### Construct with an optional fallback strategy
