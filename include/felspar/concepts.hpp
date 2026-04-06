@@ -7,6 +7,7 @@
 
 /// libc++ doesn't have a concepts header yet, so these are just basic
 /// implementations whilst we wait for it to catch up to libstdc++
+/// TODO This can almost certainly go now
 namespace felspar {
 
 

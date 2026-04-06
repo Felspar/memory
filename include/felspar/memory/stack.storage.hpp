@@ -15,13 +15,18 @@ namespace felspar::memory {
      * lifetimes don't extend beyond the allocator.
      *
      * This allocator is not thread safe.
+     *
+     * TODO This can certainly implement `try_allocate` and `owns`
+     * TODO Probably this should be attached to some sort of "storage" concept
+     * onto which an allocation strategy can be added. The allocation strategy
+     * this uses should be separated out.
      */
     template<
             std::size_t S = 2u << 10,
             std::size_t A = 16u,
             std::size_t CA = alignof(std::max_align_t)>
     class stack_storage {
-        /// Storage memory for the
+        /// Storage memory for the allocator
         std::array<std::byte, S> storage alignas(CA);
         using allocation = std::span<std::byte>;
         small_vector<allocation, A> allocations = {},
