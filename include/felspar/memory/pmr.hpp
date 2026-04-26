@@ -64,8 +64,12 @@ namespace felspar::pmr {
             }
             void do_deallocate(
                     void *p, std::size_t bytes, std::size_t alignment) {
+#if __cpp_sized_deallocation
                 ::operator delete(
                         p, bytes, static_cast<std::align_val_t>(alignment));
+#else
+                ::operator delete(p, static_cast<std::align_val_t>(alignment));
+#endif
             }
 
             bool do_is_equal(memory_resource const &other) const noexcept {

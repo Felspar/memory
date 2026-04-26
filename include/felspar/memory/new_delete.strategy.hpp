@@ -28,7 +28,11 @@ namespace felspar::memory {
 
         /// ### Deallocate back to the global heap
         void deallocate(void *ptr, std::size_t bytes) noexcept {
+#if __cpp_sized_deallocation
             ::operator delete(ptr, bytes);
+#else
+            ::operator delete(ptr);
+#endif
         }
     };
 
